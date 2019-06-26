@@ -20,4 +20,6 @@ steps:
     cmakeArgs: '-DMYSQL_FORK=MYSQL -DDEVELOPER_MODE=ON ../'
   displayName: 'Run cmake'
 
-- script: 'make'
+- script: |
+    cd build
+    make
