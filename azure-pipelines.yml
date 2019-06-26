@@ -17,7 +17,7 @@ steps:
 
 - task: CMake@1
   inputs:
-    cmakeArgs: '-DMYSQL=ON -DPGSQL=OFF -DDEVELOPER_MODE=ON ../'
+    cmakeArgs: '-DMYSQL_FORK=MYSQL -DDEVELOPER_MODE=ON ../'
   displayName: 'Run cmake'
 
 - script: 'make'
