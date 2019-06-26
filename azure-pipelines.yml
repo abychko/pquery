@@ -24,3 +24,10 @@ steps:
     cd build
     make
   displayName: 'Run build'
+
+- script: |
+    cd build
+    cpack -G RPM
+    cpack -G DEB
+    cpack -G STGZ
+  displayName: 'Run cpack'
