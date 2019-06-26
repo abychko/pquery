@@ -1,0 +1,22 @@
+# Starter pipeline
+# Start with a minimal pipeline that you can customize to build and deploy your code.
+# Add steps that build, run tests, deploy, and more:
+# https://aka.ms/yaml
+
+trigger:
+- v3.x
+
+pool:
+  vmImage: 'ubuntu-latest'
+
+steps:
+- script: |
+    sudo apt-get update
+    sudo apt-get install cmake make g++ libmysqlclient-dev
+  displayName: 'Install dependencies'
+
+- task: CMake@1
+  inputs:
+    cmakeArgs: '-DMYSQL=ON -DDEVELOPER_MODE=ON ../'
+  displayName: 'Run cmake'
+
