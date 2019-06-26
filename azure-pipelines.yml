@@ -20,3 +20,4 @@ steps:
     cmakeArgs: '-DMYSQL=ON -DPGSQL=OFF -DDEVELOPER_MODE=ON ../'
   displayName: 'Run cmake'
 
+- script: 'make'
