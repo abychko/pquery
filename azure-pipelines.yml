@@ -4,10 +4,36 @@
 # https://aka.ms/yaml
 
 trigger:
+- master
 - v3.x
 
-pool:
-  vmImage: 'ubuntu-latest'
+resources:
+    containers:
+    - container: centos-6
+      image: centos:6
+    - container: centos-7
+      image: centos:7
+
+variables:
+  devmode: true, false
+
+
+
+
+
+
+
+- stage: Prepare environment
+- stage: Cmake configure
+
+
+
+
+
+
+
+
+
 
 steps:
 - script: |

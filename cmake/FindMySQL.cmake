@@ -62,7 +62,9 @@ FIND_LIBRARY(MYSQL_LIBRARY
     PATHS ${MYSQL_BASEDIR}/lib ${MYSQL_BASEDIR}/lib64
     NO_CMAKE_SYSTEM_PATH
   ELSE(MYSQL_BASEDIR)
-    PATHS /usr/lib /usr/local/lib /usr/lib/x86_64-linux-gnu /usr/lib/i386-linux-gnu /usr/lib64 /usr/local/mysql/lib
+    PATHS /usr/lib /usr/lib64 /usr/local/lib
+          /usr/lib/x86_64-linux-gnu /usr/lib/i386-linux-gnu
+          /usr/local/mysql/lib /usr/local/opt/mysql/lib
   ENDIF(MYSQL_BASEDIR)
   PATH_SUFFIXES mysql
   )

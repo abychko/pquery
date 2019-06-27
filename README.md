@@ -127,7 +127,7 @@ If pquery exits with exit code 4 (use `echo $?` at your command line to see the 
 
 You are using a binary compiled binary with strict CPU binding/optimization (ref the `NATIVE_CPU` build flag above) while using it on a (likely older) machine which has a CPU incompatbile with the original build CPU.
 
-To fix this, you can chose from 3 options;
+To fix this, you can choose from 3 options;
 
 1. Compile pquery locally on this machine with the `-DNATIVE_CPU=ON` cmake flag, which will then automatically have the best speed optimization for this CPU on this machine
 2. Compile with the `-DNATIVE_CPU=OFF` cmake flag (the default) and use the resulting binary on any CPU. As described this option may be somewhat slower (perhaps in the area of 2% - unconfirmed)
