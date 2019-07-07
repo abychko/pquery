@@ -1,0 +1,39 @@
+# Starter pipeline
+# Start with a minimal pipeline that you can customize to build and deploy your code.
+# Add steps that build, run tests, deploy, and more:
+# https://aka.ms/yaml
+
+resources:
+  containers:
+  - container: centos-7
+    image: abychko/centos-7
+
+jobs:
+
+- job: PrepareEnvironment
+  pool:
+    vmImage: 'ubuntu-16.04'
+  strategy:
+    matrix:
+      centos-7:
+        containerImage: centos-7
+  container: $[variables['containerImage']]
+
+  steps:
+
+    - bash: |
+        sudo yum -y upgrade
+        sudo yum -y install mariadb-devel rpm-build redhat-rpm-config
+      displayName: 'Install dependencies'
+      condition: eq(variables['containerImage'], 'centos-7')
+
+    - bash: |
+        set -x
+        mkdir build && cd build
+        cmake ../ -DMYSQL_FORK=MARIADB -DWITH_PGSQL=OFF
+
+    - bash: |
+        set -x
+        cd build
+        cpack -G RPM
+      condition: eq(variables['containerImage'], 'centos-7')
