@@ -1,3 +1,8 @@
+Code status:
+------------
+[![Build Status](https://dev.azure.com/abychko/PQuery/_apis/build/status/abychko.pquery?branchName=master)](https://dev.azure.com/abychko/PQuery/_build/latest?definitionId=3&branchName=master) Azure master branch
+
+
 # What is pquery?
 pquery is an open-source (GPLv2 licensed) multi-threaded test program created to stress test the MySQL server (in any flavor), either randomly or sequentially, for QA purposes. Given it's modern C++ core, it is able to maximise the physical server's queries per second (qps) rate. pquery is an acronym for 'parallel query'. Prebuilt pquery binaries (with statically linked client libraries) for Percona Server, MySQL Server, MariaDB, and WebScaleSQL are available as part of the pquery framework.
 
