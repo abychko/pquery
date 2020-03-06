@@ -6,7 +6,7 @@
 #include <cstdlib>
 #include <sstream>
 #include <stdexcept>
-#include <ini.h>
+#include <ini.hpp>
 #include <INIReader.hpp>
 
 using std::string;

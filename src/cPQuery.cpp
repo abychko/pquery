@@ -84,6 +84,7 @@ PQuery::logVersionInfo() {
   pqLogger->addRecordToLog("* PQuery version: " + std::string(PQVERSION));
   pqLogger->addRecordToLog("* PQuery revision: " + std::string(PQREVISION));
   pqLogger->addRecordToLog("* PQuery revision date: " + std::string(PQRELDATE));
+  pqLogger->addRecordToLog("* PQuery build date: " + std::string(PQBUILDDATE));
 #ifdef HAVE_MYSQL
   pqLogger->addRecordToLog("* PQuery MySQL client library: " + std::string(MYSQL_FORK) + " v." + getMySqlClientInfo());
 #endif
@@ -355,9 +356,10 @@ PQuery::showVersion() {
 #ifdef DEBUG
   std::cerr << __PRETTY_FUNCTION__ << std::endl;
 #endif
-  std::cout << "* PQuery version: "       << PQVERSION << std::endl;
-  std::cout << "* PQuery revision: "      << PQREVISION << std::endl;
-  std::cout << "* PQuery release date: "  << PQRELDATE << std::endl;
+  std::cout << "* PQuery version: "       << PQVERSION   << std::endl;
+  std::cout << "* PQuery revision: "      << PQREVISION  << std::endl;
+  std::cout << "* PQuery release date: "  << PQRELDATE   << std::endl;
+  std::cout << "* PQuery build date: "    << PQBUILDDATE << std::endl;
 #ifdef HAVE_MYSQL
   std::cout << "* PQuery MySQL client library: " + std::string(MYSQL_FORK) + " v." + getMySqlClientInfo() << std::endl;
 #endif

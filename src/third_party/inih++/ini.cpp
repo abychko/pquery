@@ -7,14 +7,14 @@ http://code.google.com/p/inih/
 
 */
 
-#include <stdio.h>
-#include <ctype.h>
-#include <string.h>
+#include <cstdio>
+#include <cctype>
+#include <cstring>
 
-#include "ini.h"
+#include "ini.hpp"
 
 #if !INI_USE_STACK
-#include <stdlib.h>
+#include <cstdlib>
 #endif
 
 #define MAX_SECTION 50

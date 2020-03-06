@@ -93,7 +93,7 @@ CPack: - Run preinstall target for: pquery
 CPack: - Install project: pquery
 CPack: Create package
 CPackRPM: Will use GENERATED spec file: /home/percona/pquery/_CPack_Packages/Linux/RPM/SPECS/pquery-ms.spec
-CPack: - package: /home/percona/pquery/pquery-ms-2.0.0-Linux.rpm generated.
+CPack: - package: /home/percona/pquery/pquery-ms-3.0.0-Linux.rpm generated.
 $
 ```
 

@@ -15,6 +15,10 @@
 #define PQRELDATE "UNKNOWN"
 #endif
 
+#ifndef PQBUILDDATE
+#define PQBUILDDATE __DATE__
+#endif
+
 #ifndef MYSQL_FORK
 #define MYSQL_FORK "UNKNOWN"
 #endif

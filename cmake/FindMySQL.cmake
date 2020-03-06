@@ -49,8 +49,8 @@ IF(STATIC_MYSQL AND NOT MARIADB)
 ENDIF(STATIC_MYSQL AND NOT MARIADB)
 #
 FIND_PATH(MYSQL_INCLUDE_DIR mysql.h
-  ${BASEDIR}/include
-  ${BASEDIR}/include/mysql
+  ${MYSQL_BASEDIR}/include
+  ${MYSQL_BASEDIR}/include/mysql
   /usr/local/include/mysql
   /usr/include/mysql
   /usr/local/mysql/include
