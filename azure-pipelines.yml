@@ -5,8 +5,8 @@
 
 resources:
   containers:
-  - container: centos-7
-    image: abychko/centos-7
+  - container: centos-8
+    image: centos:8
 
 jobs:
 
@@ -16,7 +16,7 @@ jobs:
   strategy:
     matrix:
       centos-7:
-        containerImage: centos-7
+        containerImage: centos-8
   container: $[variables['containerImage']]
 
   steps:
@@ -25,7 +25,7 @@ jobs:
         sudo yum -y upgrade
         sudo yum -y install mariadb-devel rpm-build redhat-rpm-config
       displayName: 'Install dependencies'
-      condition: eq(variables['containerImage'], 'centos-7')
+      condition: eq(variables['containerImage'], 'centos-8')
 
     - bash: |
         set -x
@@ -36,4 +36,4 @@ jobs:
         set -x
         cd build
         cpack -G RPM
-      condition: eq(variables['containerImage'], 'centos-7')
+      condition: eq(variables['containerImage'], 'centos-8')
