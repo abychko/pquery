@@ -149,6 +149,10 @@ First, take a quick look at ``` pquery -h``` to see available modes and options.
 
 # v3.x Configuration file example:
 ```
+# and ; are comments
+# values allowed to be suffixed with kK/mM/gG for kilo-mega-giga values.
+# you can specify param = 1000 or param = 1k. 1k is 1024, not 1000.
+#
 # Section for master process
 [master]
 # Directory to store logs
@@ -178,7 +182,7 @@ password = pquery123!
 # The number of threads to use by worker
 threads = 10
 # The number of queries per thread
-queries-per-thread = 100
+queries-per-thread = 10k
 # Log all queries
 log-all-queries = No
 # Log succeeded queries
