@@ -1,6 +1,6 @@
 #include <string>
 #include <algorithm>
-#include <INIReader.hpp>
+#include <cIniReader.hpp>
 #include <cLogger.hpp>
 #include <cDbWorker.hpp>
 
