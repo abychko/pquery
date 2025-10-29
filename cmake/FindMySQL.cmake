@@ -56,6 +56,11 @@ FIND_PATH(MYSQL_INCLUDE_DIR mysql.h
   /usr/local/mysql/include
   )
 #
+# Homebrew
+IF(APPLE AND NOT MYSQL_BASEDIR)
+  MESSAGE(FATAL_ERROR "On MacOS you must set MYSQL_BASEDIR variable manually!")
+ENDIF(APPLE AND NOT MYSQL_BASEDIR)
+#
 FIND_LIBRARY(MYSQL_LIBRARY
   NAMES ${MYSQL_NAMES}
   IF(MYSQL_BASEDIR)
@@ -64,7 +69,7 @@ FIND_LIBRARY(MYSQL_LIBRARY
   ELSE(MYSQL_BASEDIR)
     PATHS /usr/lib /usr/lib64 /usr/local/lib
           /usr/lib/x86_64-linux-gnu /usr/lib/i386-linux-gnu
-          /usr/local/mysql/lib /usr/local/opt/mysql/lib
+          /usr/local/mysql/lib /opt/homebrew
   ENDIF(MYSQL_BASEDIR)
   PATH_SUFFIXES mysql
   )

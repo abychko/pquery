@@ -6,7 +6,7 @@ OPTION(STATIC_PGSQL "Build PostgreSQL statically into ${PROJECT}" OFF)
 # FOR macOS+HomeBrew
 IF(APPLE)
   IF(NOT OPENSSL_ROOT_DIR)
-    SET(OPENSSL_ROOT_DIR "/usr/local/opt/openssl@1.1/")
+    SET(OPENSSL_ROOT_DIR "/opt/homebrew")
     IF(NOT EXISTS ${OPENSSL_ROOT_DIR})
       MESSAGE(FATAL_ERROR "Please specify OpenSSL root directory with -DOPENSSL_ROOT_DIR=<PATH> ")
     ENDIF(NOT EXISTS ${OPENSSL_ROOT_DIR})
