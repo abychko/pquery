@@ -21,10 +21,6 @@
 # include <pg_config.h>
 #endif
 
-#ifdef HAVE_MONGO
-#include <cMongoWorker.hpp>
-#endif
-
 PQuery::PQuery() {
   #ifdef DEBUG
   std::cerr << __PRETTY_FUNCTION__ << std::endl;
@@ -253,11 +249,6 @@ PQuery::createWorkerProcess(struct workerParams& Params) {
         dbWorker = std::make_shared<PgsqlWorker>();
         break;
       #endif
-      #ifdef HAVE_MONGO
-      case eMONGO:
-        dbWorker = std::make_shared<MongoWorker>();
-        break;
-      #endif
       default:
         std::cerr << "=> Unable to create worker of unsupported type " << dbtype_str(Params.dbtype) << std::endl;
         pqLogger->addRecordToLog("=> PQuery is not compiled with " + dbtype_str(Params.dbtype));
@@ -365,9 +356,6 @@ PQuery::showVersion() {
   #endif
   #ifdef HAVE_PGSQL
   std::cout <<  "* PQuery PgSQL client library: PgSQL v." + getPgSqlClientInfo() << std::endl;
-  #endif
-  #ifdef HAVE_MONGO
-  std::cout <<  "* PQuery MongoDB client library: MongoDB v." + getMongoDBClientInfo() << std::endl;
   #endif
   }
 

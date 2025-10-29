@@ -50,8 +50,6 @@ class PQuery
           return "MySQL";
         case ePGSQL:
           return "PostgreSQL";
-        case eMONGO:
-          return "MongoDB";
         default:
           return "UNKNOWN";
         }
@@ -64,9 +62,6 @@ class PQuery
   #endif
   #ifdef HAVE_PGSQL
     std::string getPgSqlClientInfo();
-  #endif
-  #ifdef HAVE_MONGO
-    std::string getMongoDBClientInfo();
   #endif
 
     wRETCODE createWorkerWithParams(std::string);

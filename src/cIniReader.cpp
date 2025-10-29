@@ -44,8 +44,7 @@ INIReader::getDbType(std::string section, std::string name, eDBTYPE default_valu
   std::transform(valstr.begin(), valstr.end(), valstr.begin(), ::tolower);
   if((valstr == "mysql") || (valstr == "mariadb")) { return eMYSQL; }
   if((valstr == "pgsql") || (valstr == "postgres") || (valstr == "postgresql"))  { return ePGSQL; }
-  if((valstr == "mongo") || (valstr == "mongodb")) { return eMONGO; }
-  //throw std::invalid_argument("Invalid value for DB TYPE: " + valstr);
+  // throw std::invalid_argument("Invalid value for DB TYPE: " + valstr);
   return eNONE;
   }
 

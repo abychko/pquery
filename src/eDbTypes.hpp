@@ -6,7 +6,6 @@ enum eDBTYPE
   {
   eNONE,
   eMYSQL,
-  ePGSQL,
-  eMONGO
+  ePGSQL
   };
 #endif
