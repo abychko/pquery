@@ -11,9 +11,9 @@ Database::Database() {
 
 
 Database::~Database() {
-#ifdef DEBUG
+  #ifdef DEBUG
   std::cerr << __PRETTY_FUNCTION__ << std::endl;
-#endif
+  #endif
   }
 
 
@@ -26,9 +26,9 @@ Database::getQueryDurationMs() {
 
 bool
 Database::performQuery(std::string query) {
-#ifdef DEBUG
+  #ifdef DEBUG
   std::cerr << __PRETTY_FUNCTION__ << std::endl;
-#endif
+  #endif
   bool success;
   begin = std::chrono::steady_clock::now();
   success = performRealQuery(query);

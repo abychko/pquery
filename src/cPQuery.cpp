@@ -26,17 +26,17 @@
 #endif
 
 PQuery::PQuery() {
-#ifdef DEBUG
+  #ifdef DEBUG
   std::cerr << __PRETTY_FUNCTION__ << std::endl;
-#endif
+  #endif
   configFilePath = "pquery.cfg";
   }
 
 
 PQuery::~PQuery() {
-#ifdef DEBUG
+  #ifdef DEBUG
   std::cerr << __PRETTY_FUNCTION__ << std::endl;
-#endif
+  #endif
   }
 
 
@@ -56,9 +56,9 @@ PQuery::getPgSqlClientInfo() {
 
 bool
 PQuery::initLogger() {
-#ifdef DEBUG
+  #ifdef DEBUG
   std::cerr << __PRETTY_FUNCTION__ << std::endl;
-#endif
+  #endif
   pqLogger = std::make_shared<Logger>();
   if(pqLogger == NULL) {
     std::cerr << "Unable to init logging subsystem" << std::endl;
@@ -76,21 +76,21 @@ PQuery::initLogger() {
 
 bool
 PQuery::logVersionInfo() {
-#ifdef DEBUG
+  #ifdef DEBUG
   std::cerr << __PRETTY_FUNCTION__ << std::endl;
-#endif
+  #endif
   auto now = std::chrono::system_clock::now();
   std::time_t start_time = std::chrono::system_clock::to_time_t(now);
   pqLogger->addRecordToLog("* PQuery version: " + std::string(PQVERSION));
   pqLogger->addRecordToLog("* PQuery revision: " + std::string(PQREVISION));
   pqLogger->addRecordToLog("* PQuery revision date: " + std::string(PQRELDATE));
   pqLogger->addRecordToLog("* PQuery build date: " + std::string(PQBUILDDATE));
-#ifdef HAVE_MYSQL
+  #ifdef HAVE_MYSQL
   pqLogger->addRecordToLog("* PQuery MySQL client library: " + std::string(MYSQL_FORK) + " v." + getMySqlClientInfo());
-#endif
-#ifdef HAVE_PGSQL
+  #endif
+  #ifdef HAVE_PGSQL
   pqLogger->addRecordToLog("* PQuery PgSQL client library: PgSQL v." + getPgSqlClientInfo());
-#endif
+  #endif
   pqLogger->addRecordToLog("* Pquery master with PID " + std::to_string(getpid()) + " started at " + std::string(std::ctime(&start_time)));
   return true;
   }
@@ -98,9 +98,9 @@ PQuery::logVersionInfo() {
 
 bool
 PQuery::initConfig() {
-#ifdef DEBUG
+  #ifdef DEBUG
   std::cerr << __PRETTY_FUNCTION__ << std::endl;
-#endif
+  #endif
   configReader = std::make_shared<INIReader>(configFilePath);
   int parseerr = configReader->ParseError();
 
@@ -120,9 +120,9 @@ PQuery::initConfig() {
 
 bool
 PQuery::prepareToRun() {
-#ifdef DEBUG
+  #ifdef DEBUG
   std::cerr << __PRETTY_FUNCTION__ << std::endl;
-#endif
+  #endif
   if(!initConfig()) { return false; }
   if(!initLogger()) { return false; }
   if(!logVersionInfo()) { return false; }
@@ -133,9 +133,9 @@ PQuery::prepareToRun() {
 
 void
 PQuery::doCleanup(std::string name) {
-#ifdef DEBUG
+  #ifdef DEBUG
   std::cerr << __PRETTY_FUNCTION__ << std::endl;
-#endif
+  #endif
   std::string logfile = configReader->Get("master", "logdir", "/tmp") + "/" + name + "_worker.log";
   pqLogger->initLogFile(logfile);
   }
@@ -143,9 +143,9 @@ PQuery::doCleanup(std::string name) {
 
 void
 PQuery::setupWorkerParams(struct workerParams& wParams, std::string secName) {
-#ifdef DEBUG
+  #ifdef DEBUG
   std::cerr << __PRETTY_FUNCTION__ << std::endl;
-#endif
+  #endif
   wParams.myName    = secName;
   wParams.address   = configReader->Get(secName, "address", "localhost");
   wParams.username  = configReader->Get(secName, "user", "test");
@@ -174,7 +174,7 @@ PQuery::setupWorkerParams(struct workerParams& wParams, std::string secName) {
 
   wParams.infile = configReader->Get(secName, "infile", "pquery.sql");
   wParams.logdir = configReader->Get(secName, "logdir", "/tmp");
-//
+  //
   wParams.log_all_queries = configReader->GetBoolean(secName, "log-all-queries", false);
   wParams.log_succeeded_queries = configReader->GetBoolean(secName, "log-succeded-queries", false);
   wParams.log_failed_queries = configReader->GetBoolean(secName, "log-failed-queries", false);
@@ -187,9 +187,9 @@ PQuery::setupWorkerParams(struct workerParams& wParams, std::string secName) {
 
 void
 PQuery::logWorkerDetails(struct workerParams& Params) {
-#ifdef DEBUG
+  #ifdef DEBUG
   std::cerr << __PRETTY_FUNCTION__ << std::endl;
-#endif
+  #endif
   pqLogger->addSeparation('#', 40);
   pqLogger->addRecordToLog("## Config name: " + Params.myName);
   pqLogger->addRecordToLog("## DB type: " + dbtype_str(Params.dbtype));
@@ -217,9 +217,9 @@ PQuery::logWorkerDetails(struct workerParams& Params) {
 
 wRETCODE
 PQuery::createWorkerProcess(struct workerParams& Params) {
-#ifdef DEBUG
+  #ifdef DEBUG
   std::cerr << __PRETTY_FUNCTION__ << std::endl;
-#endif
+  #endif
   pqLogger->flushLog();
   pid_t childPID;
   childPID = fork();
@@ -243,21 +243,21 @@ PQuery::createWorkerProcess(struct workerParams& Params) {
 
     switch (Params.dbtype) {
 
-#ifdef HAVE_MYSQL
+      #ifdef HAVE_MYSQL
       case eMYSQL:
         dbWorker = std::make_shared<MysqlWorker>();
         break;
-#endif
-#ifdef HAVE_PGSQL
+      #endif
+      #ifdef HAVE_PGSQL
       case ePGSQL:
         dbWorker = std::make_shared<PgsqlWorker>();
         break;
-#endif
-#ifdef HAVE_MONGO
+      #endif
+      #ifdef HAVE_MONGO
       case eMONGO:
         dbWorker = std::make_shared<MongoWorker>();
         break;
-#endif
+      #endif
       default:
         std::cerr << "=> Unable to create worker of unsupported type " << dbtype_str(Params.dbtype) << std::endl;
         pqLogger->addRecordToLog("=> PQuery is not compiled with " + dbtype_str(Params.dbtype));
@@ -270,7 +270,7 @@ PQuery::createWorkerProcess(struct workerParams& Params) {
       return wERROR;
       }
 
-//TODO
+    //TODO
     bool success;
     dbWorker->setupLogger(pqLogger);
     success = dbWorker->executeTests(Params);
@@ -279,7 +279,7 @@ PQuery::createWorkerProcess(struct workerParams& Params) {
       return wERROR;
       }
 
-    return wCHILD;                                //fake
+    return wCHILD;               //fake
     }
   return wDEFAULT;
   }
@@ -287,9 +287,9 @@ PQuery::createWorkerProcess(struct workerParams& Params) {
 
 wRETCODE
 PQuery::createWorkerWithParams(std::string secName) {
-#ifdef DEBUG
+  #ifdef DEBUG
   std::cerr << __PRETTY_FUNCTION__ << std::endl;
-#endif
+  #endif
   struct workerParams wParams;
   setupWorkerParams(wParams, secName);
   wRETCODE wrc = createWorkerProcess(wParams);
@@ -302,9 +302,9 @@ PQuery::createWorkerWithParams(std::string secName) {
 
 bool
 PQuery::runWorkers() {
-#ifdef DEBUG
+  #ifdef DEBUG
   std::cerr << __PRETTY_FUNCTION__ << std::endl;
-#endif
+  #endif
   std::vector<std::string> sections;
   sections = configReader->GetSections();
   std::vector<std::string>::iterator it;
@@ -325,11 +325,11 @@ PQuery::runWorkers() {
           break;
         }
       }
-    }                                             // for()
+    }                            // for()
 
   pid_t wPID;
   int status;
-  bool retvalue = true;                           //uninitialised is always false
+  bool retvalue = true;          //uninitialised is always false
 
   while ((wPID = wait(&status)) > 0) {
     if(status != 0) { retvalue = false; }
@@ -341,9 +341,9 @@ PQuery::runWorkers() {
 
 int
 PQuery::run() {
-#ifdef DEBUG
+  #ifdef DEBUG
   std::cerr << __PRETTY_FUNCTION__ << std::endl;
-#endif
+  #endif
   showVersion();
   if(!prepareToRun()){ return EXIT_FAILURE; }
   if(!runWorkers()){ return EXIT_FAILURE; }
@@ -353,30 +353,30 @@ PQuery::run() {
 
 void
 PQuery::showVersion() {
-#ifdef DEBUG
+  #ifdef DEBUG
   std::cerr << __PRETTY_FUNCTION__ << std::endl;
-#endif
+  #endif
   std::cout << "* PQuery version: "       << PQVERSION   << std::endl;
   std::cout << "* PQuery revision: "      << PQREVISION  << std::endl;
   std::cout << "* PQuery release date: "  << PQRELDATE   << std::endl;
   std::cout << "* PQuery build date: "    << PQBUILDDATE << std::endl;
-#ifdef HAVE_MYSQL
+  #ifdef HAVE_MYSQL
   std::cout << "* PQuery MySQL client library: " + std::string(MYSQL_FORK) + " v." + getMySqlClientInfo() << std::endl;
-#endif
-#ifdef HAVE_PGSQL
+  #endif
+  #ifdef HAVE_PGSQL
   std::cout <<  "* PQuery PgSQL client library: PgSQL v." + getPgSqlClientInfo() << std::endl;
-#endif
-#ifdef HAVE_MONGO
+  #endif
+  #ifdef HAVE_MONGO
   std::cout <<  "* PQuery MongoDB client library: MongoDB v." + getMongoDBClientInfo() << std::endl;
-#endif
+  #endif
   }
 
 
 void
 PQuery::showHelp() {
-#ifdef DEBUG
+  #ifdef DEBUG
   std::cerr << __PRETTY_FUNCTION__ << std::endl;
-#endif
+  #endif
   std::cout << " - Usage: pquery --config-file=pquery.cfg" << std::endl;
   std::cout << " - CLI params has been replaced by config file (INI format)" << std::endl;
   std::cout << " - You can redefine any global param=value pair in host-specific section" << std::endl;
@@ -440,18 +440,18 @@ PQuery::showHelp() {
 
 bool
 PQuery::parseCliOptions(int argc, char* argv[]) {
-#ifdef DEBUG
+  #ifdef DEBUG
   std::cerr << __PRETTY_FUNCTION__ << std::endl;
-#endif
+  #endif
   int c;
   while(true) {
     static struct option long_options[] = {
-// config file with all options
+      // config file with all options
       {"config-file", required_argument, 0, 'c'},
       {"master-logfile", required_argument, 0, 'L'},
       {"help", no_argument, 0, 'h'},
       {"version", no_argument, 0, 'v'},
-// finally
+      // finally
       {0, 0, 0, 0}
       };
     int option_index = 0;

@@ -7,7 +7,7 @@
 struct
 workerParams
   {
-  std::string myName;                             // unique name for worker
+  std::string myName;            // unique name for worker
   std::string database;
   eDBTYPE dbtype;
   std::string address;

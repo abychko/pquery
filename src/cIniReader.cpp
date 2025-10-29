@@ -21,7 +21,7 @@ INIReader::INIReader(std::string filename) {
   for (std::string line; std::getline(cfg, line);) {
     if (line.empty()) { continue; }
     if (std::regex_match(line, pieces, section_regex)) {
-      if (pieces.size() == 2) {                   // exactly one match
+      if (pieces.size() == 2) {  // exactly one match
         current_section = pieces[1].str();
         _sections.push_back(current_section);
         }
@@ -31,10 +31,11 @@ INIReader::INIReader(std::string filename) {
         map[current_section][pieces[1].str()] = pieces[2].str();
         }
       }
-    }                                             // for()
+    }                            // for()
   cfg.close();
   _error = 0;
   }
+
 
 eDBTYPE
 INIReader::getDbType(std::string section, std::string name, eDBTYPE default_value) {
@@ -48,16 +49,18 @@ INIReader::getDbType(std::string section, std::string name, eDBTYPE default_valu
   return eNONE;
   }
 
+
 std::string
 INIReader::Get(std::string section, std::string name, std::string default_value) {
   std::string value = map[section][name];
   return (!value.empty()) ? value : default_value;
   }
 
+
 bool
 INIReader::GetBoolean(std::string section, std::string name, bool default_value) {
   std::string valstr = Get(section, name, "");
-// Convert to lower case to make string comparisons case-insensitive
+  // Convert to lower case to make string comparisons case-insensitive
   std::transform(valstr.begin(), valstr.end(), valstr.begin(), ::tolower);
   if (valstr == "true" || valstr == "yes" || valstr == "on" || valstr == "1") {
     return true;
@@ -77,7 +80,7 @@ INIReader::GetInteger(std::string section, std::string name, int default_value) 
   std::istringstream vss;
   vss.str(valstr);
   int ipart = 0;
-  char cpart = 0;                                 //can be K/M/G
+  char cpart = 0;                //can be K/M/G
 
   vss >> ipart;
   if(vss.fail()) {

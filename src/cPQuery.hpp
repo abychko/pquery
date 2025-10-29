@@ -59,20 +59,20 @@ class PQuery
     void  doCleanup(std::string);
     void logWorkerDetails(struct workerParams&);
 
-#ifdef HAVE_MYSQL
+  #ifdef HAVE_MYSQL
     std::string getMySqlClientInfo();
-#endif
-#ifdef HAVE_PGSQL
+  #endif
+  #ifdef HAVE_PGSQL
     std::string getPgSqlClientInfo();
-#endif
-#ifdef HAVE_MONGO
+  #endif
+  #ifdef HAVE_MONGO
     std::string getMongoDBClientInfo();
-#endif
+  #endif
 
     wRETCODE createWorkerWithParams(std::string);
     void setupWorkerParams(struct workerParams&, std::string);
     wRETCODE createWorkerProcess(struct workerParams&);
-//
+    //
     std::shared_ptr<INIReader> configReader;
     std::shared_ptr<Logger> pqLogger;
     std::shared_ptr<DbWorker> dbWorker;

@@ -6,24 +6,24 @@
 #include <cPgsqlDatabase.hpp>
 
 PgsqlWorker::PgsqlWorker() {
-#ifdef DEBUG
+  #ifdef DEBUG
   std::cerr << __PRETTY_FUNCTION__ << std::endl;
-#endif
+  #endif
   }
 
 
 PgsqlWorker::~PgsqlWorker() {
-#ifdef DEBUG
+  #ifdef DEBUG
   std::cerr << __PRETTY_FUNCTION__ << std::endl;
-#endif
+  #endif
   }
 
 
 bool
 PgsqlWorker::testConnection() {
-#ifdef DEBUG
+  #ifdef DEBUG
   std::cerr << __PRETTY_FUNCTION__ << std::endl;
-#endif
+  #endif
 
   std::shared_ptr<Database> pgsqlDB = createDbInstance();
 
@@ -40,9 +40,9 @@ PgsqlWorker::testConnection() {
 
 std::shared_ptr<Database>
 PgsqlWorker::createDbInstance() {
-#ifdef DEBUG
+  #ifdef DEBUG
   std::cerr << __PRETTY_FUNCTION__ << std::endl;
-#endif
+  #endif
   std::shared_ptr<Database> pgsqlDB = std::make_shared<PgsqlDatabase>();
   return pgsqlDB;
   }
@@ -50,8 +50,8 @@ PgsqlWorker::createDbInstance() {
 
 void
 PgsqlWorker::endDbThread() {
-#ifdef DEBUG
+  #ifdef DEBUG
   std::cerr << __PRETTY_FUNCTION__ << std::endl;
-#endif
+  #endif
 
   }
