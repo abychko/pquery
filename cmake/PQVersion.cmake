@@ -8,6 +8,8 @@ STRING(REGEX MATCH "VERSION_MINOR ([0-9]*)" _ ${ver})
 SET(vMinor ${CMAKE_MATCH_1})
 STRING(REGEX MATCH "VERSION_PATCH ([0-9]*)" _ ${ver})
 SET(vPatch ${CMAKE_MATCH_1})
+STRING(REGEX MATCH "VERSION_EXTRA ([0-9]*)" _ ${ver})
+SET(vExtra ${CMAKE_MATCH_1})
 #
 SET(PROJECT_VERSION "${vMajor}.${vMinor}.${vPatch}")
 #
