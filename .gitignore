@@ -7,3 +7,7 @@ src/pquery3
 cmake_install.cmake
 CPackConfig.cmake
 CPackSourceConfig.cmake
+install_manifest.txt
+*.tar.gz
+*.sh
+_CPack_Packages
