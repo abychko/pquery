@@ -9,8 +9,8 @@ OPTION(WITH_PGSQL "Build with PostgreSQL support" OFF)
 #
 INCLUDE(PQSetupCompiler)
 INCLUDE(PQDatabases)
-INCLUDE(PQCPack)
 INCLUDE(PQVersion)
+INCLUDE(PQCPack)
 #
 ADD_SUBDIRECTORY(src)
 #
