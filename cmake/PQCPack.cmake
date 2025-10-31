@@ -55,7 +55,7 @@ ELSE()
     "${CPACK_PACKAGE_NAME}-${PROJECT_VERSION}-${CPACK_PACKAGE_VERSION_RELEASE}.${CMAKE_SYSTEM_NAME}.${ARCH}")
 ENDIF()
 #
-MESSAGE("==> CPACK will produce: ${CPACK_GENERATOR}")
+MESSAGE("==> CPACK will produce packages in following format(s): ${CPACK_GENERATOR}")
 #
 INCLUDE(CPack)
 #
