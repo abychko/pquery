@@ -34,7 +34,7 @@ reducer.sh is a powerful multi-threaded SQL testcase simplification tool. It is 
 + A significant number of query correctness bugs were discovered in RocksDB
 
 # How to build pquery?
-1. Install cmake >= 2.6 and C++11 compiler, probably from GCC >= 4.7 (gcc-c++ for RedHat-based, g++ for Debian-based), the development files for your MySQL version/fork, and potentially OpenSSL and AIO development files and/or other deps if needed.
+1. Install cmake >= 3.10 and C++11 compiler, probably from GCC >= 4.7 (gcc-c++ for RedHat-based, g++ for Debian-based), the development files for your MySQL version/fork, and potentially OpenSSL and AIO development files and/or other deps if needed.
 2. Change dir to pquery
 3. Run cmake with no options to have optimised build with MySQL and PostgreSQL support (assuming all dependency are installed). OR, you can run cmake with options below to change the build.
 Options are:
