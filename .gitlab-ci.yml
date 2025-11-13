@@ -21,7 +21,7 @@ build:pquery:
   before_script:
     - apt update && apt install -y make cmake lsb-release build-essential devscripts libssl-dev libmysqlclient-dev default-libmysqlclient-dev
   script:
-    - cmake .
+    - cmake . -DBUILD_DEB=ON
     - cpack
     - ls -la
   # artifacts:
