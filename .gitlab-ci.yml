@@ -16,6 +16,7 @@ stages:
 
 
 build:pquery:
+  stage: build
   image: "ubuntu:24.04"
   before_script:
     - apt install -y build-essentials devscripts libssl-dev libmysql-dev
@@ -24,4 +25,3 @@ build:pquery:
     - cpack
     - ls -la
   # artifacts:
-  
