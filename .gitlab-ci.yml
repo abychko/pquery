@@ -19,7 +19,7 @@ build:pquery:
   stage: build
   image: "ubuntu:24.04"
   before_script:
-    - apt install -y build-essentials devscripts libssl-dev libmysql-dev
+    - apt update && apt install -y build-essentials devscripts libssl-dev libmysql-dev
   script:
     - cmake -DMYSQL_FORK=MARIADB
     - cpack
