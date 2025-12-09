@@ -4,9 +4,9 @@
 #include <cMysqlDatabase.hpp>
 
 MysqlWorker::MysqlWorker() {
-  #ifdef DEBUG
+#ifdef DEBUG
   std::cerr << __PRETTY_FUNCTION__ << std::endl;
-  #endif
+#endif
   if (mysql_library_init(0, NULL, NULL)) {
     throw std::runtime_error("=> Could not initialize MySQL client library");
     }
@@ -14,18 +14,18 @@ MysqlWorker::MysqlWorker() {
 
 
 MysqlWorker::~MysqlWorker() {
-  #ifdef DEBUG
+#ifdef DEBUG
   std::cerr << __PRETTY_FUNCTION__ << std::endl;
-  #endif
+#endif
   mysql_library_end();
   }
 
 
 bool
 MysqlWorker::testConnection() {
-  #ifdef DEBUG
+#ifdef DEBUG
   std::cerr << __PRETTY_FUNCTION__ << std::endl;
-  #endif
+#endif
 
   std::shared_ptr<Database> mysqlDB = createDbInstance();
 
@@ -43,9 +43,9 @@ MysqlWorker::testConnection() {
 
 std::shared_ptr<Database>
 MysqlWorker::createDbInstance() {
-  #ifdef DEBUG
+#ifdef DEBUG
   std::cerr << __PRETTY_FUNCTION__ << std::endl;
-  #endif
+#endif
   std::shared_ptr<Database> mysqlDB = std::make_shared<MysqlDatabase>();
   return mysqlDB;
   }
@@ -53,8 +53,8 @@ MysqlWorker::createDbInstance() {
 
 void
 MysqlWorker::endDbThread() {
-  #ifdef DEBUG
+#ifdef DEBUG
   std::cerr << __PRETTY_FUNCTION__ << std::endl;
-  #endif
+#endif
   mysql_thread_end();
   }

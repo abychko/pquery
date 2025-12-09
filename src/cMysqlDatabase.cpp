@@ -6,17 +6,17 @@
 #include <cMysqlDatabase.hpp>
 
 MysqlDatabase::MysqlDatabase() {
-  #ifdef DEBUG
+#ifdef DEBUG
   std::cerr << __PRETTY_FUNCTION__ << std::endl;
-  #endif
+#endif
   conn = NULL;
   }
 
 
 MysqlDatabase::~MysqlDatabase() {
-  #ifdef DEBUG
+#ifdef DEBUG
   std::cerr << __PRETTY_FUNCTION__ << std::endl;
-  #endif
+#endif
   if(conn != NULL) { mysql_close(conn); }
   }
 
@@ -32,22 +32,32 @@ MysqlDatabase::getAffectedRows() {
 
 bool
 MysqlDatabase::connect(struct workerParams& dbParams) {
-  #ifdef DEBUG
+#ifdef DEBUG
   std::cerr << __PRETTY_FUNCTION__ << std::endl;
-  #endif
+#endif
   conn = mysql_init(NULL);
   if (conn == NULL) { return false; }
+#ifdef DEBUG
+  std::cerr << "\n" <<
+  "=> Connecting to:\n" <<
+  "=> IP Address: " << dbParams.address.c_str() << "\n" <<
+  "=> Socket: " << dbParams.socket.c_str() << "\n" <<
+  std::endl;
+#endif
   if (mysql_real_connect(conn, dbParams.address.c_str(), dbParams.username.c_str(),
-    dbParams.password.c_str(), dbParams.database.c_str(), dbParams.port, dbParams.socket.c_str(), 0) == NULL){ return false; }
+    dbParams.password.c_str(), dbParams.database.c_str(), dbParams.port, dbParams.socket.c_str(), 0) == NULL){
+    std::cerr << "=> " << getErrorString() << "\n" << std::endl;
+    return false;
+  }
     return true;
   }
 
 
 bool
 MysqlDatabase::performRealQuery(std::string query) {
-  #ifdef DEBUG
+#ifdef DEBUG
   std::cerr << __PRETTY_FUNCTION__ << std::endl;
-  #endif
+#endif
   int res;
   res = mysql_real_query(conn, query.c_str(), (unsigned long)query.length());
   return (res == 0);
@@ -84,16 +94,16 @@ MysqlDatabase::processQueryOutput() {
           }
         }
       }
-                                 // do-while
-    }  while (mysql_next_result(conn) == 0) ;
+// do-while
+    }  while (mysql_next_result(conn) == 0);
   }
 
 
 std::string
 MysqlDatabase::getHostInfo() {
-  #ifdef DEBUG
+#ifdef DEBUG
   std::cerr << __PRETTY_FUNCTION__ << std::endl;
-  #endif
+#endif
   return mysql_get_host_info(conn);
   }
 

@@ -3,6 +3,10 @@
 
 #include <string>
 
+#ifndef PQMAJVERSION
+#define PQMAJVERSION = "UNKNOWN"
+#endif
+
 #ifndef PQVERSION
 #define PQVERSION = "UNKNOWN"
 #endif

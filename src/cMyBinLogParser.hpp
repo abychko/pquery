@@ -1,0 +1,3 @@
+#ifndef MYBINLOGPARSER_HPP
+#define MYBINLOGPARSER_HPP
+#endif

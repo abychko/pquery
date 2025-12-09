@@ -1,0 +1,3 @@
+#ifndef MYGENLOGPARSER_HPP
+#define MYGENLOGPARSER_HPP
+#endif

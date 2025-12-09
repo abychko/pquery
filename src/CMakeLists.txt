@@ -1,20 +1,29 @@
 SET(BINARY_NAME "pquery${vMajor}")
 INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR})
 SET(COMMON_SOURCES
-    main.cpp cPQuery.cpp cLogger.cpp cDbWorker.cpp cDatabase.cpp cIniReader.cpp
+    cDatabase.cpp
+    cDbWorker.cpp
+    cInfileParser.cpp
+    cIniReader.cpp
+    cLogger.cpp
+    cPQuery.cpp
+    main.cpp
     )
 #
 IF(MYSQL_FOUND)
   SET(MYSQL_SOURCES
-      cMysqlWorker.cpp
       cMysqlDatabase.cpp
+      cMysqlWorker.cpp
+      cMySQLParser.cpp
+      cMyGenLogParser.cpp
+      cMyBinLogParser.cpp
       )
 ENDIF(MYSQL_FOUND)
 #
 IF(PGSQL_FOUND)
   SET(PGSQL_SOURCES
-      cPgsqlWorker.cpp
       cPgsqlDatabase.cpp
+      cPgsqlWorker.cpp
       )
 ENDIF(PGSQL_FOUND)
 #

@@ -1,5 +1,5 @@
 #include <string>
-#include <eDbTypes.hpp>
+#include <eTypes.hpp>
 
 #ifndef _SWORKER_PARAMS_
 #define _SWORKER_PARAMS_
@@ -7,7 +7,7 @@
 struct
 workerParams
   {
-  std::string myName;            // unique name for worker
+  std::string myName;                             // unique name for worker
   std::string database;
   eDBTYPE dbtype;
   std::string address;
@@ -15,6 +15,7 @@ workerParams
   std::string username;
   std::string password;
   std::string infile;
+  eINFILETYPE infiletype;
   std::string logdir;
   uint16_t port;
   uint16_t threads;

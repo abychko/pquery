@@ -4,7 +4,7 @@
 #include <string>
 #include <vector>
 #include <unordered_map>
-#include <eDbTypes.hpp>
+#include <eTypes.hpp>
 
 typedef std::unordered_map< std::string, std::unordered_map<std::string, std::string> > configuration;
 
@@ -19,6 +19,7 @@ class INIReader
     int GetInteger(std::string section, std::string name, int default_value);
     bool GetBoolean(std::string section, std::string name, bool default_value);
     eDBTYPE getDbType(std::string section, std::string name, eDBTYPE default_value);
+    eINFILETYPE getInfileType(std::string section, std::string name, eINFILETYPE default_value);
 
   private:
     int _error;

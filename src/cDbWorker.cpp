@@ -5,9 +5,9 @@
 #include <cDbWorker.hpp>
 
 DbWorker::DbWorker() {
-  #ifdef DEBUG
+#ifdef DEBUG
   std::cerr << __PRETTY_FUNCTION__ << std::endl;
-  #endif
+#endif
   workers.clear();
   failed_queries_total = 0;
   performed_queries_total = 0;
@@ -16,32 +16,32 @@ DbWorker::DbWorker() {
 
 
 DbWorker::~DbWorker() {
-  #ifdef DEBUG
+#ifdef DEBUG
   std::cerr << __PRETTY_FUNCTION__ << std::endl;
-  #endif
+#endif
 
   }
 
 
 void
 DbWorker::adjustRuntimeParams() {
-  /* log replaying */
+/* log replaying */
   if(!mParams.shuffle) {
     wLogger->addRecordToLog("-> Setting # of threads to 1 for log replaying due to \"shuffle = False\"");
     mParams.threads = 1;
-    //
+//
     *wLogger << "-> Setting queries per thread to " << queryList->size() << " due to \"shuffle = False\" (size of infile)\n";
     mParams.queries_per_thread = queryList->size();
     }
-  /* END log replaying */
+/* END log replaying */
   }
 
 
 void
 DbWorker::writeFinalReport() {
-  #ifdef DEBUG
+#ifdef DEBUG
   std::cerr << __PRETTY_FUNCTION__ << std::endl;
-  #endif
+#endif
   std::ostringstream exitmsg;
   exitmsg.precision(2);
   exitmsg << std::fixed;
@@ -53,18 +53,18 @@ DbWorker::writeFinalReport() {
 
 void
 DbWorker::storeParams(struct workerParams& wParams) {
-  #ifdef DEBUG
+#ifdef DEBUG
   std::cerr << __PRETTY_FUNCTION__ << std::endl;
-  #endif
+#endif
   mParams = wParams;
   }
 
 
 void
 DbWorker::setupLogger(std::shared_ptr<Logger> logger) {
-  #ifdef DEBUG
+#ifdef DEBUG
   std::cerr << __PRETTY_FUNCTION__ << std::endl;
-  #endif
+#endif
   wLogger = logger;
   }
 
@@ -78,16 +78,17 @@ DbWorker::isComment(std::string& line) {
   return (
     (qStr.rfind("#", 0) == 0) ||
     (qStr.rfind(";", 0) == 0) ||
-    (qStr.rfind("//", 0) == 0)
+    (qStr.rfind("//", 0) == 0) ||
+    (qStr.rfind("--", 0) == 0)
     );
   }
 
 
 bool
 DbWorker::loadQueryList() {
-  #ifdef DEBUG
+#ifdef DEBUG
   std::cerr << __PRETTY_FUNCTION__ << std::endl;
-  #endif
+#endif
   queryList = std::make_shared<std::vector<std::string>>();
   if(queryList == NULL) {
     wLogger->addRecordToLog("=> Unable to create Query List, exiting...");
@@ -121,9 +122,9 @@ DbWorker::calculateQueries(std::shared_ptr<Database> Database) {
 
 void
 DbWorker::workerThread(int number) {
-  #ifdef DEBUG
+#ifdef DEBUG
   std::cerr << __PRETTY_FUNCTION__ << " " << number << std::endl;
-  #endif
+#endif
   std::shared_ptr<Logger> threadLogger = NULL;
   std::shared_ptr<Logger> outputLogger = NULL;
   std::mt19937 gen(rd());
@@ -165,13 +166,13 @@ DbWorker::workerThread(int number) {
       return;
       }
 
-    /*
-    thread logging according to config
-    */
+/*
+thread logging according to config
+*/
     if(threadLogger != NULL) {
       if( (mParams.log_all_queries) || (mParams.log_succeeded_queries && success) || (mParams.log_failed_queries && !success) ) {
         *threadLogger << (*queryList)[query_number];
-        }                        // if we should log queries
+        }                                         // if we should log queries
 
       if(mParams.log_query_statistics) {
         if(success) {
@@ -183,7 +184,7 @@ DbWorker::workerThread(int number) {
           }
         *threadLogger << "#WARNINGS: " << Database->getWarningsCount();
         *threadLogger << "#CHANGED: "  << Database->getAffectedRows();
-        }                        //log_query_statistics
+        }                                         //log_query_statistics
       if(mParams.log_query_duration) {
         *threadLogger << "#Duration: " << Database->getQueryDurationMs() << " ms";
         }
@@ -203,16 +204,16 @@ DbWorker::workerThread(int number) {
       }
     Database->cleanupResult();
     }
-  calculateQueries(Database);    //for (i=0; i<mParams.queries_per_thread; i++){}
+  calculateQueries(Database);                     //for (i=0; i<mParams.queries_per_thread; i++){}
   endDbThread();
-  }                              //void DbWorker::workerThread(int number)
+  }                                               //void DbWorker::workerThread(int number)
 
 
 void
 DbWorker::spawnWorkerThreads() {
-  #ifdef DEBUG
+#ifdef DEBUG
   std::cerr << __PRETTY_FUNCTION__ << std::endl;
-  #endif
+#endif
   workers.resize(mParams.threads);
   for (int i=0; i<mParams.threads; i++) {
     workers[i] = std::thread(&DbWorker::workerThread, this, i);
@@ -225,9 +226,9 @@ DbWorker::spawnWorkerThreads() {
 
 bool
 DbWorker::executeTests(struct workerParams& wParams) {
-  #ifdef DEBUG
+#ifdef DEBUG
   std::cerr << __PRETTY_FUNCTION__ << std::endl;
-  #endif
+#endif
   storeParams(wParams);
   if(!testConnection()) { return false; }
   if(!loadQueryList()) { return false; }

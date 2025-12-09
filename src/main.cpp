@@ -6,9 +6,9 @@
 
 int
 main(int argc, char* argv[]) {
-  #ifdef DEBUG
+#ifdef DEBUG
   std::cerr << __PRETTY_FUNCTION__ << std::endl;
-  #endif
+#endif
 
   PQuery pqueryMaster = PQuery();
 

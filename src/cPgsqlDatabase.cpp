@@ -3,18 +3,18 @@
 #include <cPgsqlDatabase.hpp>
 
 PgsqlDatabase::PgsqlDatabase() {
-  #ifdef DEBUG
+#ifdef DEBUG
   std::cerr << __PRETTY_FUNCTION__ << std::endl;
-  #endif
+#endif
   conn = NULL;
   res = NULL;
   }
 
 
 PgsqlDatabase::~PgsqlDatabase() {
-  #ifdef DEBUG
+#ifdef DEBUG
   std::cerr << __PRETTY_FUNCTION__ << std::endl;
-  #endif
+#endif
   if(conn != NULL) { PQfinish(conn); }
   if(res != NULL) { PQclear(res); }
   }
@@ -45,9 +45,9 @@ PgsqlDatabase::processQueryOutput() {
 
 bool
 PgsqlDatabase::connect(workerParams& dbParams) {
-  #ifdef DEBUG
+#ifdef DEBUG
   std::cerr << __PRETTY_FUNCTION__ << std::endl;
-  #endif
+#endif
   std::ostringstream conninfo;
   conninfo << "host=" << dbParams.address << " user=" << dbParams.username << " password=" << dbParams.password
     << " dbname=" << dbParams.database << " port=" << dbParams.port;

@@ -8,7 +8,7 @@ INCLUDE(InstallRequiredSystemLibraries)
 #
 SET(CPACK_PACKAGE_DESCRIPTION_SUMMARY "PQuery is an open-source multi-threaded test program to stress test the MySQL/PgSQL server")
 SET(CPACK_RESOURCE_FILE_LICENSE "${CMAKE_CURRENT_SOURCE_DIR}/COPYING")
-SET(CPACK_PACKAGE_NAME pquery3)
+SET(CPACK_PACKAGE_NAME pquery${vMajor})
 SET(CPACK_PACKAGE_CONTACT "abychko@gmail.com")
 SET(CPACK_PACKAGE_VENDOR "ABYCHKO.EXPERT")
 SET(CPACK_PACKAGE_VERSION_MAJOR ${vMajor})
