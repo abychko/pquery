@@ -2,12 +2,12 @@
 #ifndef ETYPES_HPP
 #define ETYPES_HPP
 
-enum wRETCODE
+enum eRETCODE
   {
-  wDEFAULT,
-  wMASTER,
-  wCHILD,
-  wERROR
+  eDEFAULT,
+  eMASTER,
+  eCHILD,
+  eERROR
   };
 
 enum eDBTYPE

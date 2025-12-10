@@ -84,35 +84,6 @@ DbWorker::isComment(std::string& line) {
   }
 
 
-bool
-DbWorker::loadQueryList() {
-#ifdef DEBUG
-  std::cerr << __PRETTY_FUNCTION__ << std::endl;
-#endif
-  queryList = std::make_shared<std::vector<std::string>>();
-  if(queryList == NULL) {
-    wLogger->addRecordToLog("=> Unable to create Query List, exiting...");
-    return false;
-    }
-  std::ifstream sqlfile_in;
-  sqlfile_in.open(mParams.infile);
-  if (!sqlfile_in.is_open()) {
-    wLogger->addRecordToLog("=> Unable to open infile " + mParams.infile + ": " + strerror(errno));
-    return false;
-    }
-  std::string line;
-  while (getline(sqlfile_in, line)) {
-
-    if((!line.empty()) && (!isComment(line))) {
-      queryList->push_back(line);
-      }
-    }
-  *wLogger << "-> Loaded " << queryList->size() << " lines from " << mParams.infile << "\n";
-  if (sqlfile_in.is_open()) { sqlfile_in.close(); }
-  return true;
-  }
-
-
 void
 DbWorker::calculateQueries(std::shared_ptr<Database> Database) {
   performed_queries_total += Database->getPerformedQueries();

@@ -69,9 +69,9 @@ class PQuery
     std::string getPgSqlClientInfo();
 #endif
 
-    wRETCODE createWorkerWithParams(std::string);
+    eRETCODE createWorkerWithParams(std::string);
     void setupWorkerParams(struct workerParams&, std::string);
-    wRETCODE createWorkerProcess(struct workerParams&);
+    eRETCODE createWorkerProcess(struct workerParams&);
 //
     std::shared_ptr<INIReader> configReader;
     std::shared_ptr<Logger> pqLogger;

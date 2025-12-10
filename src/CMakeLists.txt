@@ -7,6 +7,7 @@ SET(COMMON_SOURCES
     cIniReader.cpp
     cLogger.cpp
     cPQuery.cpp
+    cSqlFileParser.cpp
     main.cpp
     )
 #
@@ -14,7 +15,6 @@ IF(MYSQL_FOUND)
   SET(MYSQL_SOURCES
       cMysqlDatabase.cpp
       cMysqlWorker.cpp
-      cMySQLParser.cpp
       cMyGenLogParser.cpp
       cMyBinLogParser.cpp
       )

@@ -1,7 +1,4 @@
-#ifdef DEBUG
 #include <iostream>
-#endif
-
 #include <cstring>
 #include <cMysqlDatabase.hpp>
 

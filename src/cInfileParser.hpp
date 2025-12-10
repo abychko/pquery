@@ -6,5 +6,9 @@
 class InfileParser
   {
 
+public:
+  virtual std::uint64_t getInfileSize() = 0;
+protected:
+private:
   };
 #endif

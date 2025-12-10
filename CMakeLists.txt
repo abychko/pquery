@@ -7,10 +7,13 @@ OPTION(DEVELOPER_MODE "Enable developer mode" OFF)
 OPTION(WITH_MYSQL "Build with MySQL support" ON)
 OPTION(WITH_PGSQL "Build with PostgreSQL support" OFF)
 #
+INCLUDE(PQDoxygen)
 INCLUDE(PQSetupCompiler)
 INCLUDE(PQDatabases)
 INCLUDE(PQVersion)
 INCLUDE(PQCPack)
+#
+
 #
 ADD_SUBDIRECTORY(src)
 #

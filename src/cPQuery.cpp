@@ -211,7 +211,7 @@ PQuery::logWorkerDetails(struct workerParams& Params) {
   }
 
 
-wRETCODE
+eRETCODE
 PQuery::createWorkerProcess(struct workerParams& Params) {
 #ifdef DEBUG
   std::cerr << __PRETTY_FUNCTION__ << std::endl;
@@ -222,12 +222,12 @@ PQuery::createWorkerProcess(struct workerParams& Params) {
 
   if(childPID < 0) {
     pqLogger->addRecordToLog("=> Cannot fork() child process: " + std::string(std::strerror(errno)));
-    return wERROR;
+    return eERROR;
     }
 
   if(childPID > 0) {
     pqLogger->addRecordToLog("-> Waiting for created worker " + std::to_string(childPID));
-    return wMASTER;
+    return eMASTER;
     }
 
   if (childPID == 0) {
@@ -252,13 +252,13 @@ PQuery::createWorkerProcess(struct workerParams& Params) {
       default:
         std::cerr << "=> Unable to create worker of unsupported type " << dbtype_str(Params.dbtype) << std::endl;
         pqLogger->addRecordToLog("=> PQuery is not compiled with " + dbtype_str(Params.dbtype));
-        return wERROR;
+        return eERROR;
       }
 
     if(dbWorker == NULL) {
       pqLogger->addRecordToLog("=> Error creating worker of type  " + dbtype_str(Params.dbtype));
       pqLogger->addRecordToLog("=> Something went really wrong, exiting...");
-      return wERROR;
+      return eERROR;
       }
 
 //TODO
@@ -267,24 +267,24 @@ PQuery::createWorkerProcess(struct workerParams& Params) {
     success = dbWorker->executeTests(Params);
 
     if(!success) {
-      return wERROR;
+      return eERROR;
       }
 
-    return wCHILD;                                //fake
+    return eCHILD;                                //fake
     }
-  return wDEFAULT;
+  return eDEFAULT;
   }
 
 
-wRETCODE
+eRETCODE
 PQuery::createWorkerWithParams(std::string secName) {
 #ifdef DEBUG
   std::cerr << __PRETTY_FUNCTION__ << std::endl;
 #endif
   struct workerParams wParams;
   setupWorkerParams(wParams, secName);
-  wRETCODE wrc = createWorkerProcess(wParams);
-  if( wrc == wERROR) {
+  eRETCODE wrc = createWorkerProcess(wParams);
+  if( wrc == eERROR) {
     pqLogger->addRecordToLog("=> Worker returned error for " + secName);
     }
   return wrc;
@@ -306,11 +306,11 @@ PQuery::runWorkers() {
     pqLogger->addRecordToLog("-> Checking " + secName + " params...");
     if(configReader->GetBoolean(secName, "run", false)) {
       pqLogger->addRecordToLog("-> Running worker for " + secName);
-      wRETCODE wrc = createWorkerWithParams(secName);
+      eRETCODE wrc = createWorkerWithParams(secName);
       switch(wrc) {
-        case wERROR:
+        case eERROR:
           return false;
-        case wCHILD:
+        case eCHILD:
           return true;
         default:
           break;

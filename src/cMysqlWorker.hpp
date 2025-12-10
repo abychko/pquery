@@ -11,6 +11,7 @@ class MysqlWorker: public DbWorker
     ~MysqlWorker();
     std::shared_ptr<Database> createDbInstance();
     void endDbThread();
+    bool loadQueryList();
 
   private:
     bool testConnection();

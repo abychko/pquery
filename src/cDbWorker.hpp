@@ -5,9 +5,11 @@
 #include <atomic>
 #include <random>
 
-#include <sWorkerParams.hpp>
-#include <cLogger.hpp>
 #include <cDatabase.hpp>
+#include <cInfileParser.hpp>
+#include <cLogger.hpp>
+#include <sWorkerParams.hpp>
+
 
 #ifndef PQDBWORKER_HPP
 #define PQDBWORKER_HPP
@@ -22,9 +24,9 @@ class DbWorker
     virtual ~DbWorker();
     bool executeTests(struct workerParams&);
     void setupLogger(std::shared_ptr<Logger>);
-    bool loadQueryList();
     virtual std::shared_ptr<Database> createDbInstance() = 0;
     virtual void endDbThread() = 0;
+    virtual bool loadQueryList() = 0;
 
   protected:
     void workerThread(int);
@@ -32,6 +34,7 @@ class DbWorker
     void spawnWorkerThreads();
     std::vector<std::thread> workers;
     std::shared_ptr<Logger> wLogger;
+    std::shared_ptr<InfileParser> wInfileParser;
     std::shared_ptr<std::vector<std::string>> queryList;
     struct workerParams mParams;
 

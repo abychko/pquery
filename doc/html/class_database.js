@@ -1,0 +1,26 @@
+var class_database =
+[
+    [ "Database", "class_database.html#a4703c80e6969d33565ea340f768fdadf", null ],
+    [ "~Database", "class_database.html#a84d399a2ad58d69daab9b05330e1316d", null ],
+    [ "cleanupResult", "class_database.html#a3b5f1e62292b0deac6f713377f697621", null ],
+    [ "connect", "class_database.html#a048602bd5cc1434de534fdc085f23ca6", null ],
+    [ "getAffectedRows", "class_database.html#a5f69d7c5777d6bcbab448508ddbed590", null ],
+    [ "getConsecutiveFailures", "class_database.html#a0e44a9dc2404005f54298cef291e21a6", null ],
+    [ "getErrorString", "class_database.html#a75ff1788378505ca576824685dd40621", null ],
+    [ "getFailedQueries", "class_database.html#af19f3ef4a1346533886742d5dbda081b", null ],
+    [ "getHostInfo", "class_database.html#a383e17f48bc7b9276bc7137b3730e1ef", null ],
+    [ "getPerformedQueries", "class_database.html#aef7b78f508ed81f3e7234c7fef96ac3e", null ],
+    [ "getQueryDurationMs", "class_database.html#a56aad8576cd72843c40d7e671c676c95", null ],
+    [ "getQueryResult", "class_database.html#a1797a7c74502bc4e37119eaf3bf03c3a", null ],
+    [ "getServerVersion", "class_database.html#a360edfa9c7b32729dd425f0f3b3961c1", null ],
+    [ "getWarningsCount", "class_database.html#aa89c4b5c4f765c9aabea25c62262762d", null ],
+    [ "performQuery", "class_database.html#a50d97545afa4f73d704c4b7d2587850e", null ],
+    [ "performRealQuery", "class_database.html#a473203dfe99974c125c25f25701e7944", null ],
+    [ "processQueryOutput", "class_database.html#a3a6f235a788b0c2b4e505dea3714945f", null ],
+    [ "begin", "class_database.html#a95429c669843b65c0cf450d9fd80a70c", null ],
+    [ "end", "class_database.html#a44f0b5a9e5a171123e8d2406dc21a648", null ],
+    [ "failed_queries", "class_database.html#a107087681609de7988b5faaaaa34e4d5", null ],
+    [ "max_con_fail_count", "class_database.html#af4c8e1083c98eafc8156f713bcc77e3b", null ],
+    [ "performed_queries", "class_database.html#ac4fc1e4b641b97a2d5ad274e2ebf9a12", null ],
+    [ "queryResult", "class_database.html#a835c1a537544eaba2868e23f9d932e9d", null ]
+];

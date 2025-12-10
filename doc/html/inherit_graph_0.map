@@ -1,0 +1,7 @@
+<map id="Graphical Class Hierarchy" name="Graphical Class Hierarchy">
+<area shape="rect" id="Node000000" href="$class_database.html" title=" " alt="" coords="5,31,83,56"/>
+<area shape="rect" id="Node000001" href="$class_mysql_database.html" title=" " alt="" coords="131,5,243,31"/>
+<area shape="poly" id="edge1_Node000000_Node000001" title=" " alt="" coords="97,31,133,27,128,29,99,37"/>
+<area shape="rect" id="Node000002" href="$class_pgsql_database.html" title=" " alt="" coords="132,55,242,80"/>
+<area shape="poly" id="edge2_Node000000_Node000002" title=" " alt="" coords="98,50,134,58,129,59,98,55"/>
+</map>

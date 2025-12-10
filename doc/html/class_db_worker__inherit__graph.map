@@ -1,0 +1,7 @@
+<map id="DbWorker" name="DbWorker">
+<area shape="rect" id="Node000001" title=" " alt="" coords="74,5,154,31"/>
+<area shape="rect" id="Node000002" href="$class_mysql_worker.html" title=" " alt="" coords="5,79,103,105"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="97,42,66,80,62,77,92,43"/>
+<area shape="rect" id="Node000003" href="$class_pgsql_worker.html" title=" " alt="" coords="126,79,222,105"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="135,40,167,79,161,78,132,45"/>
+</map>

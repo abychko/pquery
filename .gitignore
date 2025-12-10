@@ -11,3 +11,6 @@ install_manifest.txt
 *.tar.gz
 *.sh
 _CPack_Packages
+CMakeDoxyfile.in
+CMakeDoxygenDefaults.cmake
+Doxyfile.generate_docs

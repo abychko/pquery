@@ -40,6 +40,10 @@ MysqlWorker::testConnection() {
 
   }
 
+bool
+MysqlWorker::loadQueryList() {
+  return true;
+}
 
 std::shared_ptr<Database>
 MysqlWorker::createDbInstance() {
