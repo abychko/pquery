@@ -92,11 +92,12 @@ $(function(){initNavTree('h_common_8hpp.html','',''); });
   <div class="headertitle"><div class="title">hCommon.hpp File Reference</div></div>
 </div><!--header-->
 <div class="contents">
-<div class="textblock"><code>#include &lt;string&gt;</code><br />
+<div class="textblock"><code>#include &lt;<a class="el" href="e_types_8hpp_source.html">eTypes.hpp</a>&gt;</code><br />
+<code>#include &lt;string&gt;</code><br />
 </div><div class="textblock"><div class="dynheader">
 Include dependency graph for hCommon.hpp:</div>
 <div class="dyncontent">
-<div class="center"><iframe scrolling="no" loading="lazy" frameborder="0" src="h_common_8hpp__incl.svg" width="139" height="111"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div>
+<div class="center"><iframe scrolling="no" loading="lazy" frameborder="0" src="h_common_8hpp__incl.svg" width="176" height="111"><p><b>This browser is not able to show SVG: try Firefox, Chrome, Safari, or Opera instead.</b></p></iframe></div>
 </div>
 </div><div class="textblock"><div class="dynheader">
 This graph shows which files directly or indirectly include this file:</div>
@@ -114,6 +115,12 @@ Macros</h2></td></tr>
 <tr class="memitem:a933b1970df45ba88aa004582dd7f8bd7" id="r_a933b1970df45ba88aa004582dd7f8bd7"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a933b1970df45ba88aa004582dd7f8bd7">PQRELDATE</a>&#160;&#160;&#160;&quot;UNKNOWN&quot;</td></tr>
 <tr class="memitem:afc85b9a7cb10422277d2560fb642dcd5" id="r_afc85b9a7cb10422277d2560fb642dcd5"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#afc85b9a7cb10422277d2560fb642dcd5">PQBUILDDATE</a>&#160;&#160;&#160;__DATE__</td></tr>
 <tr class="memitem:af4a823c0759b388dd3e1004a85c5cbe4" id="r_af4a823c0759b388dd3e1004a85c5cbe4"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#af4a823c0759b388dd3e1004a85c5cbe4">MYSQL_FORK</a>&#160;&#160;&#160;&quot;UNKNOWN&quot;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 id="header-func-members" class="groupheader"><a id="func-members" name="func-members"></a>
+Functions</h2></td></tr>
+<tr class="memitem:a04c1b531a775513ad03532f7a1bd08da" id="r_a04c1b531a775513ad03532f7a1bd08da"><td class="memItemLeft" align="right" valign="top">std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a04c1b531a775513ad03532f7a1bd08da">infiletype_str</a> (<a class="el" href="e_types_8hpp.html#ad28f410092eb6b42254a143a186775a1">eINFILETYPE</a> infiletype)</td></tr>
+<tr class="memitem:a914e6741371771c27faa24ae31abbacd" id="r_a914e6741371771c27faa24ae31abbacd"><td class="memItemLeft" align="right" valign="top">std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a914e6741371771c27faa24ae31abbacd">toLowerCase</a> (std::string str)</td></tr>
+<tr class="memitem:a32d324047b37077515c3122ebfc690fe" id="r_a32d324047b37077515c3122ebfc690fe"><td class="memItemLeft" align="right" valign="top">std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a32d324047b37077515c3122ebfc690fe">dbtype_str</a> (<a class="el" href="e_types_8hpp.html#af6708ad771551eca7c5f6076de1c53f3">eDBTYPE</a> type)</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 id="header-var-members" class="groupheader"><a id="var-members" name="var-members"></a>
 Variables</h2></td></tr>
@@ -200,6 +207,82 @@ Variables</h2></td></tr>
           <td class="memname">#define PQVERSION&#160;&#160;&#160;= &quot;UNKNOWN&quot;</td>
         </tr>
       </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a name="doc-func-members" id="doc-func-members"></a><h2 id="header-doc-func-members" class="groupheader">Function Documentation</h2>
+<a id="a32d324047b37077515c3122ebfc690fe" name="a32d324047b37077515c3122ebfc690fe"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a32d324047b37077515c3122ebfc690fe">&#9670;&#160;</a></span>dbtype_str()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::string dbtype_str </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="e_types_8hpp.html#af6708ad771551eca7c5f6076de1c53f3">eDBTYPE</a></td>          <td class="paramname"><span class="paramname"><em>type</em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel inline">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a04c1b531a775513ad03532f7a1bd08da" name="a04c1b531a775513ad03532f7a1bd08da"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a04c1b531a775513ad03532f7a1bd08da">&#9670;&#160;</a></span>infiletype_str()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::string infiletype_str </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="e_types_8hpp.html#ad28f410092eb6b42254a143a186775a1">eINFILETYPE</a></td>          <td class="paramname"><span class="paramname"><em>infiletype</em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel inline">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a914e6741371771c27faa24ae31abbacd" name="a914e6741371771c27faa24ae31abbacd"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a914e6741371771c27faa24ae31abbacd">&#9670;&#160;</a></span>toLowerCase()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::string toLowerCase </td>
+          <td>(</td>
+          <td class="paramtype">std::string</td>          <td class="paramname"><span class="paramname"><em>str</em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel inline">inline</span></span>  </td>
+  </tr>
+</table>
 </div><div class="memdoc">
 
 </div>

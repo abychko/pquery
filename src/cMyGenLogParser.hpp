@@ -3,9 +3,12 @@
 
 #include <cInfileParser.hpp>
 
-class MyGenLogParser: public InfileParser {
+class MyGenLogParser : public InfileParser
+  {
+  public:
+    MyGenLogParser();
+    ~MyGenLogParser();
+    bool loadQueriesFromFile(std::shared_ptr<std::vector<std::string>>, std::string);
 
-};
-
-
+  };
 #endif

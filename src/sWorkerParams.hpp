@@ -20,6 +20,7 @@ workerParams
   uint16_t port;
   uint16_t threads;
   uint64_t queries_per_thread;
+  uint64_t query_list_maxsize;                    // max memory for query list. will not be loaded to memory if greater
   bool verbose;
   bool log_all_queries;
   bool log_failed_queries;

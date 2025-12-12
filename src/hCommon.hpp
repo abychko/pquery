@@ -1,3 +1,6 @@
+#include <eTypes.hpp>
+#include <algorithm>
+
 #ifndef __HCOMMON_HPP__
 #define __HCOMMON_HPP__
 
@@ -32,4 +35,39 @@ const std::string FSSEP = "\\";
 #else
 const std::string FSSEP = "/";
 #endif
+
+inline std::string
+infiletype_str(eINFILETYPE infiletype) {
+  switch (infiletype) {
+    case eSQL:
+      return "SQL";
+    case eGENLOG:
+      return "General Log";
+    case eBINLOG:
+      return "Binary Log";
+    default:
+      return "UNKNOWN TYPE";
+    }
+  }
+
+
+inline std::string
+toLowerCase(std::string str) {
+  auto lowercased = str;
+  std::transform (lowercased.begin(), lowercased.end(), lowercased.begin(), ::tolower);
+  return lowercased;
+  }
+
+
+inline std::string
+dbtype_str(eDBTYPE type) {
+  switch (type) {
+    case eMYSQL:
+      return "MySQL";
+    case ePGSQL:
+      return "PostgreSQL";
+    default:
+      return "UNKNOWN";
+    }
+  }
 #endif

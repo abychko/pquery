@@ -102,11 +102,31 @@ Inheritance diagram for InfileParser:</div>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 id="header-pub-methods" class="groupheader"><a id="pub-methods" name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
-<tr class="memitem:aac4c63db0eb7c249e563e6acd1c25d1b" id="r_aac4c63db0eb7c249e563e6acd1c25d1b"><td class="memItemLeft" align="right" valign="top">virtual std::uint64_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#aac4c63db0eb7c249e563e6acd1c25d1b">getInfileSize</a> ()=0</td></tr>
+<tr class="memitem:a8d6bb129848f2bf6c768e942a2fceb4c" id="r_a8d6bb129848f2bf6c768e942a2fceb4c"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a8d6bb129848f2bf6c768e942a2fceb4c">InfileParser</a> ()</td></tr>
+<tr class="memitem:a428e9662f5739baa99931676870f06cc" id="r_a428e9662f5739baa99931676870f06cc"><td class="memItemLeft" align="right" valign="top">virtual&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a428e9662f5739baa99931676870f06cc">~InfileParser</a> ()</td></tr>
+<tr class="memitem:ae05129081d8b969da5228fbbd1f09497" id="r_ae05129081d8b969da5228fbbd1f09497"><td class="memItemLeft" align="right" valign="top">std::uint64_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ae05129081d8b969da5228fbbd1f09497">getInfileSize</a> (std::string)</td></tr>
+<tr class="memitem:abbcf91f77da0bd2e3cd4ddcdf86ad923" id="r_abbcf91f77da0bd2e3cd4ddcdf86ad923"><td class="memItemLeft" align="right" valign="top">virtual bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#abbcf91f77da0bd2e3cd4ddcdf86ad923">loadQueriesFromFile</a> (std::shared_ptr&lt; std::vector&lt; std::string &gt; &gt;, std::string)=0</td></tr>
 </table>
-<a name="doc-func-members" id="doc-func-members"></a><h2 id="header-doc-func-members" class="groupheader">Member Function Documentation</h2>
-<a id="aac4c63db0eb7c249e563e6acd1c25d1b" name="aac4c63db0eb7c249e563e6acd1c25d1b"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#aac4c63db0eb7c249e563e6acd1c25d1b">&#9670;&#160;</a></span>getInfileSize()</h2>
+<a name="doc-constructors" id="doc-constructors"></a><h2 id="header-doc-constructors" class="groupheader">Constructor &amp; Destructor Documentation</h2>
+<a id="a8d6bb129848f2bf6c768e942a2fceb4c" name="a8d6bb129848f2bf6c768e942a2fceb4c"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a8d6bb129848f2bf6c768e942a2fceb4c">&#9670;&#160;</a></span>InfileParser()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">InfileParser::InfileParser </td>
+          <td>(</td>
+          <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="a428e9662f5739baa99931676870f06cc" name="a428e9662f5739baa99931676870f06cc"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a428e9662f5739baa99931676870f06cc">&#9670;&#160;</a></span>~InfileParser()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -115,10 +135,57 @@ Public Member Functions</h2></td></tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">virtual std::uint64_t InfileParser::getInfileSize </td>
+          <td class="memname">InfileParser::~InfileParser </td>
           <td>(</td>
           <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
           <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel virtual">virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a name="doc-func-members" id="doc-func-members"></a><h2 id="header-doc-func-members" class="groupheader">Member Function Documentation</h2>
+<a id="ae05129081d8b969da5228fbbd1f09497" name="ae05129081d8b969da5228fbbd1f09497"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ae05129081d8b969da5228fbbd1f09497">&#9670;&#160;</a></span>getInfileSize()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::uint64_t InfileParser::getInfileSize </td>
+          <td>(</td>
+          <td class="paramtype">std::string</td>          <td class="paramname"><span class="paramname"><em>infile_name</em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="abbcf91f77da0bd2e3cd4ddcdf86ad923" name="abbcf91f77da0bd2e3cd4ddcdf86ad923"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#abbcf91f77da0bd2e3cd4ddcdf86ad923">&#9670;&#160;</a></span>loadQueriesFromFile()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">virtual bool InfileParser::loadQueriesFromFile </td>
+          <td>(</td>
+          <td class="paramtype">std::shared_ptr&lt; std::vector&lt; std::string &gt; &gt;</td>          <td class="paramname"><span class="paramname"><em></em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">std::string</td>          <td class="paramname"><span class="paramname"><em></em></span>&#160;)</td>
         </tr>
       </table>
   </td>
@@ -128,10 +195,13 @@ Public Member Functions</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
+<p>Implemented in <a class="el" href="class_my_bin_log_parser.html#a38f994e95f74d282a9b8e268efc8fe62">MyBinLogParser</a>, <a class="el" href="class_my_gen_log_parser.html#ad5e64b5bf97fbb3d02968cb933e002f2">MyGenLogParser</a>, and <a class="el" href="class_sql_file_parser.html#a1fb03a2f3d4ac64550eef2fc74692deb">SqlFileParser</a>.</p>
+
 </div>
 </div>
-<hr/>The documentation for this class was generated from the following file:<ul>
+<hr/>The documentation for this class was generated from the following files:<ul>
 <li>src/<a class="el" href="c_infile_parser_8hpp_source.html">cInfileParser.hpp</a></li>
+<li>src/<a class="el" href="c_infile_parser_8cpp.html">cInfileParser.cpp</a></li>
 </ul>
 </div><!-- contents -->
 </div><!-- doc-content -->

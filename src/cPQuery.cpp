@@ -164,19 +164,22 @@ PQuery::setupWorkerParams(struct workerParams& wParams, std::string secName) {
   wParams.queries_per_thread = configReader->GetInteger(secName, "queries-per-thread", 10000);
 
   wParams.verbose = configReader->GetBoolean(secName, "verbose", false);
-  wParams.shuffle = configReader->GetBoolean(secName, "shuffle", true);
+  wParams.shuffle = configReader->GetBoolean(secName, "shuffle", false);
 
   wParams.infile = configReader->Get(secName, "infile", "pquery.sql");
   wParams.infiletype = configReader->getInfileType(secName, "infiletype", eSQL);
+// max file size to load to memory. read from disk overwise
+  wParams.query_list_maxsize = configReader->GetInteger(secName, "query-list-maxsize", 1073741824);
+
   wParams.logdir = configReader->Get(secName, "logdir", "/tmp");
 //
-  wParams.log_all_queries = configReader->GetBoolean(secName, "log-all-queries", false);
+  wParams.log_all_queries       = configReader->GetBoolean(secName, "log-all-queries", false);
   wParams.log_succeeded_queries = configReader->GetBoolean(secName, "log-succeded-queries", false);
-  wParams.log_failed_queries = configReader->GetBoolean(secName, "log-failed-queries", false);
-  wParams.log_query_statistics = configReader->GetBoolean(secName, "log-query-statistics",  false);
-  wParams.log_query_duration = configReader->GetBoolean(secName, "log-query-duration", false);
-  wParams.log_client_output = configReader->GetBoolean(secName, "log-client-output", false);
-  wParams.log_query_numbers = configReader->GetBoolean(secName, "log-query-numbers", false);
+  wParams.log_failed_queries    = configReader->GetBoolean(secName, "log-failed-queries", false);
+  wParams.log_query_statistics  = configReader->GetBoolean(secName, "log-query-statistics",  false);
+  wParams.log_query_duration    = configReader->GetBoolean(secName, "log-query-duration", false);
+  wParams.log_client_output     = configReader->GetBoolean(secName, "log-client-output", false);
+  wParams.log_query_numbers     = configReader->GetBoolean(secName, "log-query-numbers", false);
   }
 
 
@@ -186,27 +189,28 @@ PQuery::logWorkerDetails(struct workerParams& Params) {
   std::cerr << __PRETTY_FUNCTION__ << std::endl;
 #endif
   pqLogger->addSeparation('#', 40);
-  pqLogger->addRecordToLog("## Config name: " + Params.myName);
-  pqLogger->addRecordToLog("## DB type: " + dbtype_str(Params.dbtype));
-  pqLogger->addRecordToLog("## DB name: " + Params.database);
-  pqLogger->addRecordToLog("## DB address: " + Params.address);
-  pqLogger->addRecordToLog("## DB username: " + Params.username);
-  pqLogger->addRecordToLog("## DB password: " + Params.password);
-  pqLogger->addRecordToLog("## DB socket: " + Params.socket);
-  pqLogger->addRecordToLog("## DB port: " + std::to_string(Params.port));
-  pqLogger->addRecordToLog("## PQuery threads: " + std::to_string(Params.threads));
-  pqLogger->addRecordToLog("## PQuery queries per thread: " + std::to_string(Params.queries_per_thread));
-  pqLogger->addRecordToLog("## PQuery verbosity: " + std::to_string(Params.verbose));
-  pqLogger->addRecordToLog("## PQuery shuffle: " + std::to_string(Params.shuffle));
-  pqLogger->addRecordToLog("## PQuery infile: " + Params.infile);
-  pqLogger->addRecordToLog("## PQuery infile type: " + infiletype_str(Params.infiletype));
-  pqLogger->addRecordToLog("## PQuery log directory: " + Params.logdir);
-  pqLogger->addRecordToLog("## PQuery log all queries: " + std::to_string(Params.log_all_queries));
-  pqLogger->addRecordToLog("## PQuery log failed queries: " + std::to_string(Params.log_failed_queries));
-  pqLogger->addRecordToLog("## PQuery log query statistics: " + std::to_string(Params.log_query_statistics));
-  pqLogger->addRecordToLog("## PQuery log query duration: " + std::to_string(Params.log_query_duration));
-  pqLogger->addRecordToLog("## PQuery log client output: " + std::to_string(Params.log_client_output));
-  pqLogger->addRecordToLog("## PQuery log query numbers: " + std::to_string(Params.log_query_numbers));
+  pqLogger->addRecordToLog("## Config name: "                   + Params.myName);
+  pqLogger->addRecordToLog("## DB type: "                       + dbtype_str(Params.dbtype));
+  pqLogger->addRecordToLog("## DB name: "                       + Params.database);
+  pqLogger->addRecordToLog("## DB address: "                    + Params.address);
+  pqLogger->addRecordToLog("## DB username: "                   + Params.username);
+  pqLogger->addRecordToLog("## DB password: "                   + Params.password);
+  pqLogger->addRecordToLog("## DB socket: "                     + Params.socket);
+  pqLogger->addRecordToLog("## DB port: "                       + std::to_string(Params.port));
+  pqLogger->addRecordToLog("## PQuery threads: "                + std::to_string(Params.threads));
+  pqLogger->addRecordToLog("## PQuery queries per thread: "     + std::to_string(Params.queries_per_thread));
+  pqLogger->addRecordToLog("## PQuery verbosity: "              + std::to_string(Params.verbose));
+  pqLogger->addRecordToLog("## PQuery shuffle: "                + std::to_string(Params.shuffle));
+  pqLogger->addRecordToLog("## PQuery infile: "                 + Params.infile);
+  pqLogger->addRecordToLog("## PQuery infile type: "            + infiletype_str(Params.infiletype));
+  pqLogger->addRecordToLog("## PQuery maxsize for query list: " + std::to_string(Params.query_list_maxsize));
+  pqLogger->addRecordToLog("## PQuery log directory: "          + Params.logdir);
+  pqLogger->addRecordToLog("## PQuery log all queries: "        + std::to_string(Params.log_all_queries));
+  pqLogger->addRecordToLog("## PQuery log failed queries: "     + std::to_string(Params.log_failed_queries));
+  pqLogger->addRecordToLog("## PQuery log query statistics: "   + std::to_string(Params.log_query_statistics));
+  pqLogger->addRecordToLog("## PQuery log query duration: "     + std::to_string(Params.log_query_duration));
+  pqLogger->addRecordToLog("## PQuery log client output: "      + std::to_string(Params.log_client_output));
+  pqLogger->addRecordToLog("## PQuery log query numbers: "      + std::to_string(Params.log_query_numbers));
   pqLogger->addSeparation('#', 40);
   }
 
@@ -368,8 +372,8 @@ PQuery::showHelp() {
   std::cout << " - Usage: pquery --config-file=pquery.cfg" << std::endl;
   std::cout << " - CLI params has been replaced by config file (INI format)" << std::endl;
   std::cout << " - You can redefine any global param=value pair in host-specific section" << std::endl;
-  std::cout << "\nConfig example:\n" << std::endl;
-  std::cout <<
+  std::cout << "\n# Config example:\n\n" <<
+    "# \"#\" and \";\" are comments here\n" <<
     "############################\n" <<
     "# Section for master process\n" <<
     "[master]\n\n" <<
@@ -391,6 +395,8 @@ PQuery::showHelp() {
     "infile = pquery.sql\n\n"     <<
     "# Infile type, (SQL, GENLOG, BINLOG), default is plain SQL\n" <<
     "infiletype = SQL\n\n" <<
+    "# Maximum file size to be loaded to RAM\n" <<
+    "query-list-maxsize = 1G\n\n" <<
     "# Directory to store logs\n" <<
     "logdir = /tmp\n\n"           <<
     "# Socket file to use\n" <<
@@ -421,8 +427,6 @@ PQuery::showHelp() {
     "log-client-output = No\n\n"             <<
     "# Log query numbers along the query results and statistics\n" <<
     "log-query-numbers = No\n\n" <<
-    "[node1.domain.tld]\n" <<
-    "address = 10.10.6.10\n" <<
     "# default for \"run\" is No, need to set it to YES explicitly\n" <<
     "run = Yes\n\n" <<
     "############################\n" <<

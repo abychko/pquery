@@ -17,6 +17,7 @@ var structworker_params =
     [ "password", "structworker_params.html#a7c55483790b2432c7c837f1474424298", null ],
     [ "port", "structworker_params.html#a6bf8d388033086b118ec73dba218233b", null ],
     [ "queries_per_thread", "structworker_params.html#a5015e63f71356206cd621a40bd74df9a", null ],
+    [ "query_list_maxsize", "structworker_params.html#adcc78a5cf98f075b079d76e85f678fd3", null ],
     [ "shuffle", "structworker_params.html#aa74934b35d91fc406db131d27bf6a44c", null ],
     [ "socket", "structworker_params.html#a7dafa6aa8a9a7a5edd2e7805d1890d9c", null ],
     [ "threads", "structworker_params.html#a11295fde96097ddd071a57e7b280d7b8", null ],

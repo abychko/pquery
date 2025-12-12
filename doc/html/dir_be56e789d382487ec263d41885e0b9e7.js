@@ -8,7 +8,6 @@ var dir_be56e789d382487ec263d41885e0b9e7 =
     [ "cMyBinLogParser.cpp.o.d", "c_my_bin_log_parser_8cpp_8o_8d.html", null ],
     [ "cMyGenLogParser.cpp.o.d", "c_my_gen_log_parser_8cpp_8o_8d.html", null ],
     [ "cMysqlDatabase.cpp.o.d", "c_mysql_database_8cpp_8o_8d.html", null ],
-    [ "cMySQLParser.cpp.o.d", "c_my_s_q_l_parser_8cpp_8o_8d.html", null ],
     [ "cMysqlWorker.cpp.o.d", "c_mysql_worker_8cpp_8o_8d.html", null ],
     [ "cPQuery.cpp.o.d", "c_p_query_8cpp_8o_8d.html", null ],
     [ "cSqlFileParser.cpp.o.d", "c_sql_file_parser_8cpp_8o_8d.html", null ],

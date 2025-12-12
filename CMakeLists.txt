@@ -4,6 +4,7 @@ SET(CMAKE_CXX_STANDARD 17)
 #
 SET(CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
 OPTION(DEVELOPER_MODE "Enable developer mode" OFF)
+OPTION(BUILD_DOCS "Generate docs with Doxygen" OFF)
 OPTION(WITH_MYSQL "Build with MySQL support" ON)
 OPTION(WITH_PGSQL "Build with PostgreSQL support" OFF)
 #
@@ -12,8 +13,6 @@ INCLUDE(PQSetupCompiler)
 INCLUDE(PQDatabases)
 INCLUDE(PQVersion)
 INCLUDE(PQCPack)
-#
-
 #
 ADD_SUBDIRECTORY(src)
 #

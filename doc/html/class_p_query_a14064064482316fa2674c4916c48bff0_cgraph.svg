@@ -47,7 +47,7 @@
   </g>
 </defs>
 <script type="application/ecmascript">
-var viewWidth = 778;
+var viewWidth = 739;
 var viewHeight = 107;
 var sectionId = 'dynsection-7';
 </script>
@@ -86,9 +86,9 @@ var sectionId = 'dynsection-7';
 <!-- Node9 -->
 <g id="Node000009" class="node">
 <title>Node9</title>
-<g id="a_Node000009"><a xlink:href="class_p_query.html#a4bb05d21d228932e56a92d3671bdfb4c" target="_top" xlink:title=" ">
-<polygon fill="white" stroke="#666666" points="263.38,-19.25 150.62,-19.25 150.62,0 263.38,0 263.38,-19.25"/>
-<text xml:space="preserve" text-anchor="middle" x="207" y="-5.75" font-family="Helvetica,sans-Serif" font-size="10.00">PQuery::toLowerCase</text>
+<g id="a_Node000009"><a xlink:href="h_common_8hpp.html#a914e6741371771c27faa24ae31abbacd" target="_top" xlink:title=" ">
+<polygon fill="white" stroke="#666666" points="243.88,-19.25 170.12,-19.25 170.12,0 243.88,0 243.88,-19.25"/>
+<text xml:space="preserve" text-anchor="middle" x="207" y="-5.75" font-family="Helvetica,sans-Serif" font-size="10.00">toLowerCase</text>
 </a>
 </g>
 </g>
@@ -96,8 +96,8 @@ var sectionId = 'dynsection-7';
 <g id="edge9_Node000001_Node000009" class="edge">
 <title>Node1&#45;&gt;Node9</title>
 <g id="a_edge9_Node000001_Node000009"><a xlink:title=" ">
-<path fill="none" stroke="#63b8ff" d="M104.96,-23.52C115.87,-22.02 127.53,-20.41 138.9,-18.85"/>
-<polygon fill="#63b8ff" stroke="#63b8ff" points="139.22,-22.34 148.65,-17.51 138.27,-15.4 139.22,-22.34"/>
+<path fill="none" stroke="#63b8ff" d="M104.96,-23.52C122.26,-21.14 141.45,-18.5 158.42,-16.17"/>
+<polygon fill="#63b8ff" stroke="#63b8ff" points="158.83,-19.64 168.26,-14.81 157.88,-12.71 158.83,-19.64"/>
 </a>
 </g>
 </g>
@@ -140,9 +140,9 @@ var sectionId = 'dynsection-7';
 <!-- Node4 -->
 <g id="Node000004" class="node">
 <title>Node4</title>
-<g id="a_Node000004"><a xlink:href="class_p_query.html#a89e2b97a238687621ce94d4af211be11" target="_top" xlink:title=" ">
-<polygon fill="white" stroke="#666666" points="765.12,-99.25 664.38,-99.25 664.38,-80 765.12,-80 765.12,-99.25"/>
-<text xml:space="preserve" text-anchor="middle" x="714.75" y="-85.75" font-family="Helvetica,sans-Serif" font-size="10.00">PQuery::dbtype_str</text>
+<g id="a_Node000004"><a xlink:href="h_common_8hpp.html#a32d324047b37077515c3122ebfc690fe" target="_top" xlink:title=" ">
+<polygon fill="white" stroke="#666666" points="726.12,-99.25 664.38,-99.25 664.38,-80 726.12,-80 726.12,-99.25"/>
+<text xml:space="preserve" text-anchor="middle" x="695.25" y="-85.75" font-family="Helvetica,sans-Serif" font-size="10.00">dbtype_str</text>
 </a>
 </g>
 </g>
@@ -150,8 +150,8 @@ var sectionId = 'dynsection-7';
 <g id="edge3_Node000003_Node000004" class="edge">
 <title>Node3&#45;&gt;Node4</title>
 <g id="a_edge3_Node000003_Node000004"><a xlink:title=" ">
-<path fill="none" stroke="#63b8ff" d="M432.56,-80.74C451.65,-84.31 473.9,-87.87 494.25,-89.62 547.57,-94.22 608.46,-93.78 652.55,-92.43"/>
-<polygon fill="#63b8ff" stroke="#63b8ff" points="652.56,-95.94 662.44,-92.11 652.33,-88.94 652.56,-95.94"/>
+<path fill="none" stroke="#63b8ff" d="M432.56,-80.74C451.65,-84.31 473.9,-87.87 494.25,-89.62 548.88,-94.33 612.21,-93.23 652.72,-91.7"/>
+<polygon fill="#63b8ff" stroke="#63b8ff" points="652.66,-95.2 662.51,-91.3 652.38,-88.21 652.66,-95.2"/>
 </a>
 </g>
 </g>
@@ -195,17 +195,17 @@ var sectionId = 'dynsection-7';
 <g id="edge6_Node000006_Node000004" class="edge">
 <title>Node6&#45;&gt;Node4</title>
 <g id="a_edge6_Node000006_Node000004"><a xlink:title=" ">
-<path fill="none" stroke="#63b8ff" d="M598.47,-43.72C606.78,-46.13 615.48,-48.82 623.5,-51.62 643.3,-58.56 664.98,-67.64 682.12,-75.18"/>
-<polygon fill="#63b8ff" stroke="#63b8ff" points="680.22,-78.17 690.78,-79.03 683.06,-71.77 680.22,-78.17"/>
+<path fill="none" stroke="#63b8ff" d="M600.37,-43.65C608.15,-45.98 616.16,-48.66 623.5,-51.62 638.8,-57.81 655.07,-66.4 668.15,-73.85"/>
+<polygon fill="#63b8ff" stroke="#63b8ff" points="666.17,-76.74 676.57,-78.75 669.69,-70.69 666.17,-76.74"/>
 </a>
 </g>
 </g>
 <!-- Node7 -->
 <g id="Node000007" class="node">
 <title>Node7</title>
-<g id="a_Node000007"><a xlink:href="class_p_query.html#aaf554933bcaae8d96624121e75bece2a" target="_top" xlink:title=" ">
-<polygon fill="white" stroke="#666666" points="770,-43.25 659.5,-43.25 659.5,-24 770,-24 770,-43.25"/>
-<text xml:space="preserve" text-anchor="middle" x="714.75" y="-29.75" font-family="Helvetica,sans-Serif" font-size="10.00">PQuery::infiletype_str</text>
+<g id="a_Node000007"><a xlink:href="h_common_8hpp.html#a04c1b531a775513ad03532f7a1bd08da" target="_top" xlink:title=" ">
+<polygon fill="white" stroke="#666666" points="731,-43.25 659.5,-43.25 659.5,-24 731,-24 731,-43.25"/>
+<text xml:space="preserve" text-anchor="middle" x="695.25" y="-29.75" font-family="Helvetica,sans-Serif" font-size="10.00">infiletype_str</text>
 </a>
 </g>
 </g>
@@ -213,8 +213,8 @@ var sectionId = 'dynsection-7';
 <g id="edge7_Node000006_Node000007" class="edge">
 <title>Node6&#45;&gt;Node7</title>
 <g id="a_edge7_Node000006_Node000007"><a xlink:title=" ">
-<path fill="none" stroke="#63b8ff" d="M623.8,-33.62C631.67,-33.62 639.74,-33.62 647.65,-33.62"/>
-<polygon fill="#63b8ff" stroke="#63b8ff" points="647.57,-37.13 657.57,-33.63 647.57,-30.13 647.57,-37.13"/>
+<path fill="none" stroke="#63b8ff" d="M623.91,-33.62C631.99,-33.62 640.13,-33.62 647.87,-33.62"/>
+<polygon fill="#63b8ff" stroke="#63b8ff" points="647.72,-37.13 657.72,-33.63 647.72,-30.13 647.72,-37.13"/>
 </a>
 </g>
 </g>

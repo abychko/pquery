@@ -3,8 +3,11 @@
 
 #include <cInfileParser.hpp>
 
-class MyBinLogParser: public InfileParser {
-
-};
-
+class MyBinLogParser : public InfileParser
+  {
+  public:
+    MyBinLogParser();
+    ~MyBinLogParser();
+    bool loadQueriesFromFile(std::shared_ptr<std::vector<std::string>>, std::string);
+  };
 #endif

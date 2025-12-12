@@ -1,7 +1,7 @@
 <map id="PQuery::logWorkerDetails" name="PQuery::logWorkerDetails">
 <area shape="rect" id="Node000001" title=" " alt="" coords="5,31,178,56"/>
-<area shape="rect" id="Node000002" href="$class_p_query.html#a89e2b97a238687621ce94d4af211be11" title=" " alt="" coords="232,5,366,31"/>
-<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="178,30,220,28,215,29,179,36"/>
-<area shape="rect" id="Node000003" href="$class_p_query.html#aaf554933bcaae8d96624121e75bece2a" title=" " alt="" coords="226,55,373,80"/>
-<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="178,51,213,57,208,57,178,56"/>
+<area shape="rect" id="Node000002" href="$h_common_8hpp.html#a32d324047b37077515c3122ebfc690fe" title=" " alt="" coords="232,5,314,31"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="178,29,220,25,214,27,179,34"/>
+<area shape="rect" id="Node000003" href="$h_common_8hpp.html#a04c1b531a775513ad03532f7a1bd08da" title=" " alt="" coords="226,55,321,80"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="178,52,213,59,207,59,178,58"/>
 </map>

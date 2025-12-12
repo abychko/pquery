@@ -1,5 +1,4 @@
 #include <string>
-#include <algorithm>
 #include <cIniReader.hpp>
 #include <cLogger.hpp>
 #include <cDbWorker.hpp>
@@ -28,37 +27,6 @@ class PQuery
   private:
     std::string configFilePath;
     std::string logFilePath;
-
-    inline std::string
-    toLowerCase(std::string str) {
-      auto lowercased = str;
-      std::transform (lowercased.begin(), lowercased.end(), lowercased.begin(), ::tolower);
-      return lowercased;
-      }
-    inline std::string
-    dbtype_str(eDBTYPE type) {
-      switch (type) {
-        case eMYSQL:
-          return "MySQL";
-        case ePGSQL:
-          return "PostgreSQL";
-        default:
-          return "UNKNOWN";
-        }
-      }
-    inline std::string
-    infiletype_str(eINFILETYPE infiletype) {
-      switch (infiletype) {
-        case eSQL:
-          return "SQL";
-        case eGENLOG:
-          return "General Log";
-        case eBINLOG:
-          return "Binary Log";
-        default:
-          return "UNKNOWN TYPE";
-        }
-      }
     void  doCleanup(std::string);
     void logWorkerDetails(struct workerParams&);
 

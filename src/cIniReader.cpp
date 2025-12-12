@@ -42,7 +42,7 @@ INIReader::getInfileType(std::string section, std::string name, eINFILETYPE defa
   std::string valstr = Get(section, name, "");
   if(valstr.empty()) { return default_value; }
   std::transform(valstr.begin(), valstr.end(), valstr.begin(), ::tolower);
-  if (valstr == "sql") { return eSQL; }
+  if (valstr == "sql")    { return eSQL; }
   if (valstr == "genlog") { return eGENLOG; }
   if (valstr == "binlog") { return eBINLOG; }
   return eUNKNOWN;
@@ -91,7 +91,7 @@ INIReader::GetInteger(std::string section, std::string name, int default_value) 
   std::istringstream vss;
   vss.str(valstr);
   int ipart = 0;
-  char cpart = 0;                                 //can be K/M/G
+  char cpart = 0;                                 //can be K/M/G/T
 
   vss >> ipart;
   if(vss.fail()) {
@@ -114,6 +114,8 @@ INIReader::GetInteger(std::string section, std::string name, int default_value) 
     case 'g':
     case 'G': return (ipart * 1024 * 1024 * 1024);
     break;
+    case 't':
+    case 'T': return (ipart * 1024 * 1024 * 1024 * 1024);
     default:
       throw std::invalid_argument("Invalid value for " + name + ": " + valstr);
       break;

@@ -36,17 +36,17 @@ MysqlDatabase::connect(struct workerParams& dbParams) {
   if (conn == NULL) { return false; }
 #ifdef DEBUG
   std::cerr << "\n" <<
-  "=> Connecting to:\n" <<
-  "=> IP Address: " << dbParams.address.c_str() << "\n" <<
-  "=> Socket: " << dbParams.socket.c_str() << "\n" <<
-  std::endl;
+    "=> Connecting to:\n" <<
+    "=> IP Address: " << dbParams.address.c_str() << "\n" <<
+    "=> Socket: " << dbParams.socket.c_str() << "\n" <<
+    std::endl;
 #endif
   if (mysql_real_connect(conn, dbParams.address.c_str(), dbParams.username.c_str(),
-    dbParams.password.c_str(), dbParams.database.c_str(), dbParams.port, dbParams.socket.c_str(), 0) == NULL){
+  dbParams.password.c_str(), dbParams.database.c_str(), dbParams.port, dbParams.socket.c_str(), 0) == NULL) {
     std::cerr << "=> " << getErrorString() << "\n" << std::endl;
     return false;
-  }
-    return true;
+    }
+  return true;
   }
 
 

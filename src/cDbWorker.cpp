@@ -29,8 +29,7 @@ DbWorker::adjustRuntimeParams() {
   if(!mParams.shuffle) {
     wLogger->addRecordToLog("-> Setting # of threads to 1 for log replaying due to \"shuffle = False\"");
     mParams.threads = 1;
-//
-    *wLogger << "-> Setting queries per thread to " << queryList->size() << " due to \"shuffle = False\" (size of infile)\n";
+    *wLogger << "-> Setting queries per thread to " << queryList->size() << " due to \"shuffle = False\" (the size of query list)\n";
     mParams.queries_per_thread = queryList->size();
     }
 /* END log replaying */
@@ -72,13 +71,13 @@ DbWorker::setupLogger(std::shared_ptr<Logger> logger) {
 bool
 DbWorker::isComment(std::string& line) {
   size_t first = line.find_first_not_of(' ');
-  if (std::string::npos == first){ return false; }
+  if (std::string::npos == first) { return false; }
   size_t last = line.find_last_not_of(' ');
   auto qStr = line.substr(first, (last - first + 1));
   return (
-    (qStr.rfind("#", 0) == 0) ||
-    (qStr.rfind(";", 0) == 0) ||
-    (qStr.rfind("//", 0) == 0) ||
+    (qStr.rfind("#", 0) == 0)   ||
+    (qStr.rfind(";", 0) == 0)   ||
+    (qStr.rfind("//", 0) == 0)  ||
     (qStr.rfind("--", 0) == 0)
     );
   }
@@ -106,7 +105,12 @@ DbWorker::workerThread(int number) {
     outputLogger->initLogFile(mParams.logdir + "/" + mParams.myName + "_thread-" + std::to_string(number) + ".out");
     }
 
-  if ((mParams.log_failed_queries) || (mParams.log_all_queries) || (mParams.log_succeeded_queries) || (mParams.log_query_duration) || (mParams.log_query_statistics) || (mParams.log_query_numbers)) {
+  if ((mParams.log_failed_queries)  ||
+    (mParams.log_all_queries)       ||
+    (mParams.log_succeeded_queries) ||
+    (mParams.log_query_duration)    ||
+    (mParams.log_query_statistics)  ||
+  (mParams.log_query_numbers)) {
     threadLogger = std::make_shared<Logger>();
     threadLogger->initLogFile(mParams.logdir + "/" + mParams.myName + "_thread-" + std::to_string(number) + ".sql");
     }

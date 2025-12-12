@@ -1,82 +1,111 @@
--- Создание тестовой базы данных
-CREATE DATABASE IF NOT EXISTS test_mysql_stability;
-USE test_mysql_stability;
+# Crash-hunting SQL workload for pquery
+# Intended for shuffled execution
+# Valid comments are '#', ';' and '//'
+; Keep one statement per line
+// No multiline comments
 
--- Таблица с основными типами данных
-CREATE TABLE test_data_types (
-    id INT PRIMARY KEY AUTO_INCREMENT,
-    tiny_int_col TINYINT,
-    small_int_col SMALLINT,
-    medium_int_col MEDIUMINT,
-    int_col INT,
-    big_int_col BIGINT,
-    decimal_col DECIMAL(10,2),
-    float_col FLOAT,
-    double_col DOUBLE,
-    char_col CHAR(10),
-    varchar_col VARCHAR(100),
-    text_col TEXT,
-    blob_col BLOB,
-    date_col DATE,
-    time_col TIME,
-    datetime_col DATETIME,
-    timestamp_col TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    year_col YEAR,
-    json_col JSON,
-    bool_col BOOLEAN,
-    enum_col ENUM('active','inactive','pending')
-);
+CREATE DATABASE IF NOT EXISTS pquery_crash;
+USE pquery_crash;
 
--- Таблица для тестирования внешних ключей
-CREATE TABLE test_related (
-    rel_id INT PRIMARY KEY AUTO_INCREMENT,
-    main_id INT,
-    description VARCHAR(50),
-    FOREIGN KEY (main_id) REFERENCES test_data_types(id) ON DELETE CASCADE
-);
+DROP TABLE IF EXISTS t1;
+DROP TABLE IF EXISTS t2;
+DROP TABLE IF EXISTS t3;
+CREATE TABLE t1 (id INT, a INT, b VARCHAR(100)) ENGINE=InnoDB;
+CREATE TABLE t2 (id INT, a INT, b VARCHAR(100)) ENGINE=InnoDB;
+CREATE TABLE t3 (id INT, a INT, b BLOB) ENGINE=InnoDB;
 
--- Вставка данных
-INSERT INTO test_data_types VALUES (
-    NULL, 127, 32000, 8388607, 2147483647, 9223372036854775807,
-    1234567.89, 3.14, 2.71828, 'fixed', 'variable text',
-    'Long text content', 'binary data', '2024-01-15', '14:30:00',
-    '2024-01-15 14:30:00', NULL, 2024,
-    '{"key": "value", "array": [1,2,3]}', TRUE, 'active'
-);
+INSERT INTO t1 VALUES (1,10,'one');
+INSERT INTO t1 VALUES (2,20,'two');
+INSERT INTO t1 VALUES (3,30,'three');
+INSERT INTO t2 VALUES (1,100,'aaa');
+INSERT INTO t2 VALUES (2,200,'bbb');
+INSERT INTO t3 VALUES (1,1,'blob-a');
+INSERT INTO t3 VALUES (2,2,'blob-b');
 
-INSERT INTO test_related VALUES (NULL, 1, 'Related record 1');
+SELECT * FROM t1;
+SELECT * FROM t2;
+SELECT * FROM t3;
+SELECT COUNT(*) FROM t1;
+SELECT COUNT(*) FROM t2;
+SELECT t1.id,t1.a,t2.b FROM t1 JOIN t2 ON t1.id=t2.id;
+SELECT * FROM t1 WHERE a BETWEEN 0 AND 100;
+SELECT * FROM t1 WHERE b LIKE '%o%';
+SELECT DISTINCT a FROM t1;
+SELECT id,a FROM t1 ORDER BY a DESC;
+SELECT id,a FROM t1 ORDER BY a ASC;
+SELECT MIN(a) FROM t1;
+SELECT MAX(a) FROM t1;
+SELECT SUM(a) FROM t1;
+SELECT AVG(a) FROM t1;
 
--- SELECT операции
-SELECT * FROM test_data_types;
-SELECT id, varchar_col, json_col FROM test_data_types WHERE bool_col = TRUE;
-SELECT t.*, r.description FROM test_data_types t 
-JOIN test_related r ON t.id = r.main_id;
+UPDATE t1 SET a=a+1;
+UPDATE t1 SET b='changed' WHERE id=1;
+UPDATE t2 SET a=a*2 WHERE id IN (1,2);
+UPDATE t2 SET b=CONCAT(b,'-x');
+UPDATE t1 SET id=id+100 WHERE id=3;
 
--- UPDATE операции
-UPDATE test_data_types SET varchar_col = 'updated text' WHERE id = 1;
-UPDATE test_related SET description = CONCAT(description, ' - modified');
+DELETE FROM t1 WHERE id=2;
+DELETE FROM t2 WHERE a > 150;
+DELETE FROM t3 WHERE id=999;
 
--- DELETE операция
-INSERT INTO test_related VALUES (NULL, 1, 'To be deleted');
-DELETE FROM test_related WHERE description LIKE '%deleted%';
+INSERT INTO t1 SELECT * FROM t1;
+INSERT INTO t2 SELECT * FROM t2;
+INSERT INTO t1 SELECT id+1000,a,b FROM t1;
+INSERT INTO t2 SELECT id+2000,a,b FROM t2;
 
--- ALTER таблицы
-ALTER TABLE test_data_types ADD COLUMN new_column VARCHAR(50) DEFAULT 'new default';
-ALTER TABLE test_data_types MODIFY COLUMN varchar_col VARCHAR(200);
-ALTER TABLE test_data_types ADD INDEX idx_varchar (varchar_col);
+ALTER TABLE t1 ADD COLUMN c INT DEFAULT 0;
+ALTER TABLE t1 DROP COLUMN c;
+ALTER TABLE t1 ADD INDEX idx_a(a);
+ALTER TABLE t1 DROP INDEX idx_a;
+ALTER TABLE t1 ENGINE=InnoDB;
+ALTER TABLE t2 ADD COLUMN c VARCHAR(50);
+ALTER TABLE t2 MODIFY COLUMN b VARCHAR(200);
+ALTER TABLE t2 ADD INDEX idx_b(b(10));
+ALTER TABLE t2 DROP INDEX idx_b;
 
--- Дополнительные INSERT после ALTER
-INSERT INTO test_data_types VALUES (
-    NULL, -128, -32768, -8388608, -2147483648, -9223372036854775808,
-    -987654.32, -1.5, -2.5, 'negative', 'negative values test',
-    'Negative content', NULL, '2023-12-31', '23:59:59',
-    '2023-12-31 23:59:59', NULL, 2023,
-    '{"negative": true, "values": [-1,-2,-3]}', FALSE, 'inactive'
-);
+RENAME TABLE t1 TO t1x;
+RENAME TABLE t1x TO t1;
+TRUNCATE TABLE t2;
 
--- Проверка JSON операций
-SELECT json_col->>'$.key' AS json_value FROM test_data_types;
-UPDATE test_data_types SET json_col = JSON_SET(json_col, '$.new_key', 'new_value');
+CREATE TABLE IF NOT EXISTS t4 (id INT PRIMARY KEY, v VARCHAR(50)) ENGINE=InnoDB;
+INSERT INTO t4 VALUES (1,'a');
+INSERT IGNORE INTO t4 VALUES (1,'b');
+REPLACE INTO t4 VALUES (1,'c');
+SELECT * FROM t4;
 
--- Очистка (раскомментировать для финальной проверки)
--- DROP DATABASE test_mysql_stability;
+DROP VIEW IF EXISTS v1;
+CREATE VIEW v1 AS SELECT id,a,b FROM t1;
+SELECT * FROM v1;
+DROP VIEW IF EXISTS v1;
+
+DROP TABLE IF EXISTS tmp1;
+CREATE TEMPORARY TABLE tmp1 (id INT, v VARCHAR(20));
+INSERT INTO tmp1 VALUES (1,'tmp');
+SELECT * FROM tmp1;
+DROP TEMPORARY TABLE IF EXISTS tmp1;
+
+CREATE TABLE IF NOT EXISTS tjson (id INT, j JSON) ENGINE=InnoDB;
+INSERT INTO tjson VALUES (1,'{\"a\":1}');
+UPDATE tjson SET j=JSON_SET(j,'$.b',2);
+SELECT JSON_EXTRACT(j,'$.a') FROM tjson;
+SELECT JSON_EXTRACT(j,'$.b') FROM tjson;
+
+SELECT VERSION();
+SELECT DATABASE();
+SELECT USER();
+SELECT CONNECTION_ID();
+SELECT @@autocommit;
+SELECT @@sql_mode;
+
+ANALYZE TABLE t1;
+OPTIMIZE TABLE t1;
+CHECK TABLE t1;
+
+DROP TABLE IF EXISTS t5;
+CREATE TABLE t5 (id INT AUTO_INCREMENT PRIMARY KEY, u INT UNIQUE, v VARCHAR(20)) ENGINE=InnoDB;
+INSERT INTO t5(u,v) VALUES (1,'x');
+INSERT IGNORE INTO t5(u,v) VALUES (1,'y');
+REPLACE INTO t5(u,v) VALUES (1,'z');
+SELECT * FROM t5;
+
+SELECT 'pquery-crash-end';

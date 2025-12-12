@@ -1,11 +1,5 @@
 <map id="SqlFileParser" name="SqlFileParser">
-<area shape="rect" id="Node000001" title=" " alt="" coords="21,289,120,314"/>
-<area shape="rect" id="Node000002" href="$class_infile_parser.html" title=" " alt="" coords="5,192,93,218"/>
-<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="57,231,70,288,65,288,53,235"/>
-<area shape="rect" id="Node000003" title=" " alt="" coords="117,192,282,218"/>
-<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="173,228,88,290,86,286,169,226"/>
-<area shape="rect" id="Node000004" title=" " alt="" coords="160,95,239,121"/>
-<area shape="poly" id="edge3_Node000003_Node000004" title=" " alt="" coords="201,134,202,192,197,190,198,138"/>
-<area shape="rect" id="Node000005" title=" " alt="" coords="137,5,262,46"/>
-<area shape="poly" id="edge4_Node000004_Node000005" title=" " alt="" coords="201,59,202,96,197,94,199,64"/>
+<area shape="rect" id="Node000001" title=" " alt="" coords="5,79,105,105"/>
+<area shape="rect" id="Node000002" href="$class_infile_parser.html" title=" " alt="" coords="11,5,99,31"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="57,45,58,79,52,78,53,48"/>
 </map>

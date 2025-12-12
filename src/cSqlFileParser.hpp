@@ -6,7 +6,9 @@
 
 class SqlFileParser : public InfileParser
   {
-
-  std::vector<std::string> sqlLines;
+  public:
+    ~SqlFileParser();
+    bool loadQueriesFromFile(std::shared_ptr<std::vector<std::string>>, std::string);
+  private:
   };
 #endif

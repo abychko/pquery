@@ -10,7 +10,6 @@
 #include <cLogger.hpp>
 #include <sWorkerParams.hpp>
 
-
 #ifndef PQDBWORKER_HPP
 #define PQDBWORKER_HPP
 
