@@ -1,3 +1,4 @@
+// cDbWorker.cpp
 #include <iostream>
 #include <cstring>
 #include <fstream>
@@ -205,6 +206,13 @@ DbWorker::executeTests(struct workerParams& wParams) {
   std::cerr << __PRETTY_FUNCTION__ << std::endl;
 #endif
   storeParams(wParams);
+
+    // Ensure queryList is allocated once per worker
+  if (!queryList) {
+    queryList = std::make_shared<std::vector<std::string>>();
+  } else {
+    queryList->clear();
+  }
   if(!testConnection()) { return false; }
   if(!loadQueryList()) { return false; }
   adjustRuntimeParams();

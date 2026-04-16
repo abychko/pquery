@@ -1,3 +1,4 @@
+// sWorkerParams.hpp
 #include <string>
 #include <eTypes.hpp>
 
