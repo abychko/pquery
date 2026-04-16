@@ -119,8 +119,17 @@ DbWorker::workerThread(int number) {
   std::shared_ptr<Database> Database = createDbInstance();
 
   if (!Database->connect(mParams)) {
-    threadLogger->addRecordToLog("=> Unable to connect! Database error " + Database->getErrorString());
-    *wLogger << "==> Thread #" << number << " is exiting abnormally, unable to init database" << "\n";
+    if (threadLogger) {
+      threadLogger->addRecordToLog("=> Unable to connect! Database error " + Database->getErrorString());
+      }
+    else if (wLogger) {
+      wLogger->addRecordToLog("=> Unable to connect! Database error " + Database->getErrorString());
+      }
+
+    if (wLogger) {
+      *wLogger << "==> Thread #" << number << " is exiting abnormally, unable to init database" << "\n";
+      }
+
     return;
     }
 
@@ -207,12 +216,13 @@ DbWorker::executeTests(struct workerParams& wParams) {
 #endif
   storeParams(wParams);
 
-    // Ensure queryList is allocated once per worker
+// Ensure queryList is allocated once per worker
   if (!queryList) {
     queryList = std::make_shared<std::vector<std::string>>();
-  } else {
+    }
+  else {
     queryList->clear();
-  }
+    }
   if(!testConnection()) { return false; }
   if(!loadQueryList()) { return false; }
   adjustRuntimeParams();

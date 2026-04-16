@@ -2,141 +2,173 @@
 #include <cstring>
 #include <cMysqlDatabase.hpp>
 
-MysqlDatabase::MysqlDatabase() {
+MysqlDatabase::MysqlDatabase()
+{
 #ifdef DEBUG
   std::cerr << __PRETTY_FUNCTION__ << std::endl;
 #endif
   conn = NULL;
-  }
+}
 
-
-MysqlDatabase::~MysqlDatabase() {
+MysqlDatabase::~MysqlDatabase()
+{
 #ifdef DEBUG
   std::cerr << __PRETTY_FUNCTION__ << std::endl;
 #endif
-  if(conn != NULL) { mysql_close(conn); }
+  if (conn != NULL) {
+    mysql_close(conn);
   }
+}
 
-
-inline std::uint64_t
-MysqlDatabase::getAffectedRows() {
-  if (mysql_affected_rows(conn) == ~(unsigned long long) 0) {
-    return 0LL;
-    }
-  return mysql_affected_rows(conn);
+std::uint64_t
+MysqlDatabase::getAffectedRows()
+{
+  my_ulonglong affected = mysql_affected_rows(conn);
+  if (affected == static_cast<my_ulonglong>(-1)) {
+    return 0;
   }
-
+  return static_cast<std::uint64_t>(affected);
+}
 
 bool
-MysqlDatabase::connect(struct workerParams& dbParams) {
+MysqlDatabase::connect(const workerParams& dbParams)
+{
 #ifdef DEBUG
   std::cerr << __PRETTY_FUNCTION__ << std::endl;
 #endif
+  if (conn != NULL) {
+    mysql_close(conn);
+    conn = NULL;
+  }
+
   conn = mysql_init(NULL);
-  if (conn == NULL) { return false; }
+  if (conn == NULL) {
+    return false;
+  }
+
 #ifdef DEBUG
-  std::cerr << "\n" <<
-    "=> Connecting to:\n" <<
-    "=> IP Address: " << dbParams.address.c_str() << "\n" <<
-    "=> Socket: " << dbParams.socket.c_str() << "\n" <<
-    std::endl;
+  std::cerr << "\n"
+            << "=> Connecting to:\n"
+            << "=> IP Address: " << dbParams.address << "\n"
+            << "=> Socket: " << dbParams.socket << "\n"
+            << std::endl;
 #endif
-  if (mysql_real_connect(conn, dbParams.address.c_str(), dbParams.username.c_str(),
-  dbParams.password.c_str(), dbParams.database.c_str(), dbParams.port, dbParams.socket.c_str(), 0) == NULL) {
+
+  if (mysql_real_connect(conn,
+                         dbParams.address.c_str(),
+                         dbParams.username.c_str(),
+                         dbParams.password.c_str(),
+                         dbParams.database.c_str(),
+                         dbParams.port,
+                         dbParams.socket.c_str(),
+                         0) == NULL) {
     std::cerr << "=> " << getErrorString() << "\n" << std::endl;
     return false;
-    }
-  return true;
   }
 
+  return true;
+}
 
 bool
-MysqlDatabase::performRealQuery(std::string query) {
+MysqlDatabase::performRealQuery(const std::string& query)
+{
 #ifdef DEBUG
   std::cerr << __PRETTY_FUNCTION__ << std::endl;
 #endif
-  int res;
-  res = mysql_real_query(conn, query.c_str(), (unsigned long)query.length());
-  return (res == 0);
-  }
-
+  return mysql_real_query(conn, query.c_str(), (unsigned long)query.length()) == 0;
+}
 
 std::uint32_t
-MysqlDatabase::getWarningsCount() {
+MysqlDatabase::getWarningsCount()
+{
   return mysql_warning_count(conn);
-  }
-
+}
 
 void
-MysqlDatabase::processQueryOutput() {
+MysqlDatabase::processQueryOutput()
+{
   queryResult.clear();
+
   do {
-    result = mysql_use_result(conn);
-    if(result == NULL) { return; }
+    MYSQL_RES* result = mysql_store_result(conn);
+    if (result == NULL) {
+      if (mysql_field_count(conn) == 0) {
+        continue;
+      }
+      return;
+    }
+
     MYSQL_ROW row;
-    std::uint32_t i, columns;
-    columns = mysql_num_fields(result);
-    while ((row = mysql_fetch_row(result))) {
-      for(i = 0; i < columns; i++) {
-        if (row[i]) {
-          if(strlen(row[i]) == 0) {
-            queryResult = "EMPTY";
-            }
-          else {
-            queryResult = (row[i]);
-            }
-          }
-        else {
-          queryResult = "NO DATA";
-          }
+    unsigned int columns = mysql_num_fields(result);
+
+    while ((row = mysql_fetch_row(result)) != NULL) {
+      unsigned long* lengths = mysql_fetch_lengths(result);
+
+      for (unsigned int i = 0; i < columns; i++) {
+        if (i > 0) {
+          queryResult += "\t";
+        }
+
+        if (row[i] == NULL) {
+          queryResult += "NULL";
+        } else if (lengths[i] == 0) {
+          queryResult += "EMPTY";
+        } else {
+          queryResult.append(row[i], lengths[i]);
         }
       }
-// do-while
-    }  while (mysql_next_result(conn) == 0);
-  }
 
+      queryResult += "\n";
+    }
+
+    mysql_free_result(result);
+  } while (mysql_next_result(conn) == 0);
+}
 
 std::string
-MysqlDatabase::getHostInfo() {
+MysqlDatabase::getHostInfo()
+{
 #ifdef DEBUG
   std::cerr << __PRETTY_FUNCTION__ << std::endl;
 #endif
   return mysql_get_host_info(conn);
-  }
-
-
-std::string
-MysqlDatabase::getErrorString() {
-  return (std::to_string(mysql_errno(conn)) + ": " + mysql_error(conn));
-  }
-
+}
 
 std::string
-MysqlDatabase::getServerVersion() {
-  result = NULL;
-  std::string server_version;
+MysqlDatabase::getErrorString()
+{
+  if (conn == NULL) {
+    return "MySQL connection is not initialized";
+  }
 
-  if (!mysql_query(conn, "select @@version_comment limit 1") && (result = mysql_use_result(conn))) {
-    MYSQL_ROW row = mysql_fetch_row(result);
-    if (row && row[0]) {
-      server_version = mysql_get_server_info(conn);
-      server_version.append(" ");
-      server_version.append(row[0]);
+  return std::to_string(mysql_errno(conn)) + ": " + mysql_error(conn);
+}
+
+std::string
+MysqlDatabase::getServerVersion()
+{
+  if (conn == NULL) {
+    return "";
+  }
+
+  std::string server_version = mysql_get_server_info(conn);
+
+  if (mysql_query(conn, "select @@version_comment limit 1") == 0) {
+    MYSQL_RES* result = mysql_store_result(conn);
+    if (result != NULL) {
+      MYSQL_ROW row = mysql_fetch_row(result);
+      if (row != NULL && row[0] != NULL) {
+        server_version += " ";
+        server_version += row[0];
       }
+      mysql_free_result(result);
     }
-  else {
-    server_version = mysql_get_server_info(conn);
-    }
-
-  cleanupResult();
-  return server_version;
   }
 
+  return server_version;
+}
 
 void
-MysqlDatabase::cleanupResult() {
-  if (result != NULL) {
-    mysql_free_result(result);
-    result = NULL;
-    }
-  }
+MysqlDatabase::cleanupResult()
+{
+}

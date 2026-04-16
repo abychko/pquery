@@ -1,14 +1,16 @@
-#ifndef SQLFILEPARSER_HPP
-#define SQLFILEPARSER_HPP
+#ifndef _CSQLFILEPARSER_HPP_
+#define _CSQLFILEPARSER_HPP_
 
 #include <cInfileParser.hpp>
-#include <vector>
 
 class SqlFileParser : public InfileParser
-  {
-  public:
-    ~SqlFileParser();
-    bool loadQueriesFromFile(std::shared_ptr<std::vector<std::string>>, std::string);
-  private:
-  };
+{
+public:
+  ~SqlFileParser() override;
+
+  bool loadQueriesFromFile(
+    std::shared_ptr<std::vector<std::string>> queryList,
+    const std::string& infileName) override;
+};
+
 #endif

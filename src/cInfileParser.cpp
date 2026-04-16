@@ -1,25 +1,24 @@
 #include <cInfileParser.hpp>
 #include <cstdint>
 #include <iostream>
-
+#include <fstream>
 
 InfileParser::InfileParser() {
 
-}
+  }
+
 
 InfileParser::~InfileParser() {
 
-}
+  }
+
 
 std::uint64_t
-InfileParser::getInfileSize(std::string infile_name) {
+InfileParser::getInfileSize(const std::string& infile_name) const
+  {
   std::ifstream file(infile_name, std::ios::binary | std::ios::ate);
-  if (!file) {
-    std::cerr << "=> Unable to open file " << infile_name << std::endl;
-    return 1;
+  if (!file.is_open()) {
+    return 0;
     }
-// fileSize in bytes
-  std::uint64_t fileSize = file.tellg();
-  if (file.is_open()) { file.close(); }
-  return fileSize;
+  return static_cast<std::uint64_t>(file.tellg());
   }

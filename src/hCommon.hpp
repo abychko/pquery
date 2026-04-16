@@ -1,3 +1,4 @@
+// hCommon.hpp
 #include <eTypes.hpp>
 #include <algorithm>
 
@@ -7,11 +8,11 @@
 #include <string>
 
 #ifndef PQMAJVERSION
-#define PQMAJVERSION = "UNKNOWN"
+#define PQMAJVERSION "UNKNOWN"
 #endif
 
 #ifndef PQVERSION
-#define PQVERSION = "UNKNOWN"
+#define PQVERSION "UNKNOWN"
 #endif
 
 #ifndef PQREVISION
