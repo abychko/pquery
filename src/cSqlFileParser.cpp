@@ -1,13 +1,11 @@
 #include <cSqlFileParser.hpp>
+#include <cstring>
 #include <fstream>
 #include <iostream>
-#include <cstring>
 
 namespace
   {
-
-  std::string
-  trim(const std::string& s) {
+  std::string trim(const std::string& s) {
     std::size_t first = s.find_first_not_of(" \t\r\n");
     if (first == std::string::npos) {
       return "";
@@ -17,16 +15,11 @@ namespace
     return s.substr(first, last - first + 1);
     }
 
-  bool
-  isCommentLine(const std::string& s) {
+  bool isCommentLine(const std::string& s) {
     return s.rfind("#", 0) == 0 ||
       s.rfind("--", 0) == 0 ||
       s.rfind("//", 0) == 0;
     }
-  }
-
-
-SqlFileParser::~SqlFileParser() {
   }
 
 

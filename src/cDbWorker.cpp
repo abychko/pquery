@@ -127,7 +127,9 @@ DbWorker::workerThread(int number) {
       }
 
     if (wLogger) {
-      *wLogger << "==> Thread #" << number << " is exiting abnormally, unable to init database" << "\n";
+      *wLogger << "==> Thread #" << number
+        << " is exiting abnormally, unable to init database"
+        << "\n";
       }
 
     return;

@@ -1,5 +1,5 @@
-#ifndef _INFILEPARSER_HPP_
-#define _INFILEPARSER_HPP_
+#ifndef C_INFILEPARSER_HPP
+#define C_INFILEPARSER_HPP
 
 #include <cstdint>
 #include <memory>
@@ -7,14 +7,13 @@
 #include <vector>
 
 class InfileParser
-{
-public:
-  InfileParser();
-  virtual ~InfileParser();
+  {
+  public:
+    virtual ~InfileParser() = default;
 
-  std::uint64_t getInfileSize(const std::string&) const;
-  virtual bool loadQueriesFromFile(std::shared_ptr<std::vector<std::string>>,
-                                   const std::string&) = 0;
-};
+    virtual bool loadQueriesFromFile(std::shared_ptr<std::vector<std::string>> queryList,
+      const std::string& infileName) = 0;
 
+    virtual std::uint64_t getInfileSize(const std::string& infileName) const;
+  };
 #endif

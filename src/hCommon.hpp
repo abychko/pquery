@@ -1,11 +1,11 @@
-// hCommon.hpp
-#include <eTypes.hpp>
-#include <algorithm>
-
 #ifndef __HCOMMON_HPP__
 #define __HCOMMON_HPP__
 
+#include <algorithm>
+#include <cctype>
 #include <string>
+
+#include <eTypes.hpp>
 
 #ifndef PQMAJVERSION
 #define PQMAJVERSION "UNKNOWN"
@@ -53,9 +53,13 @@ infiletype_str(eINFILETYPE infiletype) {
 
 
 inline std::string
-toLowerCase(std::string str) {
-  auto lowercased = str;
-  std::transform (lowercased.begin(), lowercased.end(), lowercased.begin(), ::tolower);
+toLowerCase(const std::string& str) {
+  std::string lowercased = str;
+  std::transform(lowercased.begin(),
+    lowercased.end(),
+    lowercased.begin(),
+    [](unsigned char c) { return static_cast<char>(std::tolower(c)); }
+  );
   return lowercased;
   }
 

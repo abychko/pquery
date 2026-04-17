@@ -1,12 +1,10 @@
 #include <cMyGenLogParser.hpp>
 
 MyGenLogParser::MyGenLogParser() {
-
   }
 
 
 MyGenLogParser::~MyGenLogParser() {
-
   }
 
 

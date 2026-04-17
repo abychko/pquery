@@ -1,12 +1,10 @@
 #include <cMyBinLogParser.hpp>
 
 MyBinLogParser::MyBinLogParser() {
-
   }
 
 
 MyBinLogParser::~MyBinLogParser() {
-
   }
 
 
