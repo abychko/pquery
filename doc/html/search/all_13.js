@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['verbose_0',['verbose',['../structworker_params.html#a1d3b2b6cc223463475dd22d486a066ab',1,'workerParams']]]
+  ['username_0',['username',['../structworker_params.html#a7aeacc3573ccf8ec05ac70f2ca8fd965',1,'workerParams']]]
 ];

@@ -15,7 +15,7 @@
 .edge:hover path { stroke: red; }
 .edge:hover polygon { stroke: red; fill: red; }
 ]]></style>
-<script type="application/ecmascript" xlink:href="svg.min.js"/>
+<script type="application/ecmascript" xlink:href="svg.min.js" target="_top"/>
 <svg id="graph" class="graph">
 <g id="graph0" class="graph" transform="scale(1 1) rotate(0) translate(4 78.5)">
 <title>src/cInfileParser.hpp</title>
@@ -80,4 +80,5 @@ document.addEventListener('DOMContentLoaded', (event) => {
   highlightAdjacentNodes();
 });
 ]]></script>
+</svg>
 </svg>

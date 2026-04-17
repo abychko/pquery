@@ -1,15 +1,5 @@
 var searchData=
 [
-  ['_7edatabase_0',['~Database',['../class_database.html#a84d399a2ad58d69daab9b05330e1316d',1,'Database']]],
-  ['_7edbworker_1',['~DbWorker',['../class_db_worker.html#aa4082ff5d2041f82d912f378868e186e',1,'DbWorker']]],
-  ['_7einfileparser_2',['~InfileParser',['../class_infile_parser.html#a428e9662f5739baa99931676870f06cc',1,'InfileParser']]],
-  ['_7elogger_3',['~Logger',['../class_logger.html#acb668a9e186a25fbaad2e4af6d1ed00a',1,'Logger']]],
-  ['_7emybinlogparser_4',['~MyBinLogParser',['../class_my_bin_log_parser.html#a98e9f0a0db1a874090453eb7e8145b9e',1,'MyBinLogParser']]],
-  ['_7emygenlogparser_5',['~MyGenLogParser',['../class_my_gen_log_parser.html#a92615e97526d2ba57347796a886b05c5',1,'MyGenLogParser']]],
-  ['_7emysqldatabase_6',['~MysqlDatabase',['../class_mysql_database.html#ab74270c66a727dcc3fce4ff7dd7d56c5',1,'MysqlDatabase']]],
-  ['_7emysqlworker_7',['~MysqlWorker',['../class_mysql_worker.html#a25568237b16cfb8117f5f1105a515fb4',1,'MysqlWorker']]],
-  ['_7epgsqldatabase_8',['~PgsqlDatabase',['../class_pgsql_database.html#aa28219891e12876cf7958ddb4e70b6be',1,'PgsqlDatabase']]],
-  ['_7epgsqlworker_9',['~PgsqlWorker',['../class_pgsql_worker.html#abba5110099c45b87ec850575f8d60834',1,'PgsqlWorker']]],
-  ['_7epquery_10',['~PQuery',['../class_p_query.html#ab0270650c627d856c04bf545729dbd70',1,'PQuery']]],
-  ['_7esqlfileparser_11',['~SqlFileParser',['../class_sql_file_parser.html#a1c82703a0b29d27abedd51311376d5cd',1,'SqlFileParser']]]
+  ['workerthread_0',['workerThread',['../class_db_worker.html#a1e27223a8dc5627187011040bae986f2',1,'DbWorker::workerThread()'],['../class_pgsql_worker.html#ad6d03adf29413d48a4c9d2b211542b32',1,'PgsqlWorker::workerThread()']]],
+  ['writefinalreport_1',['writeFinalReport',['../class_db_worker.html#a470b2d313b7ea4ffb8ddc9f39fc8e4c8',1,'DbWorker']]]
 ];

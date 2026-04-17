@@ -1,20 +1,20 @@
 var searchData=
 [
   ['get_0',['Get',['../class_i_n_i_reader.html#abb2ac89a77dc5556c8bcbaf17a1a5383',1,'INIReader']]],
-  ['getaffectedrows_1',['getAffectedRows',['../class_database.html#a5f69d7c5777d6bcbab448508ddbed590',1,'Database::getAffectedRows()'],['../class_mysql_database.html#aa7cbd98d1ff7d57a22e116f8bb0ab004',1,'MysqlDatabase::getAffectedRows()'],['../class_pgsql_database.html#a05779e5c5c40c841ed4a2657138f8f0f',1,'PgsqlDatabase::getAffectedRows()']]],
+  ['getaffectedrows_1',['getAffectedRows',['../class_database.html#a5f69d7c5777d6bcbab448508ddbed590',1,'Database::getAffectedRows()'],['../class_mysql_database.html#ac94d3b23b4e3eb346bcf80a307f90819',1,'MysqlDatabase::getAffectedRows()'],['../class_pgsql_database.html#a05779e5c5c40c841ed4a2657138f8f0f',1,'PgsqlDatabase::getAffectedRows()']]],
   ['getboolean_2',['GetBoolean',['../class_i_n_i_reader.html#ac3d70858d357a6797b0d58a9a00d737e',1,'INIReader']]],
-  ['getconsecutivefailures_3',['getConsecutiveFailures',['../class_database.html#a0e44a9dc2404005f54298cef291e21a6',1,'Database']]],
+  ['getconsecutivefailures_3',['getConsecutiveFailures',['../class_database.html#ac0cfac706095db06915483c067a30592',1,'Database']]],
   ['getdbtype_4',['getDbType',['../class_i_n_i_reader.html#a0d16017c43ebe0c34ae256392ff85270',1,'INIReader']]],
-  ['geterrorstring_5',['getErrorString',['../class_database.html#a75ff1788378505ca576824685dd40621',1,'Database::getErrorString()'],['../class_mysql_database.html#afb0bd15b0ceff6fcbc04ae5e65b53962',1,'MysqlDatabase::getErrorString()'],['../class_pgsql_database.html#a8b37be4945bbbaec003e143bbf947732',1,'PgsqlDatabase::getErrorString()']]],
-  ['getfailedqueries_6',['getFailedQueries',['../class_database.html#af19f3ef4a1346533886742d5dbda081b',1,'Database']]],
-  ['gethostinfo_7',['getHostInfo',['../class_database.html#a383e17f48bc7b9276bc7137b3730e1ef',1,'Database::getHostInfo()'],['../class_mysql_database.html#aa1ef1e5af660e2ac0cd9add1b84ed9fe',1,'MysqlDatabase::getHostInfo()'],['../class_pgsql_database.html#a350a5c2936c1b1001918a7f5361231ab',1,'PgsqlDatabase::getHostInfo()']]],
-  ['getinfilesize_8',['getInfileSize',['../class_infile_parser.html#ae05129081d8b969da5228fbbd1f09497',1,'InfileParser']]],
+  ['geterrorstring_5',['getErrorString',['../class_database.html#a75ff1788378505ca576824685dd40621',1,'Database::getErrorString()'],['../class_mysql_database.html#ad0048dbbc57d61635811f6a9850ad640',1,'MysqlDatabase::getErrorString()'],['../class_pgsql_database.html#a8b37be4945bbbaec003e143bbf947732',1,'PgsqlDatabase::getErrorString()']]],
+  ['getfailedqueries_6',['getFailedQueries',['../class_database.html#a7eac2fd984e6ef965ab26b4248a049d4',1,'Database']]],
+  ['gethostinfo_7',['getHostInfo',['../class_database.html#a383e17f48bc7b9276bc7137b3730e1ef',1,'Database::getHostInfo()'],['../class_mysql_database.html#a0de20715ada15447140438115f7f1b3b',1,'MysqlDatabase::getHostInfo()'],['../class_pgsql_database.html#a350a5c2936c1b1001918a7f5361231ab',1,'PgsqlDatabase::getHostInfo()']]],
+  ['getinfilesize_8',['getInfileSize',['../class_infile_parser.html#a0725b7a39b982765711345f7df80ba6c',1,'InfileParser']]],
   ['getinfiletype_9',['getInfileType',['../class_i_n_i_reader.html#a30a7393c5a566754a369cdadc89e6294',1,'INIReader']]],
   ['getinteger_10',['GetInteger',['../class_i_n_i_reader.html#a16f759383100796409cadfe2b4012ef7',1,'INIReader']]],
-  ['getperformedqueries_11',['getPerformedQueries',['../class_database.html#aef7b78f508ed81f3e7234c7fef96ac3e',1,'Database']]],
-  ['getquerydurationms_12',['getQueryDurationMs',['../class_database.html#a56aad8576cd72843c40d7e671c676c95',1,'Database']]],
-  ['getqueryresult_13',['getQueryResult',['../class_database.html#a1797a7c74502bc4e37119eaf3bf03c3a',1,'Database']]],
+  ['getperformedqueries_11',['getPerformedQueries',['../class_database.html#a71a4ac5025fbcc19fffce69df959ec4c',1,'Database']]],
+  ['getquerydurationms_12',['getQueryDurationMs',['../class_database.html#ad359f4ccb10d06b0515910e707b315a7',1,'Database']]],
+  ['getqueryresult_13',['getQueryResult',['../class_database.html#a706dbdfce782c07a96bedd4f694fe6ae',1,'Database']]],
   ['getsections_14',['GetSections',['../class_i_n_i_reader.html#a0b19c720dd856e88687183b00309edf0',1,'INIReader']]],
-  ['getserverversion_15',['getServerVersion',['../class_database.html#a360edfa9c7b32729dd425f0f3b3961c1',1,'Database::getServerVersion()'],['../class_mysql_database.html#aaac37bf5f415a28a237bef0e5a057f9b',1,'MysqlDatabase::getServerVersion()'],['../class_pgsql_database.html#a55bf1fa539308553f716cceffd8b1e4e',1,'PgsqlDatabase::getServerVersion()']]],
-  ['getwarningscount_16',['getWarningsCount',['../class_database.html#aa89c4b5c4f765c9aabea25c62262762d',1,'Database::getWarningsCount()'],['../class_mysql_database.html#ad5efb32a63baa8b18fe1221f674acec2',1,'MysqlDatabase::getWarningsCount()'],['../class_pgsql_database.html#a35cdb4bf5b7338b195a593b17d44bd25',1,'PgsqlDatabase::getWarningsCount()']]]
+  ['getserverversion_15',['getServerVersion',['../class_database.html#a360edfa9c7b32729dd425f0f3b3961c1',1,'Database::getServerVersion()'],['../class_mysql_database.html#a6064783b8968efdf0f4bf41f6502892b',1,'MysqlDatabase::getServerVersion()'],['../class_pgsql_database.html#a55bf1fa539308553f716cceffd8b1e4e',1,'PgsqlDatabase::getServerVersion()']]],
+  ['getwarningscount_16',['getWarningsCount',['../class_database.html#aa89c4b5c4f765c9aabea25c62262762d',1,'Database::getWarningsCount()'],['../class_mysql_database.html#aa6bf869c3228d82051b8e5778afc3b90',1,'MysqlDatabase::getWarningsCount()'],['../class_pgsql_database.html#a35cdb4bf5b7338b195a593b17d44bd25',1,'PgsqlDatabase::getWarningsCount()']]]
 ];

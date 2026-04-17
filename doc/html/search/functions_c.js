@@ -8,5 +8,9 @@ var searchData=
   ['showhelp_5',['showHelp',['../class_p_query.html#ab6947e20fba99ebbb2dbce265f296253',1,'PQuery']]],
   ['showversion_6',['showVersion',['../class_p_query.html#a00eb9701d6be53f1407ed5a4f7baf9bb',1,'PQuery']]],
   ['spawnworkerthreads_7',['spawnWorkerThreads',['../class_db_worker.html#a942383599a52e8e8b0abee9fa943a409',1,'DbWorker']]],
-  ['storeparams_8',['storeParams',['../class_db_worker.html#ad60d1a86da413c4175b599dc49cb7b67',1,'DbWorker']]]
+  ['splitstatements_8',['splitStatements',['../namespaceanonymous__namespace_02c_sql_file_parser_8cpp_03.html#a9c5a73816a67cf010f898aeff3ed82a3',1,'anonymous_namespace{cSqlFileParser.cpp}']]],
+  ['startsblockcomment_9',['startsBlockComment',['../namespaceanonymous__namespace_02c_sql_file_parser_8cpp_03.html#a3e840c26b33eb0836257863250a26d80',1,'anonymous_namespace{cSqlFileParser.cpp}']]],
+  ['startslinecomment_10',['startsLineComment',['../namespaceanonymous__namespace_02c_sql_file_parser_8cpp_03.html#aa3b2bbd5f4db601b796315d40eea9ab1',1,'anonymous_namespace{cSqlFileParser.cpp}']]],
+  ['startswithdelimiter_11',['startsWithDelimiter',['../namespaceanonymous__namespace_02c_sql_file_parser_8cpp_03.html#ac8ab9d7accace53a1a4de5bcf11bc573',1,'anonymous_namespace{cSqlFileParser.cpp}']]],
+  ['storeparams_12',['storeParams',['../class_db_worker.html#ad60d1a86da413c4175b599dc49cb7b67',1,'DbWorker']]]
 ];
