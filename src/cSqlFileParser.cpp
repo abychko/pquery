@@ -20,7 +20,44 @@ namespace
       s.rfind("--", 0) == 0 ||
       s.rfind("//", 0) == 0;
     }
-  }
+
+  bool openSqlFile(std::ifstream& file, const std::string& infileName) {
+    file.open(infileName);
+    if (!file.is_open()) {
+      std::cerr << "=> Unable to open SQL file: " << infileName << std::endl;
+      std::cerr << std::strerror(errno) << std::endl;
+      return false;
+      }
+
+    return true;
+    }
+
+  bool pushQuery(std::shared_ptr<std::vector<std::string>> queryList, const std::string& line) {
+    std::string trimmed = trim(line);
+
+    if (trimmed.empty()) {
+      return true;
+      }
+
+    if (isCommentLine(trimmed)) {
+      return true;
+      }
+
+    queryList->push_back(trimmed);
+    return true;
+    }
+
+  bool readQueries(std::ifstream& file, std::shared_ptr<std::vector<std::string>> queryList) {
+    std::string line;
+    while (std::getline(file, line)) {
+      if (!pushQuery(queryList, line)) {
+        return false;
+        }
+      }
+
+    return true;
+    }
+  }                                               // anonymous namespace
 
 
 bool
@@ -31,27 +68,10 @@ const std::string& infileName) {
     return false;
     }
 
-  std::ifstream file(infileName);
-  if (!file.is_open()) {
-    std::cerr << "=> Unable to open SQL file: " << infileName << std::endl;
-    std::cerr << std::strerror(errno) << std::endl;
+  std::ifstream file;
+  if (!openSqlFile(file, infileName)) {
     return false;
     }
 
-  std::string line;
-  while (std::getline(file, line)) {
-    std::string trimmed = trim(line);
-
-    if (trimmed.empty()) {
-      continue;
-      }
-
-    if (isCommentLine(trimmed)) {
-      continue;
-      }
-
-    queryList->push_back(trimmed);
-    }
-
-  return true;
+  return readQueries(file, queryList);
   }

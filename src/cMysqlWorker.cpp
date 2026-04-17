@@ -1,30 +1,28 @@
-#include <iostream>
-#include <hCommon.hpp>
 #include <cMysqlWorker.hpp>
+
 #include <cMysqlDatabase.hpp>
-/*
- */
 #include <cSqlFileParser.hpp>
 #include <cMyGenLogParser.hpp>
 #include <cMyBinLogParser.hpp>
-/*
- */
+#include <hCommon.hpp>
+
+#include <iostream>
+#include <memory>
 
 MysqlWorker::MysqlWorker() {
-#ifdef DEBUG
-  std::cerr << __PRETTY_FUNCTION__ << std::endl;
-#endif
-  if (mysql_library_init(0, NULL, NULL)) {
-    throw std::runtime_error("=> Could not initialize MySQL client library");
-    }
   }
 
 
 MysqlWorker::~MysqlWorker() {
+  }
+
+
+void
+MysqlWorker::endDbThread() {
 #ifdef DEBUG
   std::cerr << __PRETTY_FUNCTION__ << std::endl;
 #endif
-  mysql_library_end();
+  mysql_thread_end();
   }
 
 
@@ -34,47 +32,42 @@ MysqlWorker::testConnection() {
   std::cerr << __PRETTY_FUNCTION__ << std::endl;
 #endif
 
-  std::shared_ptr<Database> mysqlDB = createDbInstance();
-
-  if(!mysqlDB->connect(mParams)) {
-    wLogger->addRecordToLog("=> Unable to connect! MySQL error " + mysqlDB->getErrorString());
+  std::shared_ptr<Database> db = createDbInstance();
+  if (!db) {
+    std::cerr << "=> Unable to create database instance" << std::endl;
     return false;
     }
 
-  wLogger->addRecordToLog("-> Successfully connected to " + mysqlDB->getHostInfo());
-  wLogger->addRecordToLog("-> Server version: " + mysqlDB->getServerVersion());
-  return true;
+  if (!db->connect(mParams)) {
+    std::cerr << "=> Unable to connect to database: " << db->getErrorString() << std::endl;
+    return false;
+    }
 
+  return true;
+  }
+
+
+std::shared_ptr<InfileParser>
+MysqlWorker::createInfileParser() const
+  {
+  switch (mParams.infiletype) {
+    case eSQL:
+      return std::make_shared<SqlFileParser>();
+    case eGENLOG:
+      return std::make_shared<MyGenLogParser>();
+    case eBINLOG:
+      return std::make_shared<MyBinLogParser>();
+    default:
+      std::cerr << "=> Unsupported infile type: " << infiletype_str(mParams.infiletype) << std::endl;
+      return nullptr;
+    }
   }
 
 
 bool
-MysqlWorker::loadQueryList() {
-#ifdef DEBUG
-  std::cerr << __PRETTY_FUNCTION__ << std::endl;
-#endif
-
-  switch (mParams.infiletype) {
-    case eSQL:
-      wInfileParser = std::make_shared<SqlFileParser>();
-      break;
-    case eGENLOG:
-      wInfileParser = std::make_shared<MyGenLogParser>();
-      break;
-    case eBINLOG:
-      wInfileParser = std::make_shared<MyBinLogParser>();
-      break;
-    default:
-      std::cerr << "=> Unsupported infile type: " << infiletype_str(mParams.infiletype) << std::endl;
-      return false;
-    }
-
-  if (!wInfileParser) {
-    std::cerr << "=> Unable to create infile parser" << std::endl;
-    return false;
-    }
-
-  std::uint64_t file_size = wInfileParser->getInfileSize(mParams.infile);
+MysqlWorker::validateInfileSize(const InfileParser& parser) const
+  {
+  std::uint64_t file_size = parser.getInfileSize(mParams.infile);
 
 #ifdef DEBUG
   std::cerr << "=> Infile type: " << infiletype_str(mParams.infiletype) << std::endl;
@@ -94,7 +87,33 @@ MysqlWorker::loadQueryList() {
     return false;
     }
 
-  if (!wInfileParser->loadQueriesFromFile(queryList, mParams.infile)) {
+  return true;
+  }
+
+
+bool
+MysqlWorker::loadQueries(InfileParser& parser) {
+  return parser.loadQueriesFromFile(queryList, mParams.infile);
+  }
+
+
+bool
+MysqlWorker::loadQueryList() {
+#ifdef DEBUG
+  std::cerr << __PRETTY_FUNCTION__ << std::endl;
+#endif
+
+  wInfileParser = createInfileParser();
+  if (!wInfileParser) {
+    std::cerr << "=> Unable to create infile parser" << std::endl;
+    return false;
+    }
+
+  if (!validateInfileSize(*wInfileParser)) {
+    return false;
+    }
+
+  if (!loadQueries(*wInfileParser)) {
     return false;
     }
 
@@ -104,18 +123,5 @@ MysqlWorker::loadQueryList() {
 
 std::shared_ptr<Database>
 MysqlWorker::createDbInstance() {
-#ifdef DEBUG
-  std::cerr << __PRETTY_FUNCTION__ << std::endl;
-#endif
-  std::shared_ptr<Database> mysqlDB = std::make_shared<MysqlDatabase>();
-  return mysqlDB;
-  }
-
-
-void
-MysqlWorker::endDbThread() {
-#ifdef DEBUG
-  std::cerr << __PRETTY_FUNCTION__ << std::endl;
-#endif
-  mysql_thread_end();
+  return std::make_shared<MysqlDatabase>();
   }
