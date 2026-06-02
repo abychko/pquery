@@ -1,13 +1,13 @@
+#include <chrono>
+#include <ratio>
+#include <string>
 #ifdef DEBUG
 #include <iostream>
 #endif
 #include <cDatabase.hpp>
 
-Database::Database() {
-  failed_queries = 0;
-  performed_queries = 0;
-  consecutive_failures = 0;
-}
+Database::Database()
+    : failed_queries(0), performed_queries(0), consecutive_failures(0) {}
 
 Database::~Database() {
 #ifdef DEBUG

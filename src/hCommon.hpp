@@ -1,5 +1,5 @@
-#ifndef __HCOMMON_HPP__
-#define __HCOMMON_HPP__
+#ifndef HCOMMON_HPP
+#define HCOMMON_HPP
 
 #include <algorithm>
 #include <cctype>

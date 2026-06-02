@@ -6,14 +6,14 @@ MysqlDatabase::MysqlDatabase() {
 #ifdef DEBUG
   std::cerr << __PRETTY_FUNCTION__ << std::endl;
 #endif
-  conn = NULL;
+  conn = nullptr;
 }
 
 MysqlDatabase::~MysqlDatabase() {
 #ifdef DEBUG
   std::cerr << __PRETTY_FUNCTION__ << std::endl;
 #endif
-  if (conn != NULL) {
+  if (conn != nullptr) {
     mysql_close(conn);
   }
 }
@@ -30,13 +30,13 @@ bool MysqlDatabase::connect(const workerParams &dbParams) {
 #ifdef DEBUG
   std::cerr << __PRETTY_FUNCTION__ << std::endl;
 #endif
-  if (conn != NULL) {
+  if (conn != nullptr) {
     mysql_close(conn);
-    conn = NULL;
+    conn = nullptr;
   }
 
-  conn = mysql_init(NULL);
-  if (conn == NULL) {
+  conn = mysql_init(nullptr);
+  if (conn == nullptr) {
     return false;
   }
 
@@ -51,8 +51,7 @@ bool MysqlDatabase::connect(const workerParams &dbParams) {
   if (mysql_real_connect(conn, dbParams.address.c_str(),
                          dbParams.username.c_str(), dbParams.password.c_str(),
                          dbParams.database.c_str(), dbParams.port,
-                         dbParams.socket.c_str(), 0) == NULL) {
-    std::cerr << "=> " << getErrorString() << "\n" << std::endl;
+                         dbParams.socket.c_str(), 0) == nullptr) {
     return false;
   }
 
@@ -76,7 +75,7 @@ void MysqlDatabase::processQueryOutput() {
 
   do {
     MYSQL_RES *result = mysql_store_result(conn);
-    if (result == NULL) {
+    if (result == nullptr) {
       if (mysql_field_count(conn) == 0) {
         continue;
       }
@@ -86,7 +85,7 @@ void MysqlDatabase::processQueryOutput() {
     MYSQL_ROW row;
     unsigned int columns = mysql_num_fields(result);
 
-    while ((row = mysql_fetch_row(result)) != NULL) {
+    while ((row = mysql_fetch_row(result)) != nullptr) {
       unsigned long *lengths = mysql_fetch_lengths(result);
 
       for (unsigned int i = 0; i < columns; i++) {
@@ -94,7 +93,7 @@ void MysqlDatabase::processQueryOutput() {
           queryResult += "\t";
         }
 
-        if (row[i] == NULL) {
+        if (row[i] == nullptr) {
           queryResult += "NULL";
         } else if (lengths[i] == 0) {
           queryResult += "EMPTY";
@@ -118,7 +117,7 @@ std::string MysqlDatabase::getHostInfo() {
 }
 
 std::string MysqlDatabase::getErrorString() {
-  if (conn == NULL) {
+  if (conn == nullptr) {
     return "MySQL connection is not initialized";
   }
 
@@ -126,7 +125,7 @@ std::string MysqlDatabase::getErrorString() {
 }
 
 std::string MysqlDatabase::getServerVersion() {
-  if (conn == NULL) {
+  if (conn == nullptr) {
     return "";
   }
 
@@ -134,9 +133,9 @@ std::string MysqlDatabase::getServerVersion() {
 
   if (mysql_query(conn, "select @@version_comment limit 1") == 0) {
     MYSQL_RES *result = mysql_store_result(conn);
-    if (result != NULL) {
+    if (result != nullptr) {
       MYSQL_ROW row = mysql_fetch_row(result);
-      if (row != NULL && row[0] != NULL) {
+      if (row != nullptr && row[0] != nullptr) {
         server_version += " ";
         server_version += row[0];
       }

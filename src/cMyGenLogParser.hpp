@@ -1,7 +1,10 @@
-#ifndef _CMYGENLOGPARSER_HPP_
-#define _CMYGENLOGPARSER_HPP_
-
 #include <cInfileParser.hpp>
+#include <memory>
+#include <string>
+#include <vector>
+
+#ifndef CMYGENLOGPARSER_HPP
+#define CMYGENLOGPARSER_HPP
 
 class MyGenLogParser : public InfileParser {
  public:

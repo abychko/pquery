@@ -42,9 +42,8 @@ case "$(uname -s)" in
     ;;
 esac
 
-find . \
-  \( -path './.git' -o -path './build' \) -prune -o \
-  -type f \( -name '*.c' -o -name '*.cpp' \) -print |
+find ./src \
+  -type f \( -name '*.c' -o -name '*.*pp' \) -print |
 while IFS= read -r file; do
   echo "- checking $file"
   clang-tidy "$file" -p . $OPTS "${EXTRA_ARGS[@]}"

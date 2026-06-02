@@ -1,10 +1,10 @@
 #include <chrono>
 #include <cstdint>
-#include <memory>
 #include <sWorkerParams.hpp>
+#include <string>
 
-#ifndef _DATABASE_HPP_
-#define _DATABASE_HPP_
+#ifndef CDATABASE_HPP
+#define CDATABASE_HPP
 
 class Database {
  public:

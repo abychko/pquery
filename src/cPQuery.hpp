@@ -1,7 +1,9 @@
 #include <cDbWorker.hpp>
 #include <cIniReader.hpp>
 #include <cLogger.hpp>
+#include <memory>
 #include <string>
+#include "eTypes.hpp"
 
 #ifndef PQUERY_HPP
 #define PQUERY_HPP
@@ -16,7 +18,7 @@ class PQuery {
   bool initLogger();
   bool parseCliOptions(int argc, char *argv[]);
   bool runWorkers();
-  void showHelp();
+  static void showHelp();
   void showVersion();
   void setConfigFilePath(std::string configPath) {
     configFilePath = configPath;

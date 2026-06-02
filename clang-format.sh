@@ -7,7 +7,7 @@ fi
 #
 cd $(dirname ${0})
 #
-for _file in $(find . -type f -iname '*.cpp' -o -iname '*.hpp' -o -iname '*.c' -o -iname '*.h'); do
+for _file in $(find ./src -type f -iname '*.cpp' -o -iname '*.hpp' -o -iname '*.c' -o -iname '*.h'); do
   echo "- formatting ${_file}"
   clang-format -i ${_file}
 done

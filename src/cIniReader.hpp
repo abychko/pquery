@@ -1,10 +1,10 @@
-#ifndef _INIREADER_HPP_
-#define _INIREADER_HPP_
-
 #include <eTypes.hpp>
 #include <string>
 #include <unordered_map>
 #include <vector>
+
+#ifndef INIREADER_HPP
+#define INIREADER_HPP
 
 typedef std::unordered_map<std::string,
                            std::unordered_map<std::string, std::string>>

@@ -1,17 +1,19 @@
 // cDbWorker.cpp
 #include <cDbWorker.hpp>
+#include <cstdint>
 #include <cstring>
-#include <fstream>
 #include <iostream>
+#include <memory>
+#include <random>
 #include <sstream>
+#include <string>
+#include <vector>
 
-DbWorker::DbWorker() {
+DbWorker::DbWorker() : performed_queries_total(0), failed_queries_total(0) {
 #ifdef DEBUG
   std::cerr << __PRETTY_FUNCTION__ << std::endl;
 #endif
   workers.clear();
-  failed_queries_total = 0;
-  performed_queries_total = 0;
 }
 
 DbWorker::~DbWorker() {
@@ -70,7 +72,7 @@ bool DbWorker::isComment(std::string &line) {
   }
   size_t last = line.find_last_not_of(' ');
   auto qStr = line.substr(first, (last - first + 1));
-  return ((qStr.rfind("#", 0) == 0) || (qStr.rfind(";", 0) == 0) ||
+  return ((qStr.rfind('#', 0) == 0) || (qStr.rfind(';', 0) == 0) ||
           (qStr.rfind("//", 0) == 0) || (qStr.rfind("--", 0) == 0));
 }
 
@@ -83,8 +85,8 @@ void DbWorker::workerThread(int number) {
 #ifdef DEBUG
   std::cerr << __PRETTY_FUNCTION__ << " " << number << std::endl;
 #endif
-  std::shared_ptr<Logger> threadLogger = NULL;
-  std::shared_ptr<Logger> outputLogger = NULL;
+  std::shared_ptr<Logger> threadLogger = nullptr;
+  std::shared_ptr<Logger> outputLogger = nullptr;
   std::mt19937 gen(rd());
   std::uniform_int_distribution<int> dis(0, queryList->size() - 1);
 
@@ -122,7 +124,8 @@ void DbWorker::workerThread(int number) {
     return;
   }
 
-  std::uint32_t i, query_number;
+  std::uint32_t i = 0;
+  std::uint32_t query_number = 0;
   for (i = 0; i < mParams.queries_per_thread; i++) {
     if (mParams.shuffle) {
       query_number = dis(gen);
@@ -142,7 +145,7 @@ void DbWorker::workerThread(int number) {
     /*
     thread logging according to config
     */
-    if (threadLogger != NULL) {
+    if (threadLogger != nullptr) {
       if ((mParams.log_all_queries) ||
           (mParams.log_succeeded_queries && success) ||
           (mParams.log_failed_queries && !success)) {
@@ -170,7 +173,7 @@ void DbWorker::workerThread(int number) {
     }
     Database->processQueryOutput();
     std::string strToLog = Database->getQueryResult();
-    if ((!strToLog.empty()) && (outputLogger != NULL)) {
+    if ((!strToLog.empty()) && (outputLogger != nullptr)) {
       *outputLogger << strToLog;
       if (mParams.log_query_numbers) {
         *outputLogger << "#" << query_number + 1;

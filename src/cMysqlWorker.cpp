@@ -22,18 +22,26 @@ void MysqlWorker::endDbThread() {
 
 bool MysqlWorker::testConnection() {
 #ifdef DEBUG
-  std::cerr << __PRETTY_FUNCTION__ << std::endl;
+  std::cerr << __PRETTY_FUNCTION__ << '\n';
 #endif
 
   std::shared_ptr<Database> db = createDbInstance();
   if (!db) {
-    std::cerr << "=> Unable to create database instance" << std::endl;
+    std::cerr << "=> Unable to create database instance\n";
     return false;
   }
 
   if (!db->connect(mParams)) {
-    std::cerr << "=> Unable to connect to database: " << db->getErrorString()
-              << std::endl;
+    std::string target = mParams.address;
+
+    if (!target.empty() && mParams.port != 0) {
+      target += ":" + std::to_string(mParams.port);
+    } else if (target.empty() && !mParams.socket.empty()) {
+      target = "socket " + mParams.socket;
+    }
+
+    std::cerr << "\n=> Unable to connect to host " << target << "\n"
+              << "=> " << db->getErrorString() << '\n';
     return false;
   }
 

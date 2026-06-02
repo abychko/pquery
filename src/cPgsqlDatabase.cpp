@@ -6,24 +6,24 @@ PgsqlDatabase::PgsqlDatabase() {
 #ifdef DEBUG
   std::cerr << __PRETTY_FUNCTION__ << std::endl;
 #endif
-  conn = NULL;
-  res = NULL;
+  conn = nullptr;
+  res = nullptr;
 }
 
 PgsqlDatabase::~PgsqlDatabase() {
 #ifdef DEBUG
   std::cerr << __PRETTY_FUNCTION__ << std::endl;
 #endif
-  if (conn != NULL) {
+  if (conn != nullptr) {
     PQfinish(conn);
   }
-  if (res != NULL) {
+  if (res != nullptr) {
     PQclear(res);
   }
 }
 
 void PgsqlDatabase::processQueryOutput() {
-  if (res == NULL) {
+  if (res == nullptr) {
     return;
   }
 
@@ -108,8 +108,8 @@ inline std::uint64_t PgsqlDatabase::getAffectedRows() {
 }
 
 void PgsqlDatabase::cleanupResult() {
-  if (res != NULL) {
+  if (res != nullptr) {
     PQclear(res);
-    res = NULL;
+    res = nullptr;
   }
 }

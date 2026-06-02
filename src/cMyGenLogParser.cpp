@@ -1,8 +1,8 @@
 #include <cMyGenLogParser.hpp>
 
-MyGenLogParser::MyGenLogParser() {}
+MyGenLogParser::MyGenLogParser() = default;
 
-MyGenLogParser::~MyGenLogParser() {}
+MyGenLogParser::~MyGenLogParser() = default;
 
 bool MyGenLogParser::loadQueriesFromFile(
     std::shared_ptr<std::vector<std::string>>, const std::string &) {

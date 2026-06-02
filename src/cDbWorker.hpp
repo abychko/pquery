@@ -1,5 +1,6 @@
 // cDbWorker.hpp
 #include <atomic>
+#include <cstdint>
 #include <memory>
 #include <random>
 #include <string>
@@ -14,7 +15,7 @@
 #ifndef PQDBWORKER_HPP
 #define PQDBWORKER_HPP
 
-const uint16_t MAX_CON_FAILURES = 250;
+const std::uint16_t MAX_CON_FAILURES = 250;
 
 class DbWorker {
  public:
@@ -41,9 +42,9 @@ class DbWorker {
   void calculateQueries(std::shared_ptr<Database>);
   virtual bool testConnection() = 0;
   void storeParams(struct workerParams &wParams);
-  bool isComment(std::string &);
-  std::atomic<uint64_t> performed_queries_total;
-  std::atomic<uint64_t> failed_queries_total;
+  static bool isComment(std::string &);
+  std::atomic<uint64_t> performed_queries_total{};
+  std::atomic<uint64_t> failed_queries_total{};
   std::random_device rd;
 };
 #endif

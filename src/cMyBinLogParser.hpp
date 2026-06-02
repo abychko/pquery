@@ -1,7 +1,10 @@
-#ifndef _CMYBINLOGPARSER_HPP_
-#define _CMYBINLOGPARSER_HPP_
-
 #include <cInfileParser.hpp>
+#include <memory>
+#include <string>
+#include <vector>
+
+#ifndef CMYBINLOGPARSER_HPP
+#define CMYBINLOGPARSER_HPP
 
 class MyBinLogParser : public InfileParser {
  public:
