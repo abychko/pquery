@@ -14,3 +14,4 @@ _CPack_Packages
 CMakeDoxyfile.in
 CMakeDoxygenDefaults.cmake
 Doxyfile.generate_docs
+compile_commands.json

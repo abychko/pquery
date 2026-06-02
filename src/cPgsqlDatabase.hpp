@@ -1,27 +1,26 @@
-#include <cDatabase.hpp>
 #include <libpq-fe.h>
+#include <cDatabase.hpp>
 
 #ifndef _PGSQLDATABASE_
 #define _PGSQLDATABASE_
 
-class PgsqlDatabase : public Database
-  {
-  public:
-    PgsqlDatabase();
-    ~PgsqlDatabase();
-    std::string getServerVersion();
-    std::string getHostInfo();
-    std::string getErrorString();
-    bool connect(struct workerParams&);
-    inline std::uint64_t getAffectedRows();
-    bool performRealQuery(std::string);
-    void processQueryOutput();
-    std::uint32_t getWarningsCount();
-    void cleanupResult();
+class PgsqlDatabase : public Database {
+ public:
+  PgsqlDatabase();
+  ~PgsqlDatabase();
+  std::string getServerVersion();
+  std::string getHostInfo();
+  std::string getErrorString();
+  bool connect(struct workerParams &);
+  inline std::uint64_t getAffectedRows();
+  bool performRealQuery(std::string);
+  void processQueryOutput();
+  std::uint32_t getWarningsCount();
+  void cleanupResult();
 
-  private:
-    PGconn* conn;
-    PGresult* res;
-    ExecStatusType pgstatus;
-  };
+ private:
+  PGconn *conn;
+  PGresult *res;
+  ExecStatusType pgstatus;
+};
 #endif

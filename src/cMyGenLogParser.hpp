@@ -3,13 +3,12 @@
 
 #include <cInfileParser.hpp>
 
-class MyGenLogParser : public InfileParser
-  {
-  public:
-    MyGenLogParser();
-    ~MyGenLogParser() override;
+class MyGenLogParser : public InfileParser {
+ public:
+  MyGenLogParser();
+  ~MyGenLogParser() override;
 
-    bool loadQueriesFromFile(std::shared_ptr<std::vector<std::string>>,
-      const std::string&) override;
-  };
+  bool loadQueriesFromFile(std::shared_ptr<std::vector<std::string>>,
+                           const std::string &) override;
+};
 #endif

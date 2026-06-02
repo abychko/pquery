@@ -6,14 +6,12 @@
 #include <string>
 #include <vector>
 
-class SqlFileParser : public InfileParser
-{
-public:
+class SqlFileParser : public InfileParser {
+ public:
   ~SqlFileParser() override = default;
 
-  bool loadQueriesFromFile(
-    std::shared_ptr<std::vector<std::string>> queryList,
-    const std::string& infileName) override;
+  bool loadQueriesFromFile(std::shared_ptr<std::vector<std::string>> queryList,
+                           const std::string &infileName) override;
 };
 
 #endif

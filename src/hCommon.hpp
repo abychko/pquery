@@ -37,8 +37,7 @@ const std::string FSSEP = "\\";
 const std::string FSSEP = "/";
 #endif
 
-inline std::string
-infiletype_str(eINFILETYPE infiletype) {
+inline std::string infiletype_str(eINFILETYPE infiletype) {
   switch (infiletype) {
     case eSQL:
       return "SQL";
@@ -48,24 +47,18 @@ infiletype_str(eINFILETYPE infiletype) {
       return "Binary Log";
     default:
       return "UNKNOWN TYPE";
-    }
   }
+}
 
-
-inline std::string
-toLowerCase(const std::string& str) {
+inline std::string toLowerCase(const std::string &str) {
   std::string lowercased = str;
-  std::transform(lowercased.begin(),
-    lowercased.end(),
-    lowercased.begin(),
-    [](unsigned char c) { return static_cast<char>(std::tolower(c)); }
-  );
+  std::transform(
+      lowercased.begin(), lowercased.end(), lowercased.begin(),
+      [](unsigned char c) { return static_cast<char>(std::tolower(c)); });
   return lowercased;
-  }
+}
 
-
-inline std::string
-dbtype_str(eDBTYPE type) {
+inline std::string dbtype_str(eDBTYPE type) {
   switch (type) {
     case eMYSQL:
       return "MySQL";
@@ -73,6 +66,6 @@ dbtype_str(eDBTYPE type) {
       return "PostgreSQL";
     default:
       return "UNKNOWN";
-    }
   }
+}
 #endif

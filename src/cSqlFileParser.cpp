@@ -4,10 +4,8 @@
 #include <fstream>
 #include <iostream>
 
-namespace
-{
-enum class ScanState
-{
+namespace {
+enum class ScanState {
   Normal,
   SingleQuote,
   DoubleQuote,
@@ -16,8 +14,7 @@ enum class ScanState
   BlockComment
 };
 
-std::string trim(const std::string& s)
-{
+std::string trim(const std::string &s) {
   std::size_t first = s.find_first_not_of(" \t\r\n");
   if (first == std::string::npos) {
     return "";
@@ -27,8 +24,7 @@ std::string trim(const std::string& s)
   return s.substr(first, last - first + 1);
 }
 
-bool openSqlFile(std::ifstream& file, const std::string& infileName)
-{
+bool openSqlFile(std::ifstream &file, const std::string &infileName) {
   file.open(infileName);
   if (!file.is_open()) {
     std::cerr << "=> Unable to open SQL file: " << infileName << std::endl;
@@ -40,8 +36,7 @@ bool openSqlFile(std::ifstream& file, const std::string& infileName)
 }
 
 void pushStatement(std::shared_ptr<std::vector<std::string>> queryList,
-                   std::string& statement)
-{
+                   std::string &statement) {
   std::string trimmed = trim(statement);
   if (!trimmed.empty()) {
     queryList->push_back(trimmed);
@@ -50,8 +45,7 @@ void pushStatement(std::shared_ptr<std::vector<std::string>> queryList,
   statement.clear();
 }
 
-bool startsLineComment(const std::string& text, std::size_t pos)
-{
+bool startsLineComment(const std::string &text, std::size_t pos) {
   if (text[pos] == '#') {
     return true;
   }
@@ -68,13 +62,11 @@ bool startsLineComment(const std::string& text, std::size_t pos)
   return false;
 }
 
-bool startsBlockComment(const std::string& text, std::size_t pos)
-{
+bool startsBlockComment(const std::string &text, std::size_t pos) {
   return text[pos] == '/' && pos + 1 < text.size() && text[pos + 1] == '*';
 }
 
-bool isDelimiterCommand(const std::string& rawLine, std::string& newDelimiter)
-{
+bool isDelimiterCommand(const std::string &rawLine, std::string &newDelimiter) {
   std::string line = trim(rawLine);
 
   const std::string prefixUpper = "DELIMITER ";
@@ -85,7 +77,7 @@ bool isDelimiterCommand(const std::string& rawLine, std::string& newDelimiter)
   }
 
   bool hasPrefix =
-    line.rfind(prefixUpper, 0) == 0 || line.rfind(prefixLower, 0) == 0;
+      line.rfind(prefixUpper, 0) == 0 || line.rfind(prefixLower, 0) == 0;
 
   if (!hasPrefix) {
     return false;
@@ -102,10 +94,8 @@ bool isDelimiterCommand(const std::string& rawLine, std::string& newDelimiter)
   return true;
 }
 
-bool startsWithDelimiter(const std::string& text,
-                         std::size_t pos,
-                         const std::string& delimiter)
-{
+bool startsWithDelimiter(const std::string &text, std::size_t pos,
+                         const std::string &delimiter) {
   if (delimiter.empty()) {
     return false;
   }
@@ -117,13 +107,10 @@ bool startsWithDelimiter(const std::string& text,
   return text.compare(pos, delimiter.size(), delimiter) == 0;
 }
 
-bool consumeNormalChar(const std::string& text,
-                       std::size_t& pos,
-                       ScanState& state,
-                       std::string& statement,
+bool consumeNormalChar(const std::string &text, std::size_t &pos,
+                       ScanState &state, std::string &statement,
                        std::shared_ptr<std::vector<std::string>> queryList,
-                       const std::string& delimiter)
-{
+                       const std::string &delimiter) {
   char c = text[pos];
 
   if (startsWithDelimiter(text, pos, delimiter)) {
@@ -168,12 +155,8 @@ bool consumeNormalChar(const std::string& text,
   return true;
 }
 
-void consumeQuotedChar(const std::string& text,
-                       std::size_t& pos,
-                       ScanState& state,
-                       std::string& statement,
-                       char quote)
-{
+void consumeQuotedChar(const std::string &text, std::size_t &pos,
+                       ScanState &state, std::string &statement, char quote) {
   char c = text[pos];
   statement.push_back(c);
 
@@ -188,11 +171,8 @@ void consumeQuotedChar(const std::string& text,
   }
 }
 
-void consumeBacktickChar(const std::string& text,
-                         std::size_t& pos,
-                         ScanState& state,
-                         std::string& statement)
-{
+void consumeBacktickChar(const std::string &text, std::size_t &pos,
+                         ScanState &state, std::string &statement) {
   char c = text[pos];
   statement.push_back(c);
 
@@ -201,28 +181,23 @@ void consumeBacktickChar(const std::string& text,
   }
 }
 
-void consumeLineCommentChar(const std::string& text,
-                            std::size_t pos,
-                            ScanState& state)
-{
+void consumeLineCommentChar(const std::string &text, std::size_t pos,
+                            ScanState &state) {
   if (text[pos] == '\n') {
     state = ScanState::Normal;
   }
 }
 
-void consumeBlockCommentChar(const std::string& text,
-                             std::size_t& pos,
-                             ScanState& state)
-{
+void consumeBlockCommentChar(const std::string &text, std::size_t &pos,
+                             ScanState &state) {
   if (text[pos] == '*' && pos + 1 < text.size() && text[pos + 1] == '/') {
     state = ScanState::Normal;
     ++pos;
   }
 }
 
-bool splitStatements(std::ifstream& file,
-                     std::shared_ptr<std::vector<std::string>> queryList)
-{
+bool splitStatements(std::ifstream &file,
+                     std::shared_ptr<std::vector<std::string>> queryList) {
   ScanState state = ScanState::Normal;
   std::string statement;
   std::string line;
@@ -264,13 +239,11 @@ bool splitStatements(std::ifstream& file,
   pushStatement(queryList, statement);
   return true;
 }
-} // namespace
+}  // namespace
 
-bool
-SqlFileParser::loadQueriesFromFile(
-  std::shared_ptr<std::vector<std::string>> queryList,
-  const std::string& infileName)
-{
+bool SqlFileParser::loadQueriesFromFile(
+    std::shared_ptr<std::vector<std::string>> queryList,
+    const std::string &infileName) {
   if (!queryList) {
     std::cerr << "=> " << __PRETTY_FUNCTION__ << ": queryList is null"
               << std::endl;

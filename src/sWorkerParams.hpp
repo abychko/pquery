@@ -1,14 +1,12 @@
 // sWorkerParams.hpp
-#include <string>
 #include <eTypes.hpp>
+#include <string>
 
 #ifndef _SWORKER_PARAMS_
 #define _SWORKER_PARAMS_
 
-struct
-workerParams
-  {
-  std::string myName;                             // unique name for worker
+struct workerParams {
+  std::string myName;  // unique name for worker
   std::string database;
   eDBTYPE dbtype;
   std::string address;
@@ -21,7 +19,8 @@ workerParams
   uint16_t port;
   uint16_t threads;
   uint64_t queries_per_thread;
-  uint64_t query_list_maxsize;                    // max memory for query list. will not be loaded to memory if greater
+  uint64_t query_list_maxsize;  // max memory for query list. will not be loaded
+                                // to memory if greater
   bool verbose;
   bool log_all_queries;
   bool log_failed_queries;
@@ -31,5 +30,5 @@ workerParams
   bool log_client_output;
   bool log_query_numbers;
   bool shuffle;
-  };
+};
 #endif

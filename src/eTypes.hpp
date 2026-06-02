@@ -2,31 +2,13 @@
 #ifndef ETYPES_HPP
 #define ETYPES_HPP
 
-enum eRETCODE
-  {
-  eDEFAULT,
-  eMASTER,
-  eCHILD,
-  eERROR
-  };
+enum eRETCODE { eDEFAULT, eMASTER, eCHILD, eERROR };
 
-enum eDBTYPE
-  {
-  eNONE,
-  eMYSQL,
-  ePGSQL
-  };
+enum eDBTYPE { eNONE, eMYSQL, ePGSQL };
 
-enum eINFILETYPE
-  {
-  eSQL,
-  eGENLOG,
-  eBINLOG,
-  eUNKNOWN
-  };
+enum eINFILETYPE { eSQL, eGENLOG, eBINLOG, eUNKNOWN };
 
-enum eCMDTYPE
-  {
+enum eCMDTYPE {
   eCONNECT,
   eINITDB,
   eQUERY,
@@ -35,5 +17,5 @@ enum eCMDTYPE
   eSTATISTICS,
   eQUIT,
   eERR
-  };
+};
 #endif
