@@ -7,16 +7,16 @@
 class PgsqlDatabase : public Database {
  public:
   PgsqlDatabase();
-  ~PgsqlDatabase();
-  std::string getServerVersion();
-  std::string getHostInfo();
-  std::string getErrorString();
-  bool connect(struct workerParams &);
-  inline std::uint64_t getAffectedRows();
-  bool performRealQuery(std::string);
-  void processQueryOutput();
-  std::uint32_t getWarningsCount();
-  void cleanupResult();
+  ~PgsqlDatabase() override;
+  std::string getServerVersion() override;
+  std::string getHostInfo() override;
+  std::string getErrorString() override;
+  bool connect(const workerParams &) override;
+  std::uint64_t getAffectedRows() override;
+  bool performRealQuery(const std::string &) override;
+  void processQueryOutput() override;
+  std::uint32_t getWarningsCount() override;
+  void cleanupResult() override;
 
  private:
   PGconn *conn;

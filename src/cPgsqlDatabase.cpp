@@ -44,7 +44,7 @@ void PgsqlDatabase::processQueryOutput() {
   }
 }
 
-bool PgsqlDatabase::connect(workerParams &dbParams) {
+bool PgsqlDatabase::connect(const workerParams &dbParams) {
 #ifdef DEBUG
   std::cerr << __PRETTY_FUNCTION__ << std::endl;
 #endif
@@ -59,7 +59,7 @@ bool PgsqlDatabase::connect(workerParams &dbParams) {
   return true;
 }
 
-bool PgsqlDatabase::performRealQuery(std::string query) {
+bool PgsqlDatabase::performRealQuery(const std::string &query) {
   res = PQexec(conn, query.c_str());
   pgstatus = PQresultStatus(res);
   return (pgstatus == PGRES_TUPLES_OK) || (pgstatus == PGRES_COMMAND_OK);
@@ -99,7 +99,7 @@ std::string PgsqlDatabase::getHostInfo() {
   return host_info;
 }
 
-inline std::uint64_t PgsqlDatabase::getAffectedRows() {
+std::uint64_t PgsqlDatabase::getAffectedRows() {
   std::string affected_rows = PQcmdTuples(res);
   if (affected_rows.empty()) {
     return 0;

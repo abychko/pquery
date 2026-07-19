@@ -55,6 +55,10 @@ bool PQuery::initLogger() {
     return false;
   }
 
+  if (!logFilePath.empty()) {
+    pqLogger->setLogFilePath(logFilePath);
+  }
+
   std::string masterLogFile;
   std::string master_logdir = configReader->Get("master", "logdir", "/tmp");
   std::string master_logfile =

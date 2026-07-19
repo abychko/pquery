@@ -79,6 +79,16 @@ void MysqlDatabase::processQueryOutput() {
       if (mysql_field_count(conn) == 0) {
         continue;
       }
+      // A result set was expected but mysql_store_result() failed (query
+      // error). Drain any remaining multi-statement results so the
+      // connection isn't left out of sync ("commands out of sync") for the
+      // next query.
+      while (mysql_next_result(conn) == 0) {
+        MYSQL_RES *pending = mysql_store_result(conn);
+        if (pending != nullptr) {
+          mysql_free_result(pending);
+        }
+      }
       return;
     }
 

@@ -45,6 +45,5 @@ class DbWorker {
   static bool isComment(std::string &);
   std::atomic<uint64_t> performed_queries_total{};
   std::atomic<uint64_t> failed_queries_total{};
-  std::random_device rd;
 };
 #endif

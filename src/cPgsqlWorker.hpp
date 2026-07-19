@@ -6,13 +6,12 @@
 class PgsqlWorker : public DbWorker {
  public:
   PgsqlWorker();
-  ~PgsqlWorker();
-  bool executeTests(struct workerParams &);
-  std::shared_ptr<Database> createDbInstance();
-  void endDbThread();
+  ~PgsqlWorker() override;
+  std::shared_ptr<Database> createDbInstance() override;
+  void endDbThread() override;
+  bool loadQueryList() override;
 
  private:
-  bool testConnection();
-  void workerThread(int number);
+  bool testConnection() override;
 };
 #endif

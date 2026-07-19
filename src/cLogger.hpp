@@ -1,6 +1,7 @@
 #include <cerrno>
 #include <cstring>
 #include <fstream>
+#include <mutex>
 #include <string>
 
 #ifndef LOGGER_HPP
@@ -12,6 +13,7 @@ class Logger {
   ~Logger();
   template <typename T>
   Logger &operator<<(const T &rhs) {
+    std::lock_guard<std::mutex> lock(logMutex);
     logFile << rhs;
     if (logFile.fail()) {
       throw std::runtime_error("Can't write to log file: " +
@@ -30,5 +32,7 @@ class Logger {
 
  private:
   std::ofstream logFile;
+  std::mutex logMutex;
+  std::string pendingLogFilePath;
 };
 #endif
