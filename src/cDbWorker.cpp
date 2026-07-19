@@ -2,6 +2,7 @@
 #include <cDbWorker.hpp>
 #include <cstdint>
 #include <cstring>
+#include <hCommon.hpp>
 #include <iostream>
 #include <memory>
 #include <random>
@@ -69,17 +70,6 @@ void DbWorker::setupLogger(std::shared_ptr<Logger> logger) {
   wLogger = logger;
 }
 
-bool DbWorker::isComment(std::string &line) {
-  size_t first = line.find_first_not_of(' ');
-  if (std::string::npos == first) {
-    return false;
-  }
-  size_t last = line.find_last_not_of(' ');
-  auto qStr = line.substr(first, (last - first + 1));
-  return ((qStr.rfind('#', 0) == 0) || (qStr.rfind(';', 0) == 0) ||
-          (qStr.rfind("//", 0) == 0) || (qStr.rfind("--", 0) == 0));
-}
-
 void DbWorker::calculateQueries(std::shared_ptr<Database> Database) {
   performed_queries_total += Database->getPerformedQueries();
   failed_queries_total += Database->getFailedQueries();
@@ -106,7 +96,7 @@ void DbWorker::workerThread(int number) {
 
   if (mParams.log_client_output) {
     outputLogger = std::make_shared<Logger>();
-    outputLogger->initLogFile(mParams.logdir + "/" + mParams.myName +
+    outputLogger->initLogFile(mParams.logdir + FSSEP + mParams.myName +
                               "_thread-" + std::to_string(number) + ".out");
   }
 
@@ -114,7 +104,7 @@ void DbWorker::workerThread(int number) {
       (mParams.log_succeeded_queries) || (mParams.log_query_duration) ||
       (mParams.log_query_statistics) || (mParams.log_query_numbers)) {
     threadLogger = std::make_shared<Logger>();
-    threadLogger->initLogFile(mParams.logdir + "/" + mParams.myName +
+    threadLogger->initLogFile(mParams.logdir + FSSEP + mParams.myName +
                               "_thread-" + std::to_string(number) + ".sql");
   }
 

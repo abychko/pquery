@@ -107,7 +107,7 @@ bool startsWithDelimiter(const std::string &text, std::size_t pos,
   return text.compare(pos, delimiter.size(), delimiter) == 0;
 }
 
-bool consumeNormalChar(const std::string &text, std::size_t &pos,
+void consumeNormalChar(const std::string &text, std::size_t &pos,
                        ScanState &state, std::string &statement,
                        std::shared_ptr<std::vector<std::string>> queryList,
                        const std::string &delimiter) {
@@ -116,7 +116,7 @@ bool consumeNormalChar(const std::string &text, std::size_t &pos,
   if (startsWithDelimiter(text, pos, delimiter)) {
     pushStatement(queryList, statement);
     pos += delimiter.size() - 1;
-    return true;
+    return;
   }
 
   if (startsLineComment(text, pos)) {
@@ -124,35 +124,34 @@ bool consumeNormalChar(const std::string &text, std::size_t &pos,
     if (c == '/' || c == '-') {
       ++pos;
     }
-    return true;
+    return;
   }
 
   if (startsBlockComment(text, pos)) {
     state = ScanState::BlockComment;
     ++pos;
-    return true;
+    return;
   }
 
   if (c == '\'') {
     state = ScanState::SingleQuote;
     statement.push_back(c);
-    return true;
+    return;
   }
 
   if (c == '"') {
     state = ScanState::DoubleQuote;
     statement.push_back(c);
-    return true;
+    return;
   }
 
   if (c == '`') {
     state = ScanState::Backtick;
     statement.push_back(c);
-    return true;
+    return;
   }
 
   statement.push_back(c);
-  return true;
 }
 
 void consumeQuotedChar(const std::string &text, std::size_t &pos,

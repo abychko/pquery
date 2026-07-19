@@ -1,9 +1,0 @@
-<map id="src/cMyGenLogParser.hpp" name="src/cMyGenLogParser.hpp">
-<area shape="rect" id="Node000001" title=" " alt="" coords="5,5,181,31"/>
-<area shape="rect" id="Node000002" href="$c_infile_parser_8hpp.html" title=" " alt="" coords="34,79,152,105"/>
-<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="94,29,96,64,90,63,92,34"/>
-<area shape="rect" id="Node000003" title=" " alt="" coords="19,153,84,178"/>
-<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="88,103,68,141,64,138,84,106"/>
-<area shape="rect" id="Node000004" title=" " alt="" coords="109,153,162,178"/>
-<area shape="poly" id="edge3_Node000002_Node000004" title=" " alt="" coords="101,103,123,139,118,139,99,107"/>
-</map>

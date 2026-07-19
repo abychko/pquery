@@ -50,10 +50,6 @@ bool PQuery::initLogger() {
   std::cerr << __PRETTY_FUNCTION__ << std::endl;
 #endif
   pqLogger = std::make_shared<Logger>();
-  if (pqLogger == nullptr) {
-    std::cerr << "Unable to init logging subsystem" << '\n';
-    return false;
-  }
 
   if (!logFilePath.empty()) {
     pqLogger->setLogFilePath(logFilePath);
@@ -131,7 +127,7 @@ void PQuery::doCleanup(std::string name) {
 #ifdef DEBUG
   std::cerr << __PRETTY_FUNCTION__ << std::endl;
 #endif
-  std::string logfile = configReader->Get("master", "logdir", "/tmp") + "/" +
+  std::string logfile = configReader->Get("master", "logdir", "/tmp") + FSSEP +
                         name + "_worker.log";
   pqLogger->initLogFile(logfile);
 }
@@ -285,13 +281,6 @@ eRETCODE PQuery::createWorkerProcess(struct workerParams &Params) {
         pqLogger->addRecordToLog("=> PQuery is not compiled with " +
                                  dbtype_str(Params.dbtype));
         return eERROR;
-    }
-
-    if (dbWorker == nullptr) {
-      pqLogger->addRecordToLog("=> Error creating worker of type  " +
-                               dbtype_str(Params.dbtype));
-      pqLogger->addRecordToLog("=> Something went really wrong, exiting...");
-      return eERROR;
     }
 
     // TODO
