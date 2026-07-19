@@ -44,10 +44,14 @@ void DbWorker::writeFinalReport() {
   exitmsg.precision(2);
   exitmsg << std::fixed;
   exitmsg << "-> WORKER SUMMARY: " << failed_queries_total << "/"
-          << performed_queries_total << " queries failed, ("
-          << (performed_queries_total - failed_queries_total) * 100.0 /
-                 performed_queries_total
-          << "% were successful)";
+          << performed_queries_total << " queries failed, (";
+  if (performed_queries_total == 0) {
+    exitmsg << "N/A";
+  } else {
+    exitmsg << (performed_queries_total - failed_queries_total) * 100.0 /
+                   performed_queries_total;
+  }
+  exitmsg << "% were successful)";
   wLogger->addRecordToLog(exitmsg.str());
 }
 
@@ -87,6 +91,16 @@ void DbWorker::workerThread(int number) {
 #endif
   std::shared_ptr<Logger> threadLogger = nullptr;
   std::shared_ptr<Logger> outputLogger = nullptr;
+
+  if ((!queryList) || (queryList->empty())) {
+    if (wLogger) {
+      wLogger->addRecordToLog("=> Thread #" + std::to_string(number) +
+                              " is exiting abnormally, query list is empty");
+    }
+    return;
+  }
+
+
   std::mt19937 gen(rd());
   std::uniform_int_distribution<int> dis(0, queryList->size() - 1);
 
@@ -135,9 +149,15 @@ void DbWorker::workerThread(int number) {
     bool success = Database->performQuery((*queryList)[query_number]);
     std::uint16_t max_con_fail_count = Database->getConsecutiveFailures();
     if (max_con_fail_count >= MAX_CON_FAILURES) {
-      *threadLogger << "=> Last " << max_con_fail_count
-                    << " consecutive queries all failed. Likely crash/assert, "
-                       "user privileges drop, or similar. Ending run.\n";
+      std::ostringstream failmsg;
+      failmsg << "=> Last " << max_con_fail_count
+              << " consecutive queries all failed. Likely crash/assert, "
+                 "user privileges drop, or similar. Ending run.";
+      if (threadLogger) {
+        *threadLogger << failmsg.str() << "\n";
+      } else if (wLogger) {
+        wLogger->addRecordToLog(failmsg.str());
+      }
       calculateQueries(Database);
       return;
     }

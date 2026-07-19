@@ -1,3 +1,4 @@
+#include <cstdint>
 #include <eTypes.hpp>
 #include <string>
 #include <unordered_map>
@@ -16,7 +17,8 @@ class INIReader {
   int ParseError() const { return _error; };
   std::vector<std::string> GetSections() const { return _sections; };
   std::string Get(std::string, std::string name, std::string default_value);
-  int GetInteger(std::string section, std::string name, int default_value);
+  int64_t GetInteger(std::string section, std::string name,
+                     int64_t default_value);
   bool GetBoolean(std::string section, std::string name, bool default_value);
   eDBTYPE getDbType(std::string section, std::string name,
                     eDBTYPE default_value);
