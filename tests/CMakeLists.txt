@@ -19,3 +19,13 @@ ADD_EXECUTABLE(test_inireader
     )
 ADD_TEST(NAME IniReaderTests COMMAND test_inireader)
 #
+FIND_PACKAGE(Threads REQUIRED)
+ADD_EXECUTABLE(test_dbworker
+    test_dbworker.cpp
+    ${PQUERY_SRC_DIR}/cDbWorker.cpp
+    ${PQUERY_SRC_DIR}/cDatabase.cpp
+    ${PQUERY_SRC_DIR}/cLogger.cpp
+    )
+TARGET_LINK_LIBRARIES(test_dbworker Threads::Threads)
+ADD_TEST(NAME DbWorkerTests COMMAND test_dbworker)
+#

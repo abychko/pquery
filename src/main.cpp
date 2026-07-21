@@ -1,8 +1,7 @@
-#include <cstdlib>
-#ifdef DEBUG
-#include <iostream>
-#endif
 #include <cPQuery.hpp>
+#include <cstdlib>
+#include <exception>
+#include <iostream>
 
 int main(int argc, char *argv[]) {
 #ifdef DEBUG
@@ -11,9 +10,17 @@ int main(int argc, char *argv[]) {
 
   PQuery pqueryMaster = PQuery();
 
-  if (!pqueryMaster.parseCliOptions(argc, argv)) {
+  try {
+    if (!pqueryMaster.parseCliOptions(argc, argv)) {
+      return EXIT_FAILURE;
+    }
+
+    return pqueryMaster.run();
+  } catch (const std::exception &e) {
+    std::cerr << "=> Fatal error: " << e.what() << '\n';
+    return EXIT_FAILURE;
+  } catch (...) {
+    std::cerr << "=> Fatal error: unknown exception" << '\n';
     return EXIT_FAILURE;
   }
-
-  return pqueryMaster.run();
 }

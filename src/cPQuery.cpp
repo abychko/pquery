@@ -5,11 +5,13 @@
 #include <cPQuery.hpp>
 #include <cerrno>
 #include <chrono>
+#include <cstdint>
 #include <cstdlib>
 #include <cstring>
 #include <ctime>
 #include <hCommon.hpp>
 #include <iostream>
+#include <limits>
 #include <memory>
 #include <string>
 #include <vector>
@@ -132,7 +134,20 @@ void PQuery::doCleanup(std::string name) {
   pqLogger->initLogFile(logfile);
 }
 
-void PQuery::setupWorkerParams(struct workerParams &wParams,
+namespace {
+bool checkIntRange(const std::string &secName, const std::string &name,
+                   std::int64_t value, std::int64_t min, std::int64_t max) {
+  if (value < min || value > max) {
+    std::cerr << "=> Config error in section [" << secName << "]: " << name
+              << " = " << value << " out of range [" << min << ".." << max
+              << "]" << '\n';
+    return false;
+  }
+  return true;
+}
+}  // namespace
+
+bool PQuery::setupWorkerParams(struct workerParams &wParams,
                                std::string secName) {
 #ifdef DEBUG
   std::cerr << __PRETTY_FUNCTION__ << std::endl;
@@ -146,30 +161,54 @@ void PQuery::setupWorkerParams(struct workerParams &wParams,
   wParams.database = configReader->Get(secName, "database", "test");
 
   wParams.dbtype = configReader->getDbType(secName, "dbtype", eMYSQL);
-  switch (wParams.dbtype) {
-    case eMYSQL:
-      wParams.port = configReader->GetInteger(secName, "port", 3306);
-      break;
-    case ePGSQL:
-      wParams.port = configReader->GetInteger(secName, "port", 5432);
-      break;
-    default:
-      wParams.port = 0;
-      break;
-  }
 
-  wParams.threads = configReader->GetInteger(secName, "threads", 10);
-  wParams.queries_per_thread =
-      configReader->GetInteger(secName, "queries-per-thread", 10000);
+  try {
+    switch (wParams.dbtype) {
+      case eMYSQL: {
+        std::int64_t port = configReader->GetInteger(secName, "port", 3306);
+        if (!checkIntRange(secName, "port", port, 1, 65535)) return false;
+        wParams.port = static_cast<std::uint16_t>(port);
+        break;
+      }
+      case ePGSQL: {
+        std::int64_t port = configReader->GetInteger(secName, "port", 5432);
+        if (!checkIntRange(secName, "port", port, 1, 65535)) return false;
+        wParams.port = static_cast<std::uint16_t>(port);
+        break;
+      }
+      default:
+        wParams.port = 0;
+        break;
+    }
+
+    std::int64_t threads = configReader->GetInteger(secName, "threads", 10);
+    if (!checkIntRange(secName, "threads", threads, 1, 65535)) return false;
+    wParams.threads = static_cast<std::uint16_t>(threads);
+
+    std::int64_t queries_per_thread =
+        configReader->GetInteger(secName, "queries-per-thread", 10000);
+    if (!checkIntRange(secName, "queries-per-thread", queries_per_thread, 0,
+                       std::numeric_limits<std::int64_t>::max()))
+      return false;
+    wParams.queries_per_thread = static_cast<std::uint64_t>(queries_per_thread);
+
+    std::int64_t query_list_maxsize =
+        configReader->GetInteger(secName, "query-list-maxsize", 1073741824);
+    if (!checkIntRange(secName, "query-list-maxsize", query_list_maxsize, 0,
+                       std::numeric_limits<std::int64_t>::max()))
+      return false;
+    wParams.query_list_maxsize = static_cast<std::uint64_t>(query_list_maxsize);
+  } catch (const std::exception &e) {
+    std::cerr << "=> Config error in section [" << secName << "]: " << e.what()
+              << '\n';
+    return false;
+  }
 
   wParams.verbose = configReader->GetBoolean(secName, "verbose", false);
   wParams.shuffle = configReader->GetBoolean(secName, "shuffle", false);
 
   wParams.infile = configReader->Get(secName, "infile", "pquery.sql");
   wParams.infiletype = configReader->getInfileType(secName, "infiletype", eSQL);
-  // max file size to load to memory. read from disk overwise
-  wParams.query_list_maxsize =
-      configReader->GetInteger(secName, "query-list-maxsize", 1073741824);
 
   wParams.logdir = configReader->Get(secName, "logdir", "/tmp");
   //
@@ -187,6 +226,8 @@ void PQuery::setupWorkerParams(struct workerParams &wParams,
       configReader->GetBoolean(secName, "log-client-output", false);
   wParams.log_query_numbers =
       configReader->GetBoolean(secName, "log-query-numbers", false);
+
+  return true;
 }
 
 void PQuery::logWorkerDetails(struct workerParams &Params) {
@@ -199,7 +240,9 @@ void PQuery::logWorkerDetails(struct workerParams &Params) {
   pqLogger->addRecordToLog("## DB name: " + Params.database);
   pqLogger->addRecordToLog("## DB address: " + Params.address);
   pqLogger->addRecordToLog("## DB username: " + Params.username);
-  pqLogger->addRecordToLog("## DB password: " + Params.password);
+  pqLogger->addRecordToLog(
+      "## DB password: " +
+      std::string(Params.password.empty() ? "<empty>" : "<redacted>"));
   pqLogger->addRecordToLog("## DB socket: " + Params.socket);
   pqLogger->addRecordToLog("## DB port: " + std::to_string(Params.port));
   pqLogger->addRecordToLog("## PQuery threads: " +
@@ -302,7 +345,10 @@ eRETCODE PQuery::createWorkerWithParams(std::string secName) {
   std::cerr << __PRETTY_FUNCTION__ << std::endl;
 #endif
   struct workerParams wParams;
-  setupWorkerParams(wParams, secName);
+  if (!setupWorkerParams(wParams, secName)) {
+    pqLogger->addRecordToLog("=> Invalid config for " + secName);
+    return eERROR;
+  }
   eRETCODE wrc = createWorkerProcess(wParams);
   if (wrc == eERROR) {
     pqLogger->addRecordToLog("=> Worker returned error for " + secName);

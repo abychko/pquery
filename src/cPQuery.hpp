@@ -40,7 +40,7 @@ class PQuery {
 #endif
 
   eRETCODE createWorkerWithParams(std::string);
-  void setupWorkerParams(struct workerParams &, std::string);
+  bool setupWorkerParams(struct workerParams &, std::string);
   eRETCODE createWorkerProcess(struct workerParams &);
   //
   std::shared_ptr<INIReader> configReader;

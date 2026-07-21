@@ -44,5 +44,6 @@ class DbWorker {
   void storeParams(struct workerParams &wParams);
   std::atomic<uint64_t> performed_queries_total{};
   std::atomic<uint64_t> failed_queries_total{};
+  std::atomic<bool> thread_failed{false};
 };
 #endif
