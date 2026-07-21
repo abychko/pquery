@@ -25,9 +25,13 @@ class DbWorker {
   void setupLogger(std::shared_ptr<Logger>);
   virtual std::shared_ptr<Database> createDbInstance() = 0;
   virtual void endDbThread() = 0;
-  virtual bool loadQueryList() = 0;
+  virtual bool loadQueryList();
 
  protected:
+  // Hook for subclasses that support infile types beyond plain SQL (e.g.
+  // MysqlWorker adds GENLOG/BINLOG parsing). The default implementation
+  // only knows about eSQL.
+  virtual std::shared_ptr<InfileParser> createInfileParser() const;
   void workerThread(int);
   void adjustRuntimeParams();
   void spawnWorkerThreads();
@@ -42,6 +46,8 @@ class DbWorker {
   void calculateQueries(std::shared_ptr<Database>);
   virtual bool testConnection() = 0;
   void storeParams(struct workerParams &wParams);
+  bool validateInfileSize(const InfileParser &parser) const;
+  bool loadQueries(InfileParser &parser);
   std::atomic<uint64_t> performed_queries_total{};
   std::atomic<uint64_t> failed_queries_total{};
   std::atomic<bool> thread_failed{false};

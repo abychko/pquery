@@ -9,7 +9,6 @@ class PgsqlWorker : public DbWorker {
   ~PgsqlWorker() override;
   std::shared_ptr<Database> createDbInstance() override;
   void endDbThread() override;
-  bool loadQueryList() override;
 
  private:
   bool testConnection() override;

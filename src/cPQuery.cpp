@@ -2,9 +2,11 @@
 #include <sys/types.h>
 #include <sys/wait.h>
 #include <unistd.h>
+#include <algorithm>
 #include <cPQuery.hpp>
 #include <cerrno>
 #include <chrono>
+#include <csignal>
 #include <cstdint>
 #include <cstdlib>
 #include <cstring>
@@ -14,6 +16,7 @@
 #include <limits>
 #include <memory>
 #include <string>
+#include <thread>
 #include <vector>
 #include "eTypes.hpp"
 //
@@ -134,18 +137,26 @@ void PQuery::doCleanup(std::string name) {
   pqLogger->initLogFile(logfile);
 }
 
-namespace {
-bool checkIntRange(const std::string &secName, const std::string &name,
-                   std::int64_t value, std::int64_t min, std::int64_t max) {
+void PQuery::reportConfigError(const std::string &secName,
+                               const std::string &msg) {
+  std::string fullMsg = "=> Config error in section [" + secName + "]: " + msg;
+  if (pqLogger) {
+    pqLogger->addRecordToLog(fullMsg);
+  }
+  std::cerr << fullMsg << '\n';
+}
+
+bool PQuery::checkIntRange(const std::string &secName, const std::string &name,
+                           std::int64_t value, std::int64_t min,
+                           std::int64_t max) {
   if (value < min || value > max) {
-    std::cerr << "=> Config error in section [" << secName << "]: " << name
-              << " = " << value << " out of range [" << min << ".." << max
-              << "]" << '\n';
+    reportConfigError(secName, name + " = " + std::to_string(value) +
+                                   " out of range [" + std::to_string(min) +
+                                   ".." + std::to_string(max) + "]");
     return false;
   }
   return true;
 }
-}  // namespace
 
 bool PQuery::setupWorkerParams(struct workerParams &wParams,
                                std::string secName) {
@@ -161,6 +172,26 @@ bool PQuery::setupWorkerParams(struct workerParams &wParams,
   wParams.database = configReader->Get(secName, "database", "test");
 
   wParams.dbtype = configReader->getDbType(secName, "dbtype", eMYSQL);
+
+  if (wParams.dbtype == eNONE) {
+    reportConfigError(secName, "invalid or missing dbtype");
+    return false;
+  }
+
+#ifndef HAVE_MYSQL
+  if (wParams.dbtype == eMYSQL) {
+    reportConfigError(secName, "pquery is not compiled with support for " +
+                                   dbtype_str(wParams.dbtype));
+    return false;
+  }
+#endif
+#ifndef HAVE_PGSQL
+  if (wParams.dbtype == ePGSQL) {
+    reportConfigError(secName, "pquery is not compiled with support for " +
+                                   dbtype_str(wParams.dbtype));
+    return false;
+  }
+#endif
 
   try {
     switch (wParams.dbtype) {
@@ -198,9 +229,22 @@ bool PQuery::setupWorkerParams(struct workerParams &wParams,
                        std::numeric_limits<std::int64_t>::max()))
       return false;
     wParams.query_list_maxsize = static_cast<std::uint64_t>(query_list_maxsize);
+
+    std::int64_t timeout_secs = configReader->GetInteger(secName, "timeout", 0);
+    if (!checkIntRange(secName, "timeout", timeout_secs, 0,
+                       std::numeric_limits<std::uint32_t>::max()))
+      return false;
+    wParams.timeout_secs = static_cast<std::uint32_t>(timeout_secs);
+
+    std::int64_t connect_timeout_secs =
+        configReader->GetInteger(secName, "connect-timeout", 60);
+    if (!checkIntRange(secName, "connect-timeout", connect_timeout_secs, 0,
+                       std::numeric_limits<std::uint32_t>::max()))
+      return false;
+    wParams.connect_timeout_secs =
+        static_cast<std::uint32_t>(connect_timeout_secs);
   } catch (const std::exception &e) {
-    std::cerr << "=> Config error in section [" << secName << "]: " << e.what()
-              << '\n';
+    reportConfigError(secName, e.what());
     return false;
   }
 
@@ -209,6 +253,19 @@ bool PQuery::setupWorkerParams(struct workerParams &wParams,
 
   wParams.infile = configReader->Get(secName, "infile", "pquery.sql");
   wParams.infiletype = configReader->getInfileType(secName, "infiletype", eSQL);
+
+  if (wParams.infiletype == eUNKNOWN) {
+    reportConfigError(secName, "invalid infiletype value");
+    return false;
+  }
+
+  if (wParams.infiletype == eGENLOG || wParams.infiletype == eBINLOG) {
+    reportConfigError(
+        secName,
+        "infiletype GENLOG/BINLOG is not implemented yet, only SQL is "
+        "supported");
+    return false;
+  }
 
   wParams.logdir = configReader->Get(secName, "logdir", "/tmp");
   //
@@ -297,6 +354,18 @@ eRETCODE PQuery::createWorkerProcess(struct workerParams &Params) {
   if (childPID > 0) {
     pqLogger->addRecordToLog("-> Waiting for created worker " +
                              std::to_string(childPID));
+
+    workerProc proc;
+    proc.pid = childPID;
+    proc.name = Params.myName;
+    proc.has_timeout = Params.timeout_secs > 0;
+    if (proc.has_timeout) {
+      proc.deadline = std::chrono::steady_clock::now() +
+                      std::chrono::seconds(Params.timeout_secs);
+    }
+    proc.term_sent = false;
+    activeWorkers.push_back(proc);
+
     return eMASTER;
   }
 
@@ -340,20 +409,61 @@ eRETCODE PQuery::createWorkerProcess(struct workerParams &Params) {
   return eDEFAULT;
 }
 
-eRETCODE PQuery::createWorkerWithParams(std::string secName) {
+bool PQuery::waitForWorkers() {
 #ifdef DEBUG
   std::cerr << __PRETTY_FUNCTION__ << std::endl;
 #endif
-  struct workerParams wParams;
-  if (!setupWorkerParams(wParams, secName)) {
-    pqLogger->addRecordToLog("=> Invalid config for " + secName);
-    return eERROR;
+  bool retvalue = true;
+  const auto SIGTERM_GRACE = std::chrono::seconds(10);
+
+  while (!activeWorkers.empty()) {
+    int status = 0;
+    pid_t wPID = waitpid(-1, &status, WNOHANG);
+
+    if (wPID > 0) {
+      auto it = std::find_if(
+          activeWorkers.begin(), activeWorkers.end(),
+          [wPID](const workerProc &proc) { return proc.pid == wPID; });
+      if (it != activeWorkers.end()) {
+        if (status != 0) {
+          retvalue = false;
+        }
+        pqLogger->addRecordToLog("=> Exit status of child with PID " +
+                                 std::to_string(wPID) + ": " +
+                                 std::to_string(status));
+        activeWorkers.erase(it);
+      }
+      continue;  // check for more exited children before sleeping
+    }
+
+    if (wPID < 0) {
+      // No more children to wait for (e.g. ECHILD); avoid a busy loop.
+      break;
+    }
+
+    // wPID == 0: nobody exited yet, check timeouts.
+    auto now = std::chrono::steady_clock::now();
+    for (auto &proc : activeWorkers) {
+      if (proc.has_timeout && !proc.term_sent && now > proc.deadline) {
+        pqLogger->addRecordToLog("=> Worker " + proc.name + " (PID " +
+                                 std::to_string(proc.pid) +
+                                 ") exceeded timeout, sending SIGTERM");
+        kill(proc.pid, SIGTERM);
+        proc.term_sent = true;
+        proc.kill_deadline = now + SIGTERM_GRACE;
+        retvalue = false;
+      } else if (proc.term_sent && now > proc.kill_deadline) {
+        pqLogger->addRecordToLog(
+            "=> Worker " + proc.name + " (PID " + std::to_string(proc.pid) +
+            ") did not respond to SIGTERM, sending SIGKILL");
+        kill(proc.pid, SIGKILL);
+      }
+    }
+
+    std::this_thread::sleep_for(std::chrono::milliseconds(500));
   }
-  eRETCODE wrc = createWorkerProcess(wParams);
-  if (wrc == eERROR) {
-    pqLogger->addRecordToLog("=> Worker returned error for " + secName);
-  }
-  return wrc;
+
+  return retvalue;
 }
 
 bool PQuery::runWorkers() {
@@ -363,40 +473,50 @@ bool PQuery::runWorkers() {
   std::vector<std::string> sections;
   sections = configReader->GetSections();
   std::vector<std::string>::iterator it;
+  std::vector<struct workerParams> validParams;
+  bool configOk = true;
 
+  // Phase 1: validate every section before forking anything, so a bad
+  // config in one section can never leave sibling workers running.
   for (it = sections.begin(); it != sections.end(); it++) {
     const std::string &secName = *it;
     if (toLowerCase(secName) == "master") {
       continue;
     }
     pqLogger->addRecordToLog("-> Checking " + secName + " params...");
-    if (configReader->GetBoolean(secName, "run", false)) {
-      pqLogger->addRecordToLog("-> Running worker for " + secName);
-      eRETCODE wrc = createWorkerWithParams(secName);
-      switch (wrc) {
-        case eERROR:
-          return false;
-        case eCHILD:
-          return true;
-        default:
-          break;
-      }
+    if (!configReader->GetBoolean(secName, "run", false)) {
+      continue;
     }
+    struct workerParams wParams;
+    if (!setupWorkerParams(wParams, secName)) {
+      configOk = false;
+      continue;
+    }
+    validParams.push_back(wParams);
   }  // for()
 
-  pid_t wPID = 0;
-  int status = 0;
-  bool retvalue = true;  // uninitialised is always false
-
-  while ((wPID = wait(&status)) > 0) {
-    if (status != 0) {
-      retvalue = false;
-    }
-    pqLogger->addRecordToLog("=> Exit status of child with PID " +
-                             std::to_string(wPID) + ": " +
-                             std::to_string(status));
+  if (!configOk) {
+    const std::string msg = "=> Config validation failed, no workers started";
+    pqLogger->addRecordToLog(msg);
+    std::cerr << msg << '\n';
+    return false;
   }
-  return retvalue;
+
+  // Phase 2: all sections validated, now fork the workers.
+  for (auto &wParams : validParams) {
+    pqLogger->addRecordToLog("-> Running worker for " + wParams.myName);
+    eRETCODE wrc = createWorkerProcess(wParams);
+    switch (wrc) {
+      case eERROR:
+        return false;
+      case eCHILD:
+        return true;
+      default:
+        break;
+    }
+  }
+
+  return waitForWorkers();
 }
 
 int PQuery::run() {
@@ -463,10 +583,15 @@ void PQuery::showHelp() {
             << "port = 3306\n\n"
             << "# The SQL input file\n"
             << "infile = pquery.sql\n\n"
-            << "# Infile type, (SQL, GENLOG, BINLOG), default is plain SQL\n"
+            << "# Infile type: SQL only (GENLOG and BINLOG are not "
+               "implemented yet)\n"
             << "infiletype = SQL\n\n"
             << "# Maximum file size to be loaded to RAM\n"
             << "query-list-maxsize = 1G\n\n"
+            << "# Overall timeout in seconds for this worker, 0 = no timeout\n"
+               "timeout = 0\n\n"
+            << "# Connection timeout in seconds\n"
+               "connect-timeout = 60\n\n"
             << "# Directory to store logs\n"
             << "logdir = /tmp\n\n"
             << "# Socket file to use\n"

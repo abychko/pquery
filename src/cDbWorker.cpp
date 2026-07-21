@@ -1,5 +1,6 @@
 // cDbWorker.cpp
 #include <cDbWorker.hpp>
+#include <cSqlFileParser.hpp>
 #include <cstdint>
 #include <cstring>
 #include <hCommon.hpp>
@@ -237,4 +238,71 @@ bool DbWorker::executeTests(struct workerParams &wParams) {
   spawnWorkerThreads();
   writeFinalReport();
   return !thread_failed.load();
+}
+
+std::shared_ptr<InfileParser> DbWorker::createInfileParser() const {
+#ifdef DEBUG
+  std::cerr << __PRETTY_FUNCTION__ << std::endl;
+#endif
+  if (mParams.infiletype == eSQL) {
+    return std::make_shared<SqlFileParser>();
+  }
+  std::cerr << "=> Infile type " << infiletype_str(mParams.infiletype)
+            << " is not supported for " << dbtype_str(mParams.dbtype)
+            << std::endl;
+  return nullptr;
+}
+
+bool DbWorker::validateInfileSize(const InfileParser &parser) const {
+  std::uint64_t file_size = parser.getInfileSize(mParams.infile);
+
+#ifdef DEBUG
+  std::cerr << "=> Infile type: " << infiletype_str(mParams.infiletype)
+            << std::endl;
+  std::cerr << "=> Infile size: " << file_size << " Bytes" << std::endl;
+  std::cerr << "=> Infile max RAM: " << mParams.query_list_maxsize << " bytes"
+            << std::endl;
+#endif
+
+  if (file_size == 0) {
+    std::cerr << "=> Unable to read infile size or file is empty: "
+              << mParams.infile << std::endl;
+    return false;
+  }
+
+  if (file_size > mParams.query_list_maxsize) {
+    std::cerr << "=> Unable to load file " << mParams.infile
+              << " to RAM due to limit " << mParams.query_list_maxsize
+              << " bytes" << std::endl;
+    std::cerr << "=> InFile size: " << file_size << " bytes..." << std::endl;
+    return false;
+  }
+
+  return true;
+}
+
+bool DbWorker::loadQueries(InfileParser &parser) {
+  return parser.loadQueriesFromFile(queryList, mParams.infile);
+}
+
+bool DbWorker::loadQueryList() {
+#ifdef DEBUG
+  std::cerr << __PRETTY_FUNCTION__ << std::endl;
+#endif
+
+  wInfileParser = createInfileParser();
+  if (!wInfileParser) {
+    std::cerr << "=> Unable to create infile parser" << std::endl;
+    return false;
+  }
+
+  if (!validateInfileSize(*wInfileParser)) {
+    return false;
+  }
+
+  if (!loadQueries(*wInfileParser)) {
+    return false;
+  }
+
+  return true;
 }

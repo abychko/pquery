@@ -31,6 +31,8 @@ struct workerParams {
   bool log_client_output{false};
   bool log_query_numbers{false};
   bool shuffle{false};
+  std::uint32_t timeout_secs{0};  // 0 = no timeout for the whole worker run
+  std::uint32_t connect_timeout_secs{60};  // connection timeout, seconds
 };
 
 #endif

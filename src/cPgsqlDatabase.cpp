@@ -52,6 +52,9 @@ bool PgsqlDatabase::connect(const workerParams &dbParams) {
   conninfo << "host=" << dbParams.address << " user=" << dbParams.username
            << " password=" << dbParams.password
            << " dbname=" << dbParams.database << " port=" << dbParams.port;
+  if (dbParams.connect_timeout_secs > 0) {
+    conninfo << " connect_timeout=" << dbParams.connect_timeout_secs;
+  }
   conn = PQconnectdb(conninfo.str().c_str());
   if (PQstatus(conn) != CONNECTION_OK) {
     return false;

@@ -63,60 +63,6 @@ std::shared_ptr<InfileParser> MysqlWorker::createInfileParser() const {
   }
 }
 
-bool MysqlWorker::validateInfileSize(const InfileParser &parser) const {
-  std::uint64_t file_size = parser.getInfileSize(mParams.infile);
-
-#ifdef DEBUG
-  std::cerr << "=> Infile type: " << infiletype_str(mParams.infiletype)
-            << std::endl;
-  std::cerr << "=> Infile size: " << file_size << " Bytes" << std::endl;
-  std::cerr << "=> Infile max RAM: " << mParams.query_list_maxsize << " bytes"
-            << std::endl;
-#endif
-
-  if (file_size == 0) {
-    std::cerr << "=> Unable to read infile size or file is empty: "
-              << mParams.infile << std::endl;
-    return false;
-  }
-
-  if (file_size > mParams.query_list_maxsize) {
-    std::cerr << "=> Unable to load file " << mParams.infile
-              << " to RAM due to limit " << mParams.query_list_maxsize
-              << " bytes" << std::endl;
-    std::cerr << "=> InFile size: " << file_size << " bytes..." << std::endl;
-    return false;
-  }
-
-  return true;
-}
-
-bool MysqlWorker::loadQueries(InfileParser &parser) {
-  return parser.loadQueriesFromFile(queryList, mParams.infile);
-}
-
-bool MysqlWorker::loadQueryList() {
-#ifdef DEBUG
-  std::cerr << __PRETTY_FUNCTION__ << std::endl;
-#endif
-
-  wInfileParser = createInfileParser();
-  if (!wInfileParser) {
-    std::cerr << "=> Unable to create infile parser" << std::endl;
-    return false;
-  }
-
-  if (!validateInfileSize(*wInfileParser)) {
-    return false;
-  }
-
-  if (!loadQueries(*wInfileParser)) {
-    return false;
-  }
-
-  return true;
-}
-
 std::shared_ptr<Database> MysqlWorker::createDbInstance() {
   return std::make_shared<MysqlDatabase>();
 }

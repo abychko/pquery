@@ -25,6 +25,8 @@ ADD_EXECUTABLE(test_dbworker
     ${PQUERY_SRC_DIR}/cDbWorker.cpp
     ${PQUERY_SRC_DIR}/cDatabase.cpp
     ${PQUERY_SRC_DIR}/cLogger.cpp
+    ${PQUERY_SRC_DIR}/cSqlFileParser.cpp
+    ${PQUERY_SRC_DIR}/cInfileParser.cpp
     )
 TARGET_LINK_LIBRARIES(test_dbworker Threads::Threads)
 ADD_TEST(NAME DbWorkerTests COMMAND test_dbworker)

@@ -40,6 +40,11 @@ bool MysqlDatabase::connect(const workerParams &dbParams) {
     return false;
   }
 
+  if (dbParams.connect_timeout_secs > 0) {
+    unsigned int timeout = dbParams.connect_timeout_secs;
+    mysql_options(conn, MYSQL_OPT_CONNECT_TIMEOUT, &timeout);
+  }
+
 #ifdef DEBUG
   std::cerr << "\n"
             << "=> Connecting to:\n"

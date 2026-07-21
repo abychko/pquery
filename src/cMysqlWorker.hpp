@@ -13,13 +13,10 @@ class MysqlWorker : public DbWorker {
   ~MysqlWorker() override;
 
   bool testConnection() override;
-  bool loadQueryList() override;
   std::shared_ptr<Database> createDbInstance() override;
   void endDbThread() override;
 
- private:
-  std::shared_ptr<InfileParser> createInfileParser() const;
-  bool validateInfileSize(const InfileParser &parser) const;
-  bool loadQueries(InfileParser &parser);
+ protected:
+  std::shared_ptr<InfileParser> createInfileParser() const override;
 };
 #endif
