@@ -1,20 +1,105 @@
 #include <algorithm>
 #include <cIniReader.hpp>
+#include <cctype>
 #include <cstdint>
 #include <fstream>
 #include <iostream>
 #include <limits>
-#include <regex>
 #include <sstream>
 #include <stdexcept>
 
+namespace {
+bool isSpaceChar(char c) {
+  return std::isspace(static_cast<unsigned char>(c)) != 0;
+}
+
+std::size_t skipWs(const std::string &line, std::size_t pos) {
+  while (pos < line.size() && isSpaceChar(line[pos])) {
+    ++pos;
+  }
+  return pos;
+}
+
+bool isBlank(const std::string &line) { return skipWs(line, 0) == line.size(); }
+
+bool isComment(const std::string &line) {
+  std::size_t i = skipWs(line, 0);
+  if (i >= line.size()) {
+    return false;
+  }
+  if (line[i] == ';' || line[i] == '#') {
+    return true;
+  }
+  return (i + 1 < line.size() && line[i] == '-' && line[i + 1] == '-');
+}
+
+bool tryParseSection(const std::string &line, std::string &sectionName) {
+  std::size_t i = skipWs(line, 0);
+  if (i >= line.size() || line[i] != '[') {
+    return false;
+  }
+  std::size_t close = line.find(']', i + 1);
+  if (close == std::string::npos || close == i + 1 ||
+      close + 1 != line.size()) {
+    return false;
+  }
+  sectionName = line.substr(i + 1, close - i - 1);
+  return true;
+}
+
+bool tryParseKeyValue(const std::string &line, std::string &key,
+                      std::string &value) {
+  std::size_t n = line.size();
+  std::size_t i = skipWs(line, 0);
+  if (i == n) {
+    return false;
+  }
+  std::size_t kb = i;
+  ++i;  // first key char: any non-whitespace, including '='
+  while (i < n && line[i] != ' ' && line[i] != '\t' && line[i] != '=') {
+    ++i;
+  }
+  std::string keyCandidate = line.substr(kb, i - kb);
+
+  i = skipWs(line, i);
+  if (i == n || line[i] != '=') {
+    return false;
+  }
+  i = skipWs(line, i + 1);
+  if (i == n) {
+    return false;  // empty value
+  }
+
+  std::size_t vb = i;
+  while (i < n && !isSpaceChar(line[i])) {
+    ++i;
+  }
+  std::size_t ve = i;
+
+  while (i < n) {
+    std::size_t ws = i;
+    while (i < n && isSpaceChar(line[i])) {
+      ++i;
+    }
+    if (i == n) {
+      break;  // trailing whitespace, stop
+    }
+    if (i - ws != 1) {
+      return false;  // 2+ whitespace between words: malformed
+    }
+    while (i < n && !isSpaceChar(line[i])) {
+      ++i;
+    }
+    ve = i;
+  }
+
+  key = keyCandidate;
+  value = line.substr(vb, ve - vb);
+  return true;
+}
+}  // namespace
+
 INIReader::INIReader(std::string filename) {
-  static const std::regex blank_regex("^\\s*$");
-  static const std::regex comment_regex("^\\s*(?:;|#|--).*$");
-  static const std::regex section_regex{R"x(\s*\[([^\]]+)\])x"};
-  static const std::regex value_regex{
-      R"x(\s*(\S[^ \t=]*)\s*=\s*((\s?\S+)+)\s*$)x"};
-  std::smatch pieces;
   std::string current_section;
   std::ifstream cfg;
 
@@ -33,24 +118,26 @@ INIReader::INIReader(std::string filename) {
     if (line.empty()) {
       continue;
     }
-    if (std::regex_match(line, pieces, blank_regex)) {
+    if (isBlank(line)) {
       continue;
     }
-    if (std::regex_match(line, pieces, comment_regex)) {
+    if (isComment(line)) {
       continue;
     }
-    if (std::regex_match(line, pieces, section_regex)) {
-      if (pieces.size() == 2) {  // exactly one match
-        current_section = pieces[1].str();
+    {
+      std::string sectionName;
+      if (tryParseSection(line, sectionName)) {
+        current_section = sectionName;
         _sections.push_back(current_section);
+        continue;
       }
-      continue;
     }
-    if (std::regex_match(line, pieces, value_regex)) {
-      if (pieces.size() == 4) {
-        map[current_section][pieces[1].str()] = pieces[2].str();
+    {
+      std::string key, value;
+      if (tryParseKeyValue(line, key, value)) {
+        map[current_section][key] = value;
+        continue;
       }
-      continue;
     }
     if (_error == 0) {
       _error = line_no;  // first malformed line, keep parsing to collect all

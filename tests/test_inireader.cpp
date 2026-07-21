@@ -6,6 +6,7 @@
 #include <cIniReader.hpp>
 #include <eTypes.hpp>
 
+#include <chrono>
 #include <cstdint>
 #include <cstdio>
 #include <fstream>
@@ -231,6 +232,71 @@ void testGetInfileType() {
   CHECK(reader.getInfileType("s1", "missing", eSQL) == eSQL);
 }
 
+void testRedosLineParsesInLinearTime() {
+  std::string longRun(512, 'a');
+  std::string path = writeTempFile("redos",
+                                   "[s]\n"
+                                   "ok = 1\n"
+                                   "k = " +
+                                       longRun + "  b\n");
+
+  auto start = std::chrono::steady_clock::now();
+  INIReader reader(path);
+  auto elapsed = std::chrono::steady_clock::now() - start;
+  removeFile(path);
+
+  CHECK(elapsed < std::chrono::seconds(1));
+  CHECK(reader.ParseError() == 3);
+  CHECK(reader.Get("s", "ok", "") == "1");
+}
+
+void testValueWithSingleInternalSpaces() {
+  std::string path = writeTempFile("singlespaces",
+                                   "[s]\n"
+                                   "k = a b c\n");
+  INIReader reader(path);
+  removeFile(path);
+
+  CHECK(reader.ParseError() == 0);
+  CHECK(reader.Get("s", "k", "") == "a b c");
+
+  std::string path2 = writeTempFile("doublespace",
+                                    "[s]\n"
+                                    "k2 = a  b\n");
+  INIReader reader2(path2);
+  removeFile(path2);
+
+  CHECK(reader2.ParseError() == 2);
+}
+
+void testSectionTrailingGarbageIsMalformed() {
+  std::string path1 = writeTempFile("sectiontrailing1", "[s] x\n");
+  INIReader reader1(path1);
+  removeFile(path1);
+  CHECK(reader1.ParseError() > 0);
+
+  std::string path2 = writeTempFile("sectiontrailing2", "[s] \n");
+  INIReader reader2(path2);
+  removeFile(path2);
+  CHECK(reader2.ParseError() > 0);
+
+  std::string path3 = writeTempFile("sectionempty", "[]\n");
+  INIReader reader3(path3);
+  removeFile(path3);
+  CHECK(reader3.ParseError() > 0);
+}
+
+void testValueKeepsInlineSemicolon() {
+  std::string path = writeTempFile("inlinesemicolon",
+                                   "[s]\n"
+                                   "k = v ; comment\n");
+  INIReader reader(path);
+  removeFile(path);
+
+  CHECK(reader.ParseError() == 0);
+  CHECK(reader.Get("s", "k", "") == "v ; comment");
+}
+
 }  // namespace
 
 int main() {
@@ -245,6 +311,10 @@ int main() {
   testWhitespaceOnlyLineIsNotAnError();
   testGetDbType();
   testGetInfileType();
+  testRedosLineParsesInLinearTime();
+  testValueWithSingleInternalSpaces();
+  testSectionTrailingGarbageIsMalformed();
+  testValueKeepsInlineSemicolon();
 
   std::cout << (g_checks - g_failures) << "/" << g_checks << " checks passed"
             << std::endl;
