@@ -10,14 +10,17 @@
 
 #include <cDbWorker.hpp>
 #include <cDatabase.hpp>
+#include <cInfileParser.hpp>
 #include <sWorkerParams.hpp>
 
 #include <atomic>
 #include <cstdio>
+#include <fstream>
 #include <iostream>
 #include <memory>
 #include <stdexcept>
 #include <string>
+#include <vector>
 
 namespace {
 int g_checks = 0;
@@ -101,6 +104,15 @@ class TestDbWorker : public DbWorker {
   void setThrowInFactory(bool value) { throw_in_factory_ = value; }
   int instancesCreated() const { return instances_created_.load(); }
   int threadsFinishedCleanly() const { return threads_finished_cleanly_.load(); }
+
+  // Exposes the protected createInfileParser() hook for the dollar-quoting
+  // wiring test below: sets dbtype on mParams and returns whatever parser
+  // the base class builds for it.
+  std::shared_ptr<InfileParser> makeInfileParserFor(eDBTYPE dbtype) {
+    mParams.dbtype = dbtype;
+    mParams.infiletype = eSQL;
+    return createInfileParser();
+  }
 
  private:
   FakeDatabase::Mode mode_;
@@ -204,6 +216,42 @@ void testFactoryExceptionIsCaught() {
   CHECK(result == false);
 }
 
+// createInfileParser() must enable dollar-quoting (needed to keep PL/pgSQL
+// function bodies like "$$ ... ; ... $$" together as one statement) only
+// when dbtype is PostgreSQL. For MySQL, "$" must stay a plain identifier
+// character and internal ';' inside a would-be dollar-quoted block must
+// still split the statement, exactly like before this feature existed.
+void testCreateInfileParserEnablesDollarQuotingOnlyForPgsql() {
+  const std::string path = "dbworker_dollarquote.tmp.sql";
+  {
+    std::ofstream out(path, std::ios::binary | std::ios::trunc);
+    out << "CREATE FUNCTION f() RETURNS int AS $$ BEGIN SELECT 1; SELECT 2; "
+           "END $$ LANGUAGE plpgsql;\n"
+        << "SELECT 3;\n";
+  }
+
+  TestDbWorker pgWorker(FakeDatabase::Mode::kSucceed);
+  auto pgParser = pgWorker.makeInfileParserFor(ePGSQL);
+  auto pgQueries = std::make_shared<std::vector<std::string>>();
+  bool pgOk = pgParser->loadQueriesFromFile(pgQueries, path);
+  CHECK(pgOk);
+  // The dollar-quoted function body must stay a single statement: 2
+  // statements total (CREATE FUNCTION ... $$ ... $$ ...; and SELECT 3).
+  CHECK(pgQueries->size() == 2);
+
+  TestDbWorker myWorker(FakeDatabase::Mode::kSucceed);
+  auto myParser = myWorker.makeInfileParserFor(eMYSQL);
+  auto myQueries = std::make_shared<std::vector<std::string>>();
+  bool myOk = myParser->loadQueriesFromFile(myQueries, path);
+  CHECK(myOk);
+  // Without dollar-quoting, the ';' characters inside the "$$ ... $$" text
+  // are ordinary statement separators, so the same file splits into more
+  // (smaller) statements.
+  CHECK(myQueries->size() > pgQueries->size());
+
+  std::remove(path.c_str());
+}
+
 }  // namespace
 
 int main() {
@@ -212,6 +260,7 @@ int main() {
   testOrdinaryConnectFailureDoesNotTripExceptionFlag();
   testManyConcurrentThreadsAllThrowingDoesNotCrash();
   testFactoryExceptionIsCaught();
+  testCreateInfileParserEnablesDollarQuotingOnlyForPgsql();
 
   std::cout << (g_checks - g_failures) << "/" << g_checks << " checks passed"
             << std::endl;

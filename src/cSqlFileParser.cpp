@@ -1,5 +1,6 @@
 #include <cSqlFileParser.hpp>
 
+#include <cctype>
 #include <cstring>
 #include <fstream>
 #include <iostream>
@@ -11,7 +12,8 @@ enum class ScanState {
   DoubleQuote,
   Backtick,
   LineComment,
-  BlockComment
+  BlockComment,
+  DollarQuote
 };
 
 std::string trim(const std::string &s) {
@@ -107,10 +109,38 @@ bool startsWithDelimiter(const std::string &text, std::size_t pos,
   return text.compare(pos, delimiter.size(), delimiter) == 0;
 }
 
+// Returns the length of a valid "$tag$" dollar-quote opener starting at pos
+// (e.g. 2 for "$$", 6 for "$body$"), or 0 if there is no valid opener there.
+std::size_t dollarQuoteOpenLength(const std::string &text, std::size_t pos) {
+  if (text[pos] != '$') {
+    return 0;
+  }
+  std::size_t i = pos + 1;
+  if (i < text.size() && text[i] == '$') {
+    return 2;  // empty tag: "$$"
+  }
+  if (i >= text.size() ||
+      !(std::isalpha(static_cast<unsigned char>(text[i])) || text[i] == '_')) {
+    return 0;  // first tag char must be a letter or underscore (not a digit ->
+               // "$1" placeholder)
+  }
+  ++i;
+  while (
+      i < text.size() &&
+      (std::isalnum(static_cast<unsigned char>(text[i])) || text[i] == '_')) {
+    ++i;
+  }
+  if (i < text.size() && text[i] == '$') {
+    return i - pos + 1;
+  }
+  return 0;
+}
+
 void consumeNormalChar(const std::string &text, std::size_t &pos,
                        ScanState &state, std::string &statement,
                        std::shared_ptr<std::vector<std::string>> queryList,
-                       const std::string &delimiter) {
+                       const std::string &delimiter, bool dollarQuoting,
+                       std::string &dollarTag) {
   char c = text[pos];
 
   if (startsWithDelimiter(text, pos, delimiter)) {
@@ -131,6 +161,17 @@ void consumeNormalChar(const std::string &text, std::size_t &pos,
     state = ScanState::BlockComment;
     ++pos;
     return;
+  }
+
+  if (dollarQuoting && c == '$') {
+    std::size_t len = dollarQuoteOpenLength(text, pos);
+    if (len > 0) {
+      dollarTag = text.substr(pos, len);
+      statement.append(dollarTag);
+      pos += len - 1;
+      state = ScanState::DollarQuote;
+      return;
+    }
   }
 
   if (c == '\'') {
@@ -195,12 +236,27 @@ void consumeBlockCommentChar(const std::string &text, std::size_t &pos,
   }
 }
 
+void consumeDollarQuoteChar(const std::string &text, std::size_t &pos,
+                            ScanState &state, std::string &statement,
+                            std::string &dollarTag) {
+  if (text[pos] == '$' && text.compare(pos, dollarTag.size(), dollarTag) == 0) {
+    statement.append(dollarTag);
+    pos += dollarTag.size() - 1;
+    dollarTag.clear();
+    state = ScanState::Normal;
+    return;
+  }
+  statement.push_back(text[pos]);
+}
+
 bool splitStatements(std::ifstream &file,
-                     std::shared_ptr<std::vector<std::string>> queryList) {
+                     std::shared_ptr<std::vector<std::string>> queryList,
+                     bool dollarQuoting) {
   ScanState state = ScanState::Normal;
   std::string statement;
   std::string line;
   std::string delimiter = ";";
+  std::string dollarTag;
 
   while (std::getline(file, line)) {
     std::string newDelimiter;
@@ -214,7 +270,8 @@ bool splitStatements(std::ifstream &file,
     for (std::size_t pos = 0; pos < line.size(); ++pos) {
       switch (state) {
         case ScanState::Normal:
-          consumeNormalChar(line, pos, state, statement, queryList, delimiter);
+          consumeNormalChar(line, pos, state, statement, queryList, delimiter,
+                            dollarQuoting, dollarTag);
           break;
         case ScanState::SingleQuote:
           consumeQuotedChar(line, pos, state, statement, '\'');
@@ -231,6 +288,9 @@ bool splitStatements(std::ifstream &file,
         case ScanState::BlockComment:
           consumeBlockCommentChar(line, pos, state);
           break;
+        case ScanState::DollarQuote:
+          consumeDollarQuoteChar(line, pos, state, statement, dollarTag);
+          break;
       }
     }
   }
@@ -239,6 +299,9 @@ bool splitStatements(std::ifstream &file,
   return true;
 }
 }  // namespace
+
+SqlFileParser::SqlFileParser(bool dollarQuoting)
+    : mDollarQuoting(dollarQuoting) {}
 
 bool SqlFileParser::loadQueriesFromFile(
     std::shared_ptr<std::vector<std::string>> queryList,
@@ -254,5 +317,5 @@ bool SqlFileParser::loadQueriesFromFile(
     return false;
   }
 
-  return splitStatements(file, queryList);
+  return splitStatements(file, queryList, mDollarQuoting);
 }

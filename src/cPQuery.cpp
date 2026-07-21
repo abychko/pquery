@@ -260,10 +260,17 @@ bool PQuery::setupWorkerParams(struct workerParams &wParams,
   }
 
   if (wParams.infiletype == eGENLOG || wParams.infiletype == eBINLOG) {
-    reportConfigError(
-        secName,
-        "infiletype GENLOG/BINLOG is not implemented yet, only SQL is "
-        "supported");
+    if (wParams.dbtype == ePGSQL) {
+      reportConfigError(
+          secName,
+          "infiletype GENLOG/BINLOG refers to MySQL log formats and is not "
+          "applicable to PostgreSQL; use infiletype = SQL");
+    } else {
+      reportConfigError(
+          secName,
+          "infiletype GENLOG/BINLOG is not implemented yet, only SQL is "
+          "supported");
+    }
     return false;
   }
 

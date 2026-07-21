@@ -8,10 +8,14 @@
 
 class SqlFileParser : public InfileParser {
  public:
+  explicit SqlFileParser(bool dollarQuoting = false);
   ~SqlFileParser() override = default;
 
   bool loadQueriesFromFile(std::shared_ptr<std::vector<std::string>> queryList,
                            const std::string &infileName) override;
+
+ private:
+  bool mDollarQuoting;
 };
 
 #endif

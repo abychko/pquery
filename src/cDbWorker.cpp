@@ -245,7 +245,7 @@ std::shared_ptr<InfileParser> DbWorker::createInfileParser() const {
   std::cerr << __PRETTY_FUNCTION__ << std::endl;
 #endif
   if (mParams.infiletype == eSQL) {
-    return std::make_shared<SqlFileParser>();
+    return std::make_shared<SqlFileParser>(mParams.dbtype == ePGSQL);
   }
   std::cerr << "=> Infile type " << infiletype_str(mParams.infiletype)
             << " is not supported for " << dbtype_str(mParams.dbtype)

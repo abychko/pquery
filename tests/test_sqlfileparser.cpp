@@ -42,10 +42,11 @@ void removeFile(const std::string &path) { std::remove(path.c_str()); }
 // Runs the parser over `content` (via a temp file) and returns the parsed
 // statement list. Asserts that parsing itself succeeded.
 std::vector<std::string> parse(const std::string &name,
-                               const std::string &content) {
+                               const std::string &content,
+                               bool dollarQuoting = false) {
   std::string path = writeTempFile(name, content);
 
-  SqlFileParser parser;
+  SqlFileParser parser(dollarQuoting);
   auto queryList = std::make_shared<std::vector<std::string>>();
   bool ok = parser.loadQueriesFromFile(queryList, path);
   removeFile(path);
@@ -173,6 +174,79 @@ void testNullQueryListIsRejected() {
   CHECK(!ok);
 }
 
+void testDollarQuoteFunctionBodyIsOneStatement() {
+  auto queries = parse(
+      "dollarfunc",
+      "CREATE FUNCTION f() RETURNS int AS $$ BEGIN SELECT 1; SELECT 2; END "
+      "$$ LANGUAGE plpgsql;\n"
+      "SELECT 3;\n",
+      /*dollarQuoting=*/true);
+  CHECK(queries.size() == 2);
+  if (queries.size() == 2) {
+    CHECK(queries[0].find("SELECT 1;") != std::string::npos);
+    CHECK(queries[1] == "SELECT 3");
+  }
+}
+
+void testDollarQuoteWithNamedTagFunctionBodyIsOneStatement() {
+  auto queries = parse(
+      "dollarfuncnamed",
+      "CREATE FUNCTION f() RETURNS int AS $body$ BEGIN SELECT 1; SELECT 2; "
+      "END $body$ LANGUAGE plpgsql;\n"
+      "SELECT 3;\n",
+      /*dollarQuoting=*/true);
+  CHECK(queries.size() == 2);
+  if (queries.size() == 2) {
+    CHECK(queries[0].find("SELECT 1;") != std::string::npos);
+    CHECK(queries[1] == "SELECT 3");
+  }
+}
+
+void testDollarQuoteWithUnescapedSingleQuoteInside() {
+  auto queries =
+      parse("dollarquoteapostrophe", "SELECT $$it's a 'test'; done$$;\n",
+            /*dollarQuoting=*/true);
+  CHECK(queries.size() == 1);
+}
+
+void testTwoConsecutiveDollarQuoteBlocks() {
+  auto queries = parse("dollartwo",
+                       "SELECT $$one; two$$;\nSELECT $tag$three; four$tag$;\n",
+                       /*dollarQuoting=*/true);
+  CHECK(queries.size() == 2);
+}
+
+void testDollarNumberedPlaceholdersAreNotDollarQuotes() {
+  auto queries =
+      parse("dollarplaceholders",
+            "PREPARE p AS SELECT * FROM t WHERE a = $1 AND b = $2;\n",
+            /*dollarQuoting=*/true);
+  CHECK(queries.size() == 1);
+  if (queries.size() == 1) {
+    CHECK(queries[0] == "PREPARE p AS SELECT * FROM t WHERE a = $1 AND b = $2");
+  }
+}
+
+void testDollarQuoteInnerTagIsNotRealNesting() {
+  auto queries =
+      parse("dollarnested",
+            "SELECT $outer$ text $inner$more$inner$ ; text $outer$;\n",
+            /*dollarQuoting=*/true);
+  CHECK(queries.size() == 1);
+}
+
+void testDollarSignInIdentifierWithoutDollarQuotingEnabled() {
+  auto queries = parse("dollarmysql", "SELECT a$b$c;\nSELECT 2;\n",
+                       /*dollarQuoting=*/false);
+  CHECK(queries.size() == 2);
+}
+
+void testUnterminatedDollarQuoteDoesNotCrash() {
+  auto queries = parse("dollarunterminated", "SELECT $$ text without an end\n",
+                       /*dollarQuoting=*/true);
+  CHECK(queries.size() == 1);
+}
+
 }  // namespace
 
 int main() {
@@ -189,6 +263,14 @@ int main() {
   testFileWithOnlyCommentsProducesNoQueries();
   testMissingFileFailsGracefully();
   testNullQueryListIsRejected();
+  testDollarQuoteFunctionBodyIsOneStatement();
+  testDollarQuoteWithNamedTagFunctionBodyIsOneStatement();
+  testDollarQuoteWithUnescapedSingleQuoteInside();
+  testTwoConsecutiveDollarQuoteBlocks();
+  testDollarNumberedPlaceholdersAreNotDollarQuotes();
+  testDollarQuoteInnerTagIsNotRealNesting();
+  testDollarSignInIdentifierWithoutDollarQuotingEnabled();
+  testUnterminatedDollarQuoteDoesNotCrash();
 
   std::cout << (g_checks - g_failures) << "/" << g_checks << " checks passed"
             << std::endl;
