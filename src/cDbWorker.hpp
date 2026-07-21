@@ -43,6 +43,12 @@ class DbWorker {
   std::uint64_t getFailedConnectionsTotal() const {
     return failed_connections_total.load();
   }
+  std::uint64_t getPerformedQueriesTotal() const {
+    return performed_queries_total.load();
+  }
+  std::uint64_t getFailedQueriesTotal() const {
+    return failed_queries_total.load();
+  }
 
  private:
   void writeFinalReport();

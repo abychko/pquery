@@ -13,16 +13,18 @@ typedef std::unordered_map<std::string,
 
 class INIReader {
  public:
-  explicit INIReader(std::string filename);
+  explicit INIReader(const std::string &filename);
   int ParseError() const { return _error; };
   std::vector<std::string> GetSections() const { return _sections; };
-  std::string Get(std::string, std::string name, std::string default_value);
-  int64_t GetInteger(std::string section, std::string name,
+  std::string Get(const std::string &section, const std::string &name,
+                  const std::string &default_value);
+  int64_t GetInteger(const std::string &section, const std::string &name,
                      int64_t default_value);
-  bool GetBoolean(std::string section, std::string name, bool default_value);
-  eDBTYPE getDbType(std::string section, std::string name,
+  bool GetBoolean(const std::string &section, const std::string &name,
+                  bool default_value);
+  eDBTYPE getDbType(const std::string &section, const std::string &name,
                     eDBTYPE default_value);
-  eINFILETYPE getInfileType(std::string section, std::string name,
+  eINFILETYPE getInfileType(const std::string &section, const std::string &name,
                             eINFILETYPE default_value);
 
  private:

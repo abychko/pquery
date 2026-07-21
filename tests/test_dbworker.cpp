@@ -42,9 +42,10 @@ void reportCheck(bool cond, const char *expr, const char *file, int line) {
 // paths inside DbWorker::workerThread() without any real DB client.
 class FakeDatabase : public Database {
  public:
-  enum class Mode { kThrowOnConnect, kFailOnConnect, kSucceed };
+  enum class Mode { kThrowOnConnect, kFailOnConnect, kSucceed, kFailQueries };
 
-  explicit FakeDatabase(Mode mode) : mode_(mode) {}
+  explicit FakeDatabase(Mode mode, std::uint32_t succeed_every_n = 0)
+      : mode_(mode), succeed_every_n_(succeed_every_n) {}
 
   std::string getServerVersion() override { return "fake-1.0"; }
   std::string getHostInfo() override { return "fake-host"; }
@@ -57,33 +58,47 @@ class FakeDatabase : public Database {
       case Mode::kFailOnConnect:
         return false;
       case Mode::kSucceed:
+      case Mode::kFailQueries:
         return true;
     }
     return false;
   }
 
   std::uint64_t getAffectedRows() override { return 0; }
-  bool performRealQuery(const std::string & /*query*/) override { return true; }
+  bool performRealQuery(const std::string & /*query*/) override {
+    if (mode_ != Mode::kFailQueries) {
+      return true;
+    }
+    ++query_calls_;
+    if (succeed_every_n_ > 0 && (query_calls_ % succeed_every_n_) == 0) {
+      return true;
+    }
+    return false;
+  }
   void processQueryOutput() override {}
   std::uint32_t getWarningsCount() override { return 0; }
   void cleanupResult() override {}
 
  private:
   Mode mode_;
+  std::uint32_t succeed_every_n_;
+  std::uint32_t query_calls_ = 0;
 };
 
 // A minimal concrete DbWorker whose factory/hook methods are configurable
 // per test, so we can drive workerThread() through its various branches.
 class TestDbWorker : public DbWorker {
  public:
-  explicit TestDbWorker(FakeDatabase::Mode mode) : mode_(mode) {}
+  explicit TestDbWorker(FakeDatabase::Mode mode,
+                        std::uint32_t succeed_every_n = 0)
+      : mode_(mode), succeed_every_n_(succeed_every_n) {}
 
   std::shared_ptr<Database> createDbInstance() override {
     ++instances_created_;
     if (throw_in_factory_) {
       throw std::runtime_error("simulated factory exception");
     }
-    return std::make_shared<FakeDatabase>(mode_);
+    return std::make_shared<FakeDatabase>(mode_, succeed_every_n_);
   }
 
   void endDbThread() override { ++threads_finished_cleanly_; }
@@ -107,6 +122,10 @@ class TestDbWorker : public DbWorker {
   std::uint64_t failedConnectionsTotal() const {
     return getFailedConnectionsTotal();
   }
+  std::uint64_t performedQueriesTotal() const {
+    return getPerformedQueriesTotal();
+  }
+  std::uint64_t failedQueriesTotal() const { return getFailedQueriesTotal(); }
 
   // Exposes the protected createInfileParser() hook for the dollar-quoting
   // wiring test below: sets dbtype on mParams and returns whatever parser
@@ -119,6 +138,7 @@ class TestDbWorker : public DbWorker {
 
  private:
   FakeDatabase::Mode mode_;
+  std::uint32_t succeed_every_n_;
   bool throw_in_factory_ = false;
   std::atomic<int> instances_created_{0};
   std::atomic<int> threads_finished_cleanly_{0};
@@ -257,6 +277,45 @@ void testCreateInfileParserEnablesDollarQuotingOnlyForPgsql() {
   std::remove(path.c_str());
 }
 
+// MAX_CON_FAILURES consecutive query failures inside a single thread must
+// abort that thread's query loop early (see the `max_con_fail_count >=
+// MAX_CON_FAILURES` check in workerThread()): this is a distinct, "expected"
+// abort path from the exception-based thread_failed flag, so executeTests()
+// must still report success, and the counters must reflect that only
+// MAX_CON_FAILURES queries actually ran before bailing out. Because the
+// abort path returns before calling endDbThread(), threadsFinishedCleanly()
+// must stay at 0.
+void testConsecutiveFailuresAbortThread() {
+  TestDbWorker worker(FakeDatabase::Mode::kFailQueries);  // always fails
+  worker.setupLogger(makeDiscardLogger());
+  workerParams params = makeParams(1);
+  params.queries_per_thread = 2 * MAX_CON_FAILURES;
+
+  bool result = worker.executeTests(params);
+
+  CHECK(result == true);
+  CHECK(worker.threadsFinishedCleanly() == 0);
+  CHECK(worker.performedQueriesTotal() == MAX_CON_FAILURES);
+  CHECK(worker.failedQueriesTotal() == MAX_CON_FAILURES);
+}
+
+// Occasional successes reset the consecutive-failure counter (see
+// Database::performQuery()), so the MAX_CON_FAILURES threshold should never
+// be reached and the thread must run to completion normally.
+void testIntermittentFailuresDoNotAbort() {
+  TestDbWorker worker(FakeDatabase::Mode::kFailQueries,
+                      /*succeed_every_n=*/100);
+  worker.setupLogger(makeDiscardLogger());
+  workerParams params = makeParams(1);
+  params.queries_per_thread = 500;
+
+  bool result = worker.executeTests(params);
+
+  CHECK(result == true);
+  CHECK(worker.threadsFinishedCleanly() == 1);
+  CHECK(worker.performedQueriesTotal() == 500);
+}
+
 }  // namespace
 
 int main() {
@@ -266,6 +325,8 @@ int main() {
   testManyConcurrentThreadsAllThrowingDoesNotCrash();
   testFactoryExceptionIsCaught();
   testCreateInfileParserEnablesDollarQuotingOnlyForPgsql();
+  testConsecutiveFailuresAbortThread();
+  testIntermittentFailuresDoNotAbort();
 
   std::cout << (g_checks - g_failures) << "/" << g_checks << " checks passed"
             << std::endl;

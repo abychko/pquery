@@ -99,7 +99,7 @@ bool tryParseKeyValue(const std::string &line, std::string &key,
 }
 }  // namespace
 
-INIReader::INIReader(std::string filename) {
+INIReader::INIReader(const std::string &filename) {
   std::string current_section;
   std::ifstream cfg;
 
@@ -147,7 +147,8 @@ INIReader::INIReader(std::string filename) {
   cfg.close();
 }
 
-eINFILETYPE INIReader::getInfileType(std::string section, std::string name,
+eINFILETYPE INIReader::getInfileType(const std::string &section,
+                                     const std::string &name,
                                      eINFILETYPE default_value) {
   std::string valstr = Get(section, name, "");
   if (valstr.empty()) {
@@ -166,8 +167,8 @@ eINFILETYPE INIReader::getInfileType(std::string section, std::string name,
   return eUNKNOWN;
 }
 
-eDBTYPE INIReader::getDbType(std::string section, std::string name,
-                             eDBTYPE default_value) {
+eDBTYPE INIReader::getDbType(const std::string &section,
+                             const std::string &name, eDBTYPE default_value) {
   std::string valstr = Get(section, name, "");
   if (valstr.empty()) {
     return default_value;
@@ -184,8 +185,8 @@ eDBTYPE INIReader::getDbType(std::string section, std::string name,
   return eNONE;
 }
 
-std::string INIReader::Get(std::string section, std::string name,
-                           std::string default_value) {
+std::string INIReader::Get(const std::string &section, const std::string &name,
+                           const std::string &default_value) {
   auto section_it = map.find(section);
   if (section_it == map.end()) {
     return default_value;
@@ -199,7 +200,7 @@ std::string INIReader::Get(std::string section, std::string name,
   return (!value_it->second.empty()) ? value_it->second : default_value;
 }
 
-bool INIReader::GetBoolean(std::string section, std::string name,
+bool INIReader::GetBoolean(const std::string &section, const std::string &name,
                            bool default_value) {
   std::string valstr = Get(section, name, "");
   // Convert to lower case to make string comparisons case-insensitive
@@ -213,8 +214,8 @@ bool INIReader::GetBoolean(std::string section, std::string name,
   return default_value;
 }
 
-int64_t INIReader::GetInteger(std::string section, std::string name,
-                              int64_t default_value) {
+int64_t INIReader::GetInteger(const std::string &section,
+                              const std::string &name, int64_t default_value) {
   std::string valstr = Get(section, name, "");
   if (valstr.empty()) {
     return default_value;
