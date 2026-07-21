@@ -40,6 +40,9 @@ class DbWorker {
   std::shared_ptr<InfileParser> wInfileParser;
   std::shared_ptr<std::vector<std::string>> queryList;
   struct workerParams mParams;
+  std::uint64_t getFailedConnectionsTotal() const {
+    return failed_connections_total.load();
+  }
 
  private:
   void writeFinalReport();
@@ -50,6 +53,7 @@ class DbWorker {
   bool loadQueries(InfileParser &parser);
   std::atomic<uint64_t> performed_queries_total{};
   std::atomic<uint64_t> failed_queries_total{};
+  std::atomic<std::uint64_t> failed_connections_total{0};
   std::atomic<bool> thread_failed{false};
 };
 #endif

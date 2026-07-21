@@ -31,11 +31,7 @@
 #define MYSQL_FORK "UNKNOWN"
 #endif
 
-#if defined(WIN32) || defined(_WIN32)
-const std::string FSSEP = "\\";
-#else
-const std::string FSSEP = "/";
-#endif
+inline constexpr char FSSEP = '/';
 
 inline std::string infiletype_str(eINFILETYPE infiletype) {
   switch (infiletype) {

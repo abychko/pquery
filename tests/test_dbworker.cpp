@@ -8,8 +8,8 @@
 // be reflected in DbWorker::executeTests()'s return value, and must behave
 // correctly under concurrent execution from multiple threads.
 
-#include <cDbWorker.hpp>
 #include <cDatabase.hpp>
+#include <cDbWorker.hpp>
 #include <cInfileParser.hpp>
 #include <sWorkerParams.hpp>
 
@@ -63,9 +63,7 @@ class FakeDatabase : public Database {
   }
 
   std::uint64_t getAffectedRows() override { return 0; }
-  bool performRealQuery(const std::string & /*query*/) override {
-    return true;
-  }
+  bool performRealQuery(const std::string & /*query*/) override { return true; }
   void processQueryOutput() override {}
   std::uint32_t getWarningsCount() override { return 0; }
   void cleanupResult() override {}
@@ -103,7 +101,12 @@ class TestDbWorker : public DbWorker {
 
   void setThrowInFactory(bool value) { throw_in_factory_ = value; }
   int instancesCreated() const { return instances_created_.load(); }
-  int threadsFinishedCleanly() const { return threads_finished_cleanly_.load(); }
+  int threadsFinishedCleanly() const {
+    return threads_finished_cleanly_.load();
+  }
+  std::uint64_t failedConnectionsTotal() const {
+    return getFailedConnectionsTotal();
+  }
 
   // Exposes the protected createInfileParser() hook for the dollar-quoting
   // wiring test below: sets dbtype on mParams and returns whatever parser
@@ -133,7 +136,7 @@ workerParams makeParams(std::uint16_t threads) {
   params.myName = "unittest-node";
   params.threads = threads;
   params.queries_per_thread = 2;
-  params.shuffle = true;  // avoid adjustRuntimeParams() forcing threads to 1
+  params.shuffle = true;   // avoid adjustRuntimeParams() forcing threads to 1
   params.logdir = "/dev";  // unused: no per-thread logging enabled below
   return params;
 }
@@ -166,6 +169,7 @@ void testSuccessfulRunStillReturnsTrue() {
   CHECK(result == true);
   CHECK(worker.instancesCreated() == 4);
   CHECK(worker.threadsFinishedCleanly() == 4);
+  CHECK(worker.failedConnectionsTotal() == 0);
 }
 
 // connect() returning false (not throwing) is a pre-existing, "expected"
@@ -184,6 +188,7 @@ void testOrdinaryConnectFailureDoesNotTripExceptionFlag() {
   CHECK(result == true);
   CHECK(worker.instancesCreated() == 3);
   CHECK(worker.threadsFinishedCleanly() == 0);
+  CHECK(worker.failedConnectionsTotal() == 3);
 }
 
 // Concurrency check: many threads throwing simultaneously must not race or

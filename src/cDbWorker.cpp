@@ -54,6 +54,10 @@ void DbWorker::writeFinalReport() {
                    performed_queries_total;
   }
   exitmsg << "% were successful)";
+  if (failed_connections_total > 0) {
+    exitmsg << "; " << failed_connections_total
+            << " thread(s) failed to connect";
+  }
   wLogger->addRecordToLog(exitmsg.str());
 }
 
@@ -127,6 +131,7 @@ void DbWorker::workerThread(int number) {
                  << "\n";
       }
 
+      failed_connections_total++;
       return;
     }
 
