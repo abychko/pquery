@@ -31,3 +31,12 @@ ADD_EXECUTABLE(test_dbworker
 TARGET_LINK_LIBRARIES(test_dbworker Threads::Threads)
 ADD_TEST(NAME DbWorkerTests COMMAND test_dbworker)
 #
+ADD_EXECUTABLE(test_workerconfig
+    test_workerconfig.cpp
+    ${PQUERY_SRC_DIR}/cWorkerConfig.cpp
+    ${PQUERY_SRC_DIR}/cIniReader.cpp
+    ${PQUERY_SRC_DIR}/cLogger.cpp
+    )
+TARGET_COMPILE_DEFINITIONS(test_workerconfig PRIVATE HAVE_MYSQL HAVE_PGSQL)
+ADD_TEST(NAME WorkerConfigTests COMMAND test_workerconfig)
+#

@@ -1,6 +1,7 @@
 SET(BINARY_NAME "pquery${vMajor}")
 #
 SET(COMMON_SOURCES
+    cCli.cpp
     cDatabase.cpp
     cDbWorker.cpp
     cInfileParser.cpp
@@ -8,6 +9,8 @@ SET(COMMON_SOURCES
     cLogger.cpp
     cPQuery.cpp
     cSqlFileParser.cpp
+    cWorkerConfig.cpp
+    cWorkerPool.cpp
     main.cpp
     )
 #
