@@ -171,6 +171,8 @@ address = 192.168.10.1
 port = 3306
 # The SQL input file
 infile = pquery-mysql.sql
+# Infile type: SQL only (GENLOG and BINLOG are not implemented yet)
+infiletype = SQL
 # Directory to store logs
 logdir = /tmp
 # Socket file to use
@@ -183,6 +185,10 @@ password = pquery123!
 threads = 10
 # The number of queries per thread
 queries-per-thread = 10k
+# Overall timeout in seconds for this worker, 0 = no timeout
+timeout = 0
+# Connection timeout in seconds
+connect-timeout = 60
 # Log all queries
 log-all-queries = No
 # Log succeeded queries
