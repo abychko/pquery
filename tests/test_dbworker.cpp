@@ -11,6 +11,7 @@
 #include <cDatabase.hpp>
 #include <cDbWorker.hpp>
 #include <cInfileParser.hpp>
+#include <hCommon.hpp>
 #include <sWorkerParams.hpp>
 
 #include <atomic>
@@ -303,17 +304,20 @@ void testConsecutiveFailuresAbortThread() {
 // Database::performQuery()), so the MAX_CON_FAILURES threshold should never
 // be reached and the thread must run to completion normally.
 void testIntermittentFailuresDoNotAbort() {
-  TestDbWorker worker(FakeDatabase::Mode::kFailQueries,
-                      /*succeed_every_n=*/100);
+  constexpr std::uint32_t kSucceedEveryN = MAX_CON_FAILURES / 3;
+  static_assert(kSucceedEveryN > 0 && kSucceedEveryN < MAX_CON_FAILURES,
+                "reset must fire well before the abort threshold");
+
+  TestDbWorker worker(FakeDatabase::Mode::kFailQueries, kSucceedEveryN);
   worker.setupLogger(makeDiscardLogger());
   workerParams params = makeParams(1);
-  params.queries_per_thread = 500;
+  params.queries_per_thread = 2 * MAX_CON_FAILURES;
 
   bool result = worker.executeTests(params);
 
   CHECK(result == true);
   CHECK(worker.threadsFinishedCleanly() == 1);
-  CHECK(worker.performedQueriesTotal() == 500);
+  CHECK(worker.performedQueriesTotal() == params.queries_per_thread);
 }
 
 }  // namespace

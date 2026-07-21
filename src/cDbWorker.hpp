@@ -15,8 +15,6 @@
 #ifndef PQDBWORKER_HPP
 #define PQDBWORKER_HPP
 
-const std::uint16_t MAX_CON_FAILURES = 250;
-
 class DbWorker {
  public:
   DbWorker();

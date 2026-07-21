@@ -3,6 +3,7 @@
 
 #include <algorithm>
 #include <cctype>
+#include <cstdint>
 #include <string>
 
 #include <eTypes.hpp>
@@ -32,6 +33,9 @@
 #endif
 
 inline constexpr char FSSEP = '/';
+
+// Consecutive query failures after which a worker thread aborts its loop.
+inline constexpr std::uint16_t MAX_CON_FAILURES = 250;
 
 inline std::string infiletype_str(eINFILETYPE infiletype) {
   switch (infiletype) {
